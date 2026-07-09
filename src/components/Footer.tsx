@@ -43,7 +43,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             {categories.slice(0, 5).map((c) => (
               <li key={c.slug}>
-                <Link to="/trends" search={{ category: c.slug }} className="hover:text-primary">
+                <Link to="/trends" hash={c.slug} className="hover:text-primary">
                   {c.name}
                 </Link>
               </li>
