@@ -106,7 +106,7 @@ function TrendDetail() {
 
       <div className="container-page mt-16 grid gap-12 lg:grid-cols-[1fr_320px]">
         <div className="mx-auto max-w-2xl">
-          {trend.content.map((para, i) => (
+          {trend.content.map((para: string, i: number) => (
             <p key={i} className="mb-5 text-lg leading-relaxed text-foreground/90">
               {para}
             </p>
@@ -118,7 +118,7 @@ function TrendDetail() {
             <div className="text-xs uppercase tracking-widest text-primary">Style Notes</div>
             <h3 className="mt-2 font-display text-2xl">How to wear it</h3>
             <ul className="mt-4 space-y-3">
-              {trend.tips.map((tip, i) => (
+              {trend.tips.map((tip: string, i: number) => (
                 <li key={i} className="flex gap-3 text-foreground/90">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                   <span>{tip}</span>
@@ -131,7 +131,7 @@ function TrendDetail() {
             <div className="mt-12">
               <h3 className="mb-4 font-display text-2xl">Gallery</h3>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                {trend.gallery.map((src, i) => (
+                {trend.gallery.map((src: string, i: number) => (
                   <div key={i} className="overflow-hidden rounded-xl">
                     <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
                   </div>
@@ -141,7 +141,7 @@ function TrendDetail() {
           )}
 
           <div className="mt-10 flex flex-wrap gap-2">
-            {trend.tags.map((t) => (
+            {trend.tags.map((t: string) => (
               <span key={t} className="rounded-full bg-secondary/60 px-3 py-1 text-xs text-secondary-foreground">
                 #{t}
               </span>

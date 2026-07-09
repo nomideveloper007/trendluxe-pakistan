@@ -76,7 +76,7 @@ function BlogDetail() {
 
       <div className="container-page mx-auto mt-12 max-w-2xl">
         <p className="text-xl leading-relaxed text-foreground/90">{post.excerpt}</p>
-        {post.content.map((p, i) => (
+        {post.content.map((p: string, i: number) => (
           <p key={i} className="mt-5 text-lg leading-relaxed text-foreground/90">{p}</p>
         ))}
         <AdSlot variant="in-article" />
