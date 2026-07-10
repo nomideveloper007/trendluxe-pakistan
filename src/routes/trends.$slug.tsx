@@ -180,20 +180,6 @@ function TrendDetail() {
   );
 }
 
-function ActionButton({ active, icon, label, onClick }: { active?: boolean; icon: React.ReactNode; label: string; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`inline-flex items-center gap-2 rounded-full border px-5 py-2 text-sm font-medium transition ${
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-surface text-foreground hover:border-primary hover:text-primary"
-      }`}
-    >
-      {icon} {label}
-    </button>
-  );
-}
 
 function TrendNotFound() {
   return (
