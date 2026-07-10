@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { getBlogPost, blogPosts, SITE } from "@/lib/content";
 import { BlogCard } from "@/components/BlogCard";
 import { AdSlot } from "@/components/AdSlot";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -66,6 +67,9 @@ function BlogDetail() {
           {post.title}
         </h1>
         <div className="mt-4 text-sm text-muted-foreground">{date} · {post.readMinutes} min read</div>
+        <div className="mt-6 flex justify-center">
+          <FavoriteButton itemType="blog" itemSlug={post.slug} />
+        </div>
       </header>
 
       <div className="container-page mt-10 overflow-hidden">
