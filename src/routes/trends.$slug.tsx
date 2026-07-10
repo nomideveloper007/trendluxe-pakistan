@@ -1,9 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { Heart, Share2, Eye, Calendar, ArrowLeft, Bookmark } from "lucide-react";
+import { Heart, Share2, Eye, Calendar, ArrowLeft } from "lucide-react";
 import { getTrend, getCategory, relatedTrends, SITE } from "@/lib/content";
 import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
+import { LikeButton } from "@/components/LikeButton";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/trends/$slug")({
@@ -57,8 +58,6 @@ function TrendDetail() {
   const { trend } = Route.useLoaderData();
   const cat = getCategory(trend.category);
   const related = relatedTrends(trend);
-  const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   async function onShare() {
     const url = typeof window !== "undefined" ? window.location.href : "";
@@ -98,10 +97,15 @@ function TrendDetail() {
       </div>
 
       {/* Action bar */}
-      <div className="container-page mt-6 flex justify-center gap-2">
-        <ActionButton active={liked} onClick={() => setLiked((v) => !v)} icon={<Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />} label={liked ? "Loved" : "Love"} />
-        <ActionButton active={saved} onClick={() => setSaved((v) => !v)} icon={<Bookmark className={`h-4 w-4 ${saved ? "fill-current" : ""}`} />} label={saved ? "Saved" : "Save"} />
-        <ActionButton onClick={onShare} icon={<Share2 className="h-4 w-4" />} label="Share" />
+      <div className="container-page mt-6 flex flex-wrap justify-center gap-2">
+        <LikeButton trendSlug={trend.slug} baseLikes={trend.likes} />
+        <FavoriteButton itemType="trend" itemSlug={trend.slug} />
+        <button
+          onClick={onShare}
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-5 py-2 text-sm font-medium transition hover:border-primary hover:text-primary"
+        >
+          <Share2 className="h-4 w-4" /> Share
+        </button>
       </div>
 
       <div className="container-page mt-16 grid gap-12 lg:grid-cols-[1fr_320px]">

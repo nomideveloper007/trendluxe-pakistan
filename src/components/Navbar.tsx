@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, User } from "lucide-react";
 import { SITE } from "@/lib/content";
+import { useAuth } from "@/lib/auth";
 
 const links = [
   { to: "/", label: "Home" },
@@ -13,6 +14,7 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const { session } = useAuth();
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="container-page flex h-16 items-center justify-between">
@@ -43,6 +45,21 @@ export function Navbar() {
           >
             <Search className="h-4 w-4" />
           </button>
+          {session ? (
+            <Link
+              to="/profile"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium hover:border-primary hover:text-primary"
+            >
+              <User className="h-4 w-4" /> Profile
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="text-sm font-medium text-foreground/80 hover:text-primary"
+            >
+              Sign in
+            </Link>
+          )}
           <Link
             to="/trends"
             className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:bg-accent"
@@ -75,6 +92,13 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              to={session ? "/profile" : "/auth"}
+              onClick={() => setOpen(false)}
+              className="py-2 text-sm font-medium text-primary"
+            >
+              {session ? "Your profile" : "Sign in"}
+            </Link>
           </nav>
         </div>
       )}
