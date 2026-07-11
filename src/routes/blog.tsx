@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { blogCategories, SITE } from "@/lib/content";
+import { blogCategories, SITE, type BlogPost } from "@/lib/content";
 import { fetchAllPosts } from "@/lib/blog-data";
 import { BlogCard } from "@/components/BlogCard";
 import { AdSlot } from "@/components/AdSlot";
@@ -33,7 +33,7 @@ function BlogPage() {
 
   const [cat, setCat] = useState<(typeof cats)[number]>("all");
   const filtered = useMemo(
-    () => (cat === "all" ? posts : posts.filter((p) => p.category === cat)),
+    () => (cat === "all" ? (posts as BlogPost[]) : (posts as BlogPost[]).filter((p: BlogPost) => p.category === cat)),
     [cat, posts],
   );
   return (
@@ -68,7 +68,7 @@ function BlogPage() {
 
       <section className="container-page pb-20">
         <div className="grid gap-5">
-          {filtered.map((p) => <BlogCard key={p.slug} post={p} />)}
+          {filtered.map((p: BlogPost) => <BlogCard key={p.slug} post={p} />)}
         </div>
         <AdSlot variant="footer" />
       </section>

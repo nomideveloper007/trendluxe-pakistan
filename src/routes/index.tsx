@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
-import { categories, heroImage, SITE } from "@/lib/content";
+import { categories, heroImage, SITE, type Trend, type BlogPost } from "@/lib/content";
 import { fetchAllTrends } from "@/lib/trends-data";
 import { fetchAllPosts } from "@/lib/blog-data";
 import { TrendCard } from "@/components/TrendCard";
@@ -137,7 +137,7 @@ function Home() {
               </div>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
-              {featured.map((t, i) => (
+              {featured.map((t: Trend, i: number) => (
                 <TrendCard key={t.slug} trend={t} priority={i === 0} />
               ))}
             </div>
@@ -159,7 +159,7 @@ function Home() {
             </div>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {trending.map((t) => <TrendCard key={t.slug} trend={t} />)}
+            {trending.map((t: Trend) => <TrendCard key={t.slug} trend={t} />)}
           </div>
         </section>
       )}
@@ -180,7 +180,7 @@ function Home() {
               </Link>
             </div>
             <div className="grid gap-5">
-              {latestPosts.map((p) => <BlogCard key={p.slug} post={p} />)}
+              {latestPosts.map((p: BlogPost) => <BlogCard key={p.slug} post={p} />)}
             </div>
           </div>
         </section>
@@ -199,7 +199,7 @@ function Home() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6">
-            {gallery.map((t) => (
+            {gallery.map((t: Trend) => (
               <Link
                 key={t.slug}
                 to="/trends/$slug"

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-import { categories, SITE } from "@/lib/content";
+import { categories, SITE, type Trend } from "@/lib/content";
 import { fetchAllTrends } from "@/lib/trends-data";
 import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
@@ -35,13 +35,13 @@ function TrendsPage() {
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
-    return trends.filter((t) => {
+    return (trends as Trend[]).filter((t: Trend) => {
       if (cat !== "all" && t.category !== cat) return false;
       if (!query) return true;
       return (
         t.title.toLowerCase().includes(query) ||
         t.excerpt.toLowerCase().includes(query) ||
-        t.tags.some((tag) => tag.toLowerCase().includes(query))
+        t.tags.some((tag: string) => tag.toLowerCase().includes(query))
       );
     });
   }, [q, cat, trends]);
@@ -88,7 +88,7 @@ function TrendsPage() {
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((t) => <TrendCard key={t.slug} trend={t} />)}
+            {filtered.map((t: Trend) => <TrendCard key={t.slug} trend={t} />)}
           </div>
         )}
 

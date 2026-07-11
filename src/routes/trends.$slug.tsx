@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Heart, Share2, Eye, Calendar, ArrowLeft } from "lucide-react";
-import { getCategory, SITE } from "@/lib/content";
+import { getCategory, SITE, type Trend } from "@/lib/content";
 import { fetchTrendBySlug, fetchAllTrends } from "@/lib/trends-data";
 import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
@@ -175,7 +175,7 @@ function TrendDetail() {
         <section className="container-page mt-24">
           <h2 className="mb-8 font-display text-3xl">You might also love</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((r) => <TrendCard key={r.slug} trend={r} />)}
+            {related.map((r: Trend) => <TrendCard key={r.slug} trend={r} />)}
           </div>
         </section>
       )}

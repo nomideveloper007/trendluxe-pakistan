@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { SITE } from "@/lib/content";
+import { SITE, type BlogPost } from "@/lib/content";
 import { fetchPostBySlug, fetchAllPosts } from "@/lib/blog-data";
 import { BlogCard } from "@/components/BlogCard";
 import { AdSlot } from "@/components/AdSlot";
@@ -93,7 +93,7 @@ function BlogDetail() {
         <section className="container-page mt-20">
           <h2 className="mb-8 font-display text-3xl">Keep reading</h2>
           <div className="grid gap-5">
-            {related.map((r) => <BlogCard key={r.slug} post={r} />)}
+            {related.map((r: BlogPost) => <BlogCard key={r.slug} post={r} />)}
           </div>
         </section>
       )}
