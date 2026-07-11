@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
+import { subscribeToNewsletter } from "@/lib/user-data";
 
 const schema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
@@ -18,11 +19,15 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
       return;
     }
     setLoading(true);
-    // Phase 2 will persist to Lovable Cloud.
-    await new Promise((r) => setTimeout(r, 500));
-    toast.success("You're on the list — welcome to TrendLibas ✨");
-    setEmail("");
-    setLoading(false);
+    try {
+      await subscribeToNewsletter(parsed.data.email);
+      toast.success("You're on the list — welcome to TrendLibas ✨");
+      setEmail("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not subscribe");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

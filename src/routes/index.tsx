@@ -1,18 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
-import { categories, trends, blogPosts, heroImage, SITE } from "@/lib/content";
+import { categories, heroImage, SITE, type Trend, type BlogPost } from "@/lib/content";
+import { fetchAllTrends } from "@/lib/trends-data";
+import { fetchAllPosts } from "@/lib/blog-data";
 import { TrendCard } from "@/components/TrendCard";
 import { BlogCard } from "@/components/BlogCard";
 import { AdSlot } from "@/components/AdSlot";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const [trends, posts] = await Promise.all([fetchAllTrends(), fetchAllPosts()]);
+    return { trends, posts };
+  },
   component: Home,
 });
 
 function Home() {
+  const { trends, posts } = Route.useLoaderData();
   const featured = trends.slice(0, 3);
   const trending = trends.slice(3, 7);
-  const latestPosts = blogPosts.slice(0, 3);
+  const latestPosts = posts.slice(0, 3);
   const gallery = trends.slice(0, 6);
 
   return (
@@ -48,9 +55,9 @@ function Home() {
             </div>
             <div className="mt-10 flex gap-8">
               {[
-                { k: "12+", v: "Trends" },
-                { k: "8", v: "Categories" },
-                { k: "10+", v: "Editorials" },
+                { k: `${trends.length}+`, v: "Trends" },
+                { k: `${categories.length}`, v: "Categories" },
+                { k: `${posts.length}+`, v: "Editorials" },
               ].map((s) => (
                 <div key={s.v}>
                   <div className="font-display text-3xl text-foreground">{s.k}</div>
@@ -118,90 +125,98 @@ function Home() {
       </div>
 
       {/* FEATURED TRENDS */}
-      <section className="bg-blush py-20">
-        <div className="container-page">
-          <div className="mb-10 flex items-end justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-primary">Editor's Picks</p>
-              <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">
-                Featured this month
-              </h2>
+      {featured.length > 0 && (
+        <section className="bg-blush py-20">
+          <div className="container-page">
+            <div className="mb-10 flex items-end justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-widest text-primary">Editor's Picks</p>
+                <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">
+                  Featured this month
+                </h2>
+              </div>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {featured.map((t: Trend, i: number) => (
+                <TrendCard key={t.slug} trend={t} priority={i === 0} />
+              ))}
             </div>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {featured.map((t, i) => (
-              <TrendCard key={t.slug} trend={t} priority={i === 0} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* TRENDING */}
-      <section className="container-page py-20">
-        <div className="mb-10 flex items-end justify-between">
-          <div>
-            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-primary">
-              <TrendingUp className="h-3.5 w-3.5" /> Trending this week
-            </p>
-            <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">
-              What everyone is styling
-            </h2>
-          </div>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {trending.map((t) => <TrendCard key={t.slug} trend={t} />)}
-        </div>
-      </section>
-
-      {/* BLOG */}
-      <section className="bg-blush py-20">
-        <div className="container-page">
+      {trending.length > 0 && (
+        <section className="container-page py-20">
           <div className="mb-10 flex items-end justify-between">
             <div>
-              <p className="text-xs uppercase tracking-widest text-primary">Journal</p>
+              <p className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-primary">
+                <TrendingUp className="h-3.5 w-3.5" /> Trending this week
+              </p>
               <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">
-                From the editors
+                What everyone is styling
               </h2>
             </div>
-            <Link to="/blog" className="hidden text-sm text-primary hover:underline md:inline">
-              All articles →
-            </Link>
           </div>
-          <div className="grid gap-5">
-            {latestPosts.map((p) => <BlogCard key={p.slug} post={p} />)}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {trending.map((t: Trend) => <TrendCard key={t.slug} trend={t} />)}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* BLOG */}
+      {latestPosts.length > 0 && (
+        <section className="bg-blush py-20">
+          <div className="container-page">
+            <div className="mb-10 flex items-end justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-widest text-primary">Journal</p>
+                <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">
+                  From the editors
+                </h2>
+              </div>
+              <Link to="/blog" className="hidden text-sm text-primary hover:underline md:inline">
+                All articles →
+              </Link>
+            </div>
+            <div className="grid gap-5">
+              {latestPosts.map((p: BlogPost) => <BlogCard key={p.slug} post={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* GALLERY */}
-      <section className="container-page py-20">
-        <div className="mb-10 text-center">
-          <p className="text-xs uppercase tracking-widest text-primary">@trendlibas</p>
-          <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">
-            The inspiration feed
-          </h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Follow along for daily fashion moments.
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6">
-          {gallery.map((t) => (
-            <Link
-              key={t.slug}
-              to="/trends/$slug"
-              params={{ slug: t.slug }}
-              className="group aspect-square overflow-hidden rounded-xl"
-            >
-              <img
-                src={t.image}
-                alt={t.title}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-            </Link>
-          ))}
-        </div>
-      </section>
+      {gallery.length > 0 && (
+        <section className="container-page py-20">
+          <div className="mb-10 text-center">
+            <p className="text-xs uppercase tracking-widest text-primary">@trendlibas</p>
+            <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">
+              The inspiration feed
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Follow along for daily fashion moments.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6">
+            {gallery.map((t: Trend) => (
+              <Link
+                key={t.slug}
+                to="/trends/$slug"
+                params={{ slug: t.slug }}
+                className="group aspect-square overflow-hidden rounded-xl"
+              >
+                <img
+                  src={t.image}
+                  alt={t.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

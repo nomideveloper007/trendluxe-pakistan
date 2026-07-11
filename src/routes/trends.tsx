@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-import { trends, categories, SITE } from "@/lib/content";
+import { categories, SITE, type Trend } from "@/lib/content";
+import { fetchAllTrends } from "@/lib/trends-data";
 import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
 
@@ -16,25 +18,33 @@ export const Route = createFileRoute("/trends")({
     ],
     links: [{ rel: "canonical", href: "/trends" }],
   }),
+  loader: () => fetchAllTrends(),
   component: TrendsPage,
 });
 
 function TrendsPage() {
+  const initial = Route.useLoaderData();
+  const { data: trends = initial } = useQuery({
+    queryKey: ["trends", "published"],
+    queryFn: fetchAllTrends,
+    initialData: initial,
+  });
+
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string | "all">("all");
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
-    return trends.filter((t) => {
+    return (trends as Trend[]).filter((t: Trend) => {
       if (cat !== "all" && t.category !== cat) return false;
       if (!query) return true;
       return (
         t.title.toLowerCase().includes(query) ||
         t.excerpt.toLowerCase().includes(query) ||
-        t.tags.some((tag) => tag.toLowerCase().includes(query))
+        t.tags.some((tag: string) => tag.toLowerCase().includes(query))
       );
     });
-  }, [q, cat]);
+  }, [q, cat, trends]);
 
   return (
     <div>
@@ -78,7 +88,7 @@ function TrendsPage() {
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((t) => <TrendCard key={t.slug} trend={t} />)}
+            {filtered.map((t: Trend) => <TrendCard key={t.slug} trend={t} />)}
           </div>
         )}
 
