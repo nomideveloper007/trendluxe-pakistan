@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          category: string
+          content: Json
+          created_at: string
+          excerpt: string
+          id: string
+          image_key: string
+          published: boolean
+          published_at: string | null
+          read_minutes: number
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          content?: Json
+          created_at?: string
+          excerpt: string
+          id?: string
+          image_key: string
+          published?: boolean
+          published_at?: string | null
+          read_minutes?: number
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content?: Json
+          created_at?: string
+          excerpt?: string
+          id?: string
+          image_key?: string
+          published?: boolean
+          published_at?: string | null
+          read_minutes?: number
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          handled: boolean
+          id: string
+          message: string
+          name: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          handled?: boolean
+          id?: string
+          message: string
+          name: string
+          subject: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          handled?: boolean
+          id?: string
+          message?: string
+          name?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -35,6 +110,24 @@ export type Database = {
           item_slug?: string
           item_type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
         }
         Relationships: []
       }
@@ -86,15 +179,99 @@ export type Database = {
         }
         Relationships: []
       }
+      trends: {
+        Row: {
+          category_slug: string
+          content: Json
+          created_at: string
+          excerpt: string
+          gallery_keys: Json
+          id: string
+          image_key: string
+          likes_seed: number
+          published: boolean
+          published_at: string | null
+          slug: string
+          tags: string[]
+          tips: Json
+          title: string
+          updated_at: string
+          views_seed: number
+        }
+        Insert: {
+          category_slug: string
+          content?: Json
+          created_at?: string
+          excerpt: string
+          gallery_keys?: Json
+          id?: string
+          image_key: string
+          likes_seed?: number
+          published?: boolean
+          published_at?: string | null
+          slug: string
+          tags?: string[]
+          tips?: Json
+          title: string
+          updated_at?: string
+          views_seed?: number
+        }
+        Update: {
+          category_slug?: string
+          content?: Json
+          created_at?: string
+          excerpt?: string
+          gallery_keys?: Json
+          id?: string
+          image_key?: string
+          likes_seed?: number
+          published?: boolean
+          published_at?: string | null
+          slug?: string
+          tags?: string[]
+          tips?: Json
+          title?: string
+          updated_at?: string
+          views_seed?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -221,6 +398,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
