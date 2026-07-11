@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { blogPosts, SITE } from "@/lib/content";
+import { useQuery } from "@tanstack/react-query";
+import { blogCategories, SITE } from "@/lib/content";
+import { fetchAllPosts } from "@/lib/blog-data";
 import { BlogCard } from "@/components/BlogCard";
 import { AdSlot } from "@/components/AdSlot";
 
-const cats = ["all", "styling-guides", "how-to", "occasion", "features", "beauty"] as const;
+const cats = ["all", ...blogCategories] as const;
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -17,14 +19,22 @@ export const Route = createFileRoute("/blog")({
     ],
     links: [{ rel: "canonical", href: "/blog" }],
   }),
+  loader: () => fetchAllPosts(),
   component: BlogPage,
 });
 
 function BlogPage() {
+  const initial = Route.useLoaderData();
+  const { data: posts = initial } = useQuery({
+    queryKey: ["blog", "published"],
+    queryFn: fetchAllPosts,
+    initialData: initial,
+  });
+
   const [cat, setCat] = useState<(typeof cats)[number]>("all");
   const filtered = useMemo(
-    () => (cat === "all" ? blogPosts : blogPosts.filter((p) => p.category === cat)),
-    [cat],
+    () => (cat === "all" ? posts : posts.filter((p) => p.category === cat)),
+    [cat, posts],
   );
   return (
     <div>

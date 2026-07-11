@@ -99,3 +99,24 @@ export async function unlikeTrend(userId: string, trendSlug: string) {
     .eq("trend_slug", trendSlug);
   if (error) throw error;
 }
+
+export async function fetchIsAdmin(userId: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error) throw error;
+  return !!data;
+}
+
+export async function subscribeToNewsletter(email: string) {
+  const { error } = await supabase.from("newsletter_subscribers").insert({ email });
+  if (error && error.code !== "23505") throw error;
+}
+
+export async function sendContactMessage(payload: { name: string; email: string; subject: string; message: string }) {
+  const { error } = await supabase.from("contact_messages").insert(payload);
+  if (error) throw error;
+}

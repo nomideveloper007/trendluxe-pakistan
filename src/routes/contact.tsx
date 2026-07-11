@@ -4,6 +4,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Mail, Instagram, MapPin } from "lucide-react";
 import { SITE } from "@/lib/content";
+import { sendContactMessage } from "@/lib/user-data";
 
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100),
@@ -38,10 +39,15 @@ function ContactPage() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    toast.success("Thanks — we'll be in touch soon.");
-    setForm({ name: "", email: "", subject: "", message: "" });
-    setLoading(false);
+    try {
+      await sendContactMessage(parsed.data);
+      toast.success("Thanks — we'll be in touch soon.");
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not send message");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

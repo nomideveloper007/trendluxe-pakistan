@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Heart, Share2, Eye, Calendar, ArrowLeft } from "lucide-react";
-import { getTrend, getCategory, relatedTrends, SITE } from "@/lib/content";
+import { getCategory, SITE } from "@/lib/content";
+import { fetchTrendBySlug, fetchAllTrends } from "@/lib/trends-data";
 import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
 import { LikeButton } from "@/components/LikeButton";
@@ -8,10 +9,12 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/trends/$slug")({
-  loader: ({ params }) => {
-    const trend = getTrend(params.slug);
+  loader: async ({ params }) => {
+    const trend = await fetchTrendBySlug(params.slug);
     if (!trend) throw notFound();
-    return { trend };
+    const all = await fetchAllTrends();
+    const related = all.filter((x) => x.slug !== trend.slug && x.category === trend.category).slice(0, 3);
+    return { trend, related };
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) {
@@ -55,9 +58,8 @@ export const Route = createFileRoute("/trends/$slug")({
 });
 
 function TrendDetail() {
-  const { trend } = Route.useLoaderData();
+  const { trend, related } = Route.useLoaderData();
   const cat = getCategory(trend.category);
-  const related = relatedTrends(trend);
 
   async function onShare() {
     const url = typeof window !== "undefined" ? window.location.href : "";
@@ -96,7 +98,6 @@ function TrendDetail() {
         </div>
       </div>
 
-      {/* Action bar */}
       <div className="container-page mt-6 flex flex-wrap justify-center gap-2">
         <LikeButton trendSlug={trend.slug} baseLikes={trend.likes} />
         <FavoriteButton itemType="trend" itemSlug={trend.slug} />
@@ -118,18 +119,20 @@ function TrendDetail() {
 
           <AdSlot variant="in-article" />
 
-          <div className="mt-4 rounded-2xl bg-blush p-8">
-            <div className="text-xs uppercase tracking-widest text-primary">Style Notes</div>
-            <h3 className="mt-2 font-display text-2xl">How to wear it</h3>
-            <ul className="mt-4 space-y-3">
-              {trend.tips.map((tip: string, i: number) => (
-                <li key={i} className="flex gap-3 text-foreground/90">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                  <span>{tip}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {trend.tips.length > 0 && (
+            <div className="mt-4 rounded-2xl bg-blush p-8">
+              <div className="text-xs uppercase tracking-widest text-primary">Style Notes</div>
+              <h3 className="mt-2 font-display text-2xl">How to wear it</h3>
+              <ul className="mt-4 space-y-3">
+                {trend.tips.map((tip: string, i: number) => (
+                  <li key={i} className="flex gap-3 text-foreground/90">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {trend.gallery.length > 1 && (
             <div className="mt-12">
@@ -179,7 +182,6 @@ function TrendDetail() {
     </article>
   );
 }
-
 
 function TrendNotFound() {
   return (

@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-import { trends, categories, SITE } from "@/lib/content";
+import { categories, SITE } from "@/lib/content";
+import { fetchAllTrends } from "@/lib/trends-data";
 import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
 
@@ -16,10 +18,18 @@ export const Route = createFileRoute("/trends")({
     ],
     links: [{ rel: "canonical", href: "/trends" }],
   }),
+  loader: () => fetchAllTrends(),
   component: TrendsPage,
 });
 
 function TrendsPage() {
+  const initial = Route.useLoaderData();
+  const { data: trends = initial } = useQuery({
+    queryKey: ["trends", "published"],
+    queryFn: fetchAllTrends,
+    initialData: initial,
+  });
+
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string | "all">("all");
 
@@ -34,7 +44,7 @@ function TrendsPage() {
         t.tags.some((tag) => tag.toLowerCase().includes(query))
       );
     });
-  }, [q, cat]);
+  }, [q, cat, trends]);
 
   return (
     <div>

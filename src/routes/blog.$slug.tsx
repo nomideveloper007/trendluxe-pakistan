@@ -1,15 +1,18 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { getBlogPost, blogPosts, SITE } from "@/lib/content";
+import { SITE } from "@/lib/content";
+import { fetchPostBySlug, fetchAllPosts } from "@/lib/blog-data";
 import { BlogCard } from "@/components/BlogCard";
 import { AdSlot } from "@/components/AdSlot";
 import { FavoriteButton } from "@/components/FavoriteButton";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getBlogPost(params.slug);
+  loader: async ({ params }) => {
+    const post = await fetchPostBySlug(params.slug);
     if (!post) throw notFound();
-    return { post };
+    const all = await fetchAllPosts();
+    const related = all.filter((p) => p.slug !== post.slug).slice(0, 3);
+    return { post, related };
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) {
@@ -46,11 +49,11 @@ export const Route = createFileRoute("/blog/$slug")({
     };
   },
   component: BlogDetail,
+  notFoundComponent: PostNotFound,
 });
 
 function BlogDetail() {
-  const { post } = Route.useLoaderData();
-  const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const { post, related } = Route.useLoaderData();
   const date = new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
   return (
@@ -86,12 +89,26 @@ function BlogDetail() {
         <AdSlot variant="in-article" />
       </div>
 
-      <section className="container-page mt-20">
-        <h2 className="mb-8 font-display text-3xl">Keep reading</h2>
-        <div className="grid gap-5">
-          {related.map((r) => <BlogCard key={r.slug} post={r} />)}
-        </div>
-      </section>
+      {related.length > 0 && (
+        <section className="container-page mt-20">
+          <h2 className="mb-8 font-display text-3xl">Keep reading</h2>
+          <div className="grid gap-5">
+            {related.map((r) => <BlogCard key={r.slug} post={r} />)}
+          </div>
+        </section>
+      )}
     </article>
+  );
+}
+
+function PostNotFound() {
+  return (
+    <div className="container-page py-24 text-center">
+      <h1 className="font-display text-4xl">Article not found</h1>
+      <p className="mt-3 text-muted-foreground">The article you're looking for doesn't exist.</p>
+      <Link to="/blog" className="mt-6 inline-block rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground">
+        Back to journal
+      </Link>
+    </div>
   );
 }
