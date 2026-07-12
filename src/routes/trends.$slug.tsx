@@ -172,6 +172,8 @@ function TrendDetail() {
         </aside>
       </div>
 
+      {trend.id && <Comments targetType="trend" targetId={trend.id} />}
+
       {related.length > 0 && (
         <section className="container-page mt-24">
           <h2 className="mb-8 font-display text-3xl">You might also love</h2>
