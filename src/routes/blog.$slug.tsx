@@ -5,6 +5,7 @@ import { fetchPostBySlug, fetchAllPosts } from "@/lib/blog-data";
 import { BlogCard } from "@/components/BlogCard";
 import { AdSlot } from "@/components/AdSlot";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { Comments } from "@/components/Comments";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
