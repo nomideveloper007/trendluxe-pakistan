@@ -33,6 +33,11 @@ import {
   type AdminPost,
   type AdminTrend,
 } from "@/lib/admin-data";
+import {
+  deleteComment,
+  fetchAllCommentsAdmin,
+  setCommentStatus,
+} from "@/lib/comments-data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
