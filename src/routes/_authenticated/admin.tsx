@@ -553,6 +553,85 @@ function MessagesTab() {
   );
 }
 
+/* ---------------- COMMENTS ---------------- */
+
+function CommentsTab() {
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: ["admin-comments"], queryFn: fetchAllCommentsAdmin });
+  const setStatus = useMutation({
+    mutationFn: (vars: { id: string; status: "visible" | "hidden" }) => setCommentStatus(vars.id, vars.status),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-comments"] });
+      qc.invalidateQueries({ queryKey: ["comments"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const del = useMutation({
+    mutationFn: (id: string) => deleteComment(id),
+    onSuccess: () => {
+      toast.success("Deleted");
+      qc.invalidateQueries({ queryKey: ["admin-comments"] });
+      qc.invalidateQueries({ queryKey: ["comments"] });
+      qc.invalidateQueries({ queryKey: ["admin-overview"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const rows = q.data ?? [];
+  return (
+    <div>
+      <h2 className="mb-4 font-display text-2xl">Comments ({rows.length})</h2>
+      <div className="space-y-3">
+        {rows.map((c) => (
+          <div
+            key={c.id}
+            className={`rounded-2xl border p-5 shadow-soft ${c.status === "hidden" ? "border-border bg-secondary/40 opacity-70" : "border-border bg-surface"}`}
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-medium">{c.author?.display_name || "Anonymous"}</span>
+                  <span className="text-xs text-muted-foreground">
+                    on {c.target_type === "trend" ? "trend" : "post"}{" "}
+                    <span className="font-medium text-foreground">{c.target_title ?? c.target_id}</span>
+                  </span>
+                  {c.status === "hidden" && <Badge variant="secondary">Hidden</Badge>}
+                </div>
+                <div className="text-xs text-muted-foreground">{new Date(c.created_at).toLocaleString()}</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() =>
+                    setStatus.mutate({ id: c.id, status: c.status === "hidden" ? "visible" : "hidden" })
+                  }
+                >
+                  {c.status === "hidden" ? (
+                    <><Eye className="mr-1 h-4 w-4" />Show</>
+                  ) : (
+                    <><EyeOff className="mr-1 h-4 w-4" />Hide</>
+                  )}
+                </Button>
+                <Button size="icon" variant="ghost" onClick={() => confirm("Delete this comment?") && del.mutate(c.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <p className="mt-3 whitespace-pre-wrap text-sm text-foreground/90">{c.body}</p>
+          </div>
+        ))}
+        {rows.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
+            No comments yet.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
 /* ---------------- SHARED ---------------- */
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
