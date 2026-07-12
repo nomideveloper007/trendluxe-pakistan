@@ -6,6 +6,7 @@ import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
 import { LikeButton } from "@/components/LikeButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { Comments } from "@/components/Comments";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/trends/$slug")({
