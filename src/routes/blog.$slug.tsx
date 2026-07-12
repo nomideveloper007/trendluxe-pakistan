@@ -90,6 +90,8 @@ function BlogDetail() {
         <AdSlot variant="in-article" />
       </div>
 
+      {post.id && <Comments targetType="post" targetId={post.id} />}
+
       {related.length > 0 && (
         <section className="container-page mt-20">
           <h2 className="mb-8 font-display text-3xl">Keep reading</h2>
