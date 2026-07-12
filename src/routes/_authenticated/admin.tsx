@@ -103,6 +103,7 @@ function AdminDashboard() {
           <TabsTrigger value="blog"><BookOpen className="mr-2 h-4 w-4" />Blog</TabsTrigger>
           <TabsTrigger value="newsletter"><Mail className="mr-2 h-4 w-4" />Newsletter</TabsTrigger>
           <TabsTrigger value="messages"><Inbox className="mr-2 h-4 w-4" />Messages</TabsTrigger>
+          <TabsTrigger value="comments"><MessageCircle className="mr-2 h-4 w-4" />Comments</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-6"><OverviewTab /></TabsContent>
@@ -110,6 +111,7 @@ function AdminDashboard() {
         <TabsContent value="blog" className="mt-6"><BlogTab /></TabsContent>
         <TabsContent value="newsletter" className="mt-6"><NewsletterTab /></TabsContent>
         <TabsContent value="messages" className="mt-6"><MessagesTab /></TabsContent>
+        <TabsContent value="comments" className="mt-6"><CommentsTab /></TabsContent>
       </Tabs>
     </div>
   );
