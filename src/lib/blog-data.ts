@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { resolveImage, type BlogPost } from "@/lib/content";
 
 type Row = {
+  id: string;
   slug: string;
   title: string;
   category: string;
@@ -19,6 +20,7 @@ function toStringArray(v: unknown): string[] {
 
 export function normalizePost(r: Row): BlogPost {
   return {
+    id: r.id,
     slug: r.slug,
     title: r.title,
     category: r.category,
@@ -30,7 +32,7 @@ export function normalizePost(r: Row): BlogPost {
   };
 }
 
-const SELECT = "slug,title,category,image_key,excerpt,content,read_minutes,published_at,created_at";
+const SELECT = "id,slug,title,category,image_key,excerpt,content,read_minutes,published_at,created_at";
 
 export async function fetchAllPosts(): Promise<BlogPost[]> {
   const { data, error } = await supabase
