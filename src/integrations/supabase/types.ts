@@ -59,6 +59,39 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          status: Database["public"]["Enums"]["comment_status"]
+          target_id: string
+          target_type: Database["public"]["Enums"]["comment_target"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["comment_status"]
+          target_id: string
+          target_type: Database["public"]["Enums"]["comment_target"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["comment_status"]
+          target_id?: string
+          target_type?: Database["public"]["Enums"]["comment_target"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -272,6 +305,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      comment_status: "visible" | "hidden"
+      comment_target: "trend" | "post"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -400,6 +435,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      comment_status: ["visible", "hidden"],
+      comment_target: ["trend", "post"],
     },
   },
 } as const
