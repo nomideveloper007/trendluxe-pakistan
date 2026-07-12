@@ -128,6 +128,7 @@ function OverviewTab() {
     { label: "Open messages", value: data?.openMessages ?? 0 },
     { label: "Total likes", value: data?.likes ?? 0 },
     { label: "Total saves", value: data?.favorites ?? 0 },
+    { label: "Comments", value: data?.comments ?? 0 },
   ];
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
