@@ -6,6 +6,7 @@ import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
 import { LikeButton } from "@/components/LikeButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { Comments } from "@/components/Comments";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/trends/$slug")({
@@ -170,6 +171,8 @@ function TrendDetail() {
           </div>
         </aside>
       </div>
+
+      {trend.id && <Comments targetType="trend" targetId={trend.id} />}
 
       {related.length > 0 && (
         <section className="container-page mt-24">

@@ -66,6 +66,7 @@ export function getCategory(slug: string) {
 }
 
 export type Trend = {
+  id?: string;
   slug: string;
   title: string;
   category: string;
@@ -81,6 +82,7 @@ export type Trend = {
 };
 
 export type BlogPost = {
+  id?: string;
   slug: string;
   title: string;
   category: string;

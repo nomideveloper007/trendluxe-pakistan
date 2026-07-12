@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { resolveImage, type Trend } from "@/lib/content";
 
 type Row = {
+  id: string;
   slug: string;
   title: string;
   category_slug: string;
@@ -23,6 +24,7 @@ function toStringArray(v: unknown): string[] {
 
 export function normalizeTrend(r: Row): Trend {
   return {
+    id: r.id,
     slug: r.slug,
     title: r.title,
     category: r.category_slug,
@@ -38,7 +40,7 @@ export function normalizeTrend(r: Row): Trend {
   };
 }
 
-const SELECT = "slug,title,category_slug,image_key,gallery_keys,excerpt,content,tips,tags,views_seed,likes_seed,published_at,created_at";
+const SELECT = "id,slug,title,category_slug,image_key,gallery_keys,excerpt,content,tips,tags,views_seed,likes_seed,published_at,created_at";
 
 export async function fetchAllTrends(): Promise<Trend[]> {
   const { data, error } = await supabase

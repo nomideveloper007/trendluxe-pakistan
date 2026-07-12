@@ -174,13 +174,14 @@ export async function deleteMessage(id: string) {
 }
 
 export async function fetchAdminOverview() {
-  const [trends, posts, subs, msgs, likes, favs] = await Promise.all([
+  const [trends, posts, subs, msgs, likes, favs, comments] = await Promise.all([
     supabase.from("trends").select("id", { count: "exact", head: true }),
     supabase.from("blog_posts").select("id", { count: "exact", head: true }),
     supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }),
     supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("handled", false),
     supabase.from("trend_likes").select("id", { count: "exact", head: true }),
     supabase.from("favorites").select("id", { count: "exact", head: true }),
+    supabase.from("comments").select("id", { count: "exact", head: true }),
   ]);
   return {
     trends: trends.count ?? 0,
@@ -189,5 +190,6 @@ export async function fetchAdminOverview() {
     openMessages: msgs.count ?? 0,
     likes: likes.count ?? 0,
     favorites: favs.count ?? 0,
+    comments: comments.count ?? 0,
   };
 }
