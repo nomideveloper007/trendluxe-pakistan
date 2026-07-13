@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Menu, X, Search, User, Shield } from "lucide-react";
 import { SITE } from "@/lib/content";
 import { useAuth } from "@/lib/auth";
+import logo from "@/assets/logo-trendlibas.png";
 
 const links = [
   { to: "/", label: "Home" },
@@ -18,10 +19,8 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="container-page flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="font-display text-2xl font-bold tracking-tight text-gradient">
-            {SITE.name}
-          </span>
+        <Link to="/" className="flex items-center gap-2" aria-label={SITE.name}>
+          <img src={logo} alt={`${SITE.name} logo`} width={140} height={40} className="h-10 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
