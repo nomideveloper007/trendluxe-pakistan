@@ -8,7 +8,7 @@ import { AdSlot } from "@/components/AdSlot";
 
 const cats = ["all", ...blogCategories] as const;
 
-export const Route = createFileRoute("/blog")({
+export const Route = createFileRoute("/blog/")({
   head: () => ({
     meta: [
       { title: `Journal — ${SITE.name}` },

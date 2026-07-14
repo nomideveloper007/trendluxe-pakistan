@@ -2,14 +2,19 @@ import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Youtube, Mail } from "lucide-react";
 import { SITE, categories } from "@/lib/content";
 import { NewsletterForm } from "./NewsletterForm";
-import logo from "@/assets/logo-trendlibas.png";
+import logo from "@/assets/logo-pahraan.png";
 
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-border/60 bg-blush">
       <div className="container-page grid gap-10 py-16 md:grid-cols-4">
         <div className="md:col-span-2">
-          <img src={logo} alt={`${SITE.name} logo`} loading="lazy" width={180} height={52} className="h-14 w-auto" />
+          <div className="flex items-center gap-3">
+            <img src={logo} alt={`${SITE.name} logo`} loading="lazy" className="h-16 w-auto" />
+            <span className="font-display text-2xl font-semibold tracking-wider text-primary">
+              {SITE.name}
+            </span>
+          </div>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">{SITE.description}</p>
           <div className="mt-6 flex gap-3">
             {[Instagram, Facebook, Youtube, Mail].map((I, i) => (

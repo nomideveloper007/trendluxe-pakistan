@@ -7,7 +7,7 @@ import { AdSlot } from "@/components/AdSlot";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { Comments } from "@/components/Comments";
 
-export const Route = createFileRoute("/blog/$slug")({
+export const Route = createFileRoute("/blog_/$slug")({
   loader: async ({ params }) => {
     const post = await fetchPostBySlug(params.slug);
     if (!post) throw notFound();

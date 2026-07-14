@@ -21,7 +21,7 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
     setLoading(true);
     try {
       await subscribeToNewsletter(parsed.data.email);
-      toast.success("You're on the list — welcome to TrendLibas ✨");
+      toast.success("You're on the list — welcome to PAHRAAN ✨");
       setEmail("");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not subscribe");

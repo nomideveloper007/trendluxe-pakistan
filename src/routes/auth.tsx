@@ -11,7 +11,7 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: `Sign in — ${SITE.name}` },
-      { name: "description", content: "Sign in or create your TrendLibas account to save trends and personalize your feed." },
+      { name: "description", content: "Sign in or create your PAHRAAN account to save trends and personalize your feed." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -75,7 +75,7 @@ function AuthPage() {
     <div className="container-page grid min-h-[calc(100vh-8rem)] place-items-center py-12">
       <div className="w-full max-w-md rounded-3xl bg-surface p-8 shadow-elegant">
         <div className="text-center">
-          <h1 className="font-display text-3xl text-gradient">{mode === "signin" ? "Welcome back" : "Join TrendLibas"}</h1>
+          <h1 className="font-display text-3xl text-gradient">{mode === "signin" ? "Welcome back" : "Join PAHRAAN"}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {mode === "signin" ? "Sign in to save your favorite trends." : "Create an account to save and personalize."}
           </p>

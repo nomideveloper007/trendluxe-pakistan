@@ -65,8 +65,8 @@ function ContactPage() {
       <section className="container-page grid gap-12 py-16 md:grid-cols-[1fr_1.2fr]">
         <div className="space-y-6">
           {[
-            { icon: Mail, label: "Email", value: "hello@trendlibas.com" },
-            { icon: Instagram, label: "Instagram", value: "@trendlibas" },
+            { icon: Mail, label: "Email", value: "hello@pahraan.com" },
+            { icon: Instagram, label: "Instagram", value: "@pahraan" },
             { icon: MapPin, label: "Studio", value: "Karachi · Lahore · London" },
           ].map(({ icon: Icon, label, value }) => (
             <div key={label} className="flex items-start gap-4 rounded-2xl bg-surface p-5 shadow-soft">

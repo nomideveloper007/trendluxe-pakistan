@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Heart, Share2, Eye, Calendar, ArrowLeft } from "lucide-react";
+import { Heart, Share2, Eye, Calendar, ArrowLeft, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
 import { getCategory, SITE, type Trend } from "@/lib/content";
 import { fetchTrendBySlug, fetchAllTrends } from "@/lib/trends-data";
 import { TrendCard } from "@/components/TrendCard";
@@ -9,7 +10,7 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { Comments } from "@/components/Comments";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/trends/$slug")({
+export const Route = createFileRoute("/trends_/$slug")({
   loader: async ({ params }) => {
     const trend = await fetchTrendBySlug(params.slug);
     if (!trend) throw notFound();
@@ -62,6 +63,38 @@ function TrendDetail() {
   const { trend, related } = Route.useLoaderData();
   const cat = getCategory(trend.category);
 
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const allImages = useMemo(() => {
+    const list = [trend.image];
+    trend.gallery.forEach((g) => {
+      if (g && !list.includes(g)) {
+        list.push(g);
+      }
+    });
+    return list;
+  }, [trend.image, trend.gallery]);
+
+  const showPrev = () => {
+    setLightboxIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+  };
+
+  const showNext = () => {
+    setLightboxIndex((prev) => (prev + 1) % allImages.length);
+  };
+
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") showPrev();
+      if (e.key === "ArrowRight") showNext();
+      if (e.key === "Escape") setIsLightboxOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isLightboxOpen, allImages]);
+
   async function onShare() {
     const url = typeof window !== "undefined" ? window.location.href : "";
     if (navigator.share) {
@@ -81,7 +114,13 @@ function TrendDetail() {
       </div>
 
       <header className="container-page pt-8 text-center">
-        <div className="text-xs uppercase tracking-widest text-primary">{cat?.name}</div>
+        <Link
+          to="/trends"
+          hash={cat?.slug}
+          className="text-xs uppercase tracking-widest text-primary hover:underline"
+        >
+          {cat?.name}
+        </Link>
         <h1 className="mx-auto mt-3 max-w-3xl font-display text-4xl leading-tight text-foreground md:text-6xl">
           {trend.title}
         </h1>
@@ -94,9 +133,24 @@ function TrendDetail() {
       </header>
 
       <div className="container-page mt-10">
-        <div className="overflow-hidden rounded-3xl shadow-elegant">
-          <img src={trend.image} alt={trend.title} className="h-full w-full object-cover" />
-        </div>
+        <button
+          onClick={() => {
+            setLightboxIndex(0);
+            setIsLightboxOpen(true);
+          }}
+          className="group relative block w-full overflow-hidden rounded-3xl shadow-elegant cursor-zoom-in text-left focus:outline-none"
+        >
+          <img
+            src={trend.image}
+            alt={trend.title}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.01]"
+          />
+          <div className="absolute inset-0 bg-black/10 opacity-0 transition group-hover:opacity-100 flex items-center justify-center">
+            <span className="rounded-full bg-surface/90 px-4 py-2 text-sm font-medium text-foreground shadow-soft flex items-center gap-1.5">
+              <Eye className="h-4 w-4 text-primary" /> View Fullscreen
+            </span>
+          </div>
+        </button>
       </div>
 
       <div className="container-page mt-6 flex flex-wrap justify-center gap-2">
@@ -139,11 +193,29 @@ function TrendDetail() {
             <div className="mt-12">
               <h3 className="mb-4 font-display text-2xl">Gallery</h3>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                {trend.gallery.map((src: string, i: number) => (
-                  <div key={i} className="overflow-hidden rounded-xl">
-                    <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
-                  </div>
-                ))}
+                {trend.gallery.map((src: string, i: number) => {
+                  const indexInAll = allImages.indexOf(src);
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setLightboxIndex(indexInAll >= 0 ? indexInAll : 0);
+                        setIsLightboxOpen(true);
+                      }}
+                      className="group relative block w-full overflow-hidden rounded-xl aspect-[4/5] text-left focus:outline-none cursor-zoom-in"
+                    >
+                      <img
+                        src={src}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/15 opacity-0 transition group-hover:opacity-100 flex items-center justify-center">
+                        <Eye className="h-5 w-5 text-white/90" />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -181,6 +253,55 @@ function TrendDetail() {
             {related.map((r: Trend) => <TrendCard key={r.slug} trend={r} />)}
           </div>
         </section>
+      )}
+
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm transition-all duration-300 animate-in fade-in">
+          {/* Close button */}
+          <button
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute right-6 top-6 z-10 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 focus:outline-none"
+            aria-label="Close lightbox"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
+          {/* Prev button */}
+          {allImages.length > 1 && (
+            <button
+              onClick={showPrev}
+              className="absolute left-6 z-10 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 focus:outline-none"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+          )}
+
+          {/* Main Image Container */}
+          <div className="relative max-h-[85vh] max-w-[90vw] overflow-hidden flex items-center justify-center">
+            <img
+              src={allImages[lightboxIndex]}
+              alt="Fullscreen gallery item"
+              className="max-h-[80vh] max-w-[85vw] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-200"
+            />
+          </div>
+
+          {/* Next button */}
+          {allImages.length > 1 && (
+            <button
+              onClick={showNext}
+              className="absolute right-6 z-10 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 focus:outline-none"
+              aria-label="Next image"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+          )}
+
+          {/* Counter indicator */}
+          <div className="absolute bottom-6 text-sm text-white/60 font-medium">
+            {lightboxIndex + 1} / {allImages.length}
+          </div>
+        </div>
       )}
     </article>
   );

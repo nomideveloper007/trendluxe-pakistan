@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: `${SITE.name} — ${SITE.tagline}` },
       { name: "twitter:description", content: SITE.description },
-      { name: "theme-color", content: "#E91E63" },
+      { name: "theme-color", content: "#C2185B" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -103,10 +103,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": SITE.name,
+          "url": "/",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
           "@type": "Organization",
-          name: SITE.name,
-          description: SITE.description,
-          url: "/",
+          "name": SITE.name,
+          "description": SITE.description,
+          "url": "/",
         }),
       },
     ],
@@ -136,7 +145,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <div className="flex min-h-screen flex-col">
+        <div className="flex min-h-screen flex-col overflow-x-hidden">
           <Navbar />
           <main className="flex-1">
             <Outlet />

@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link, useLocation } from "@tanstack/react-router";
+import { useMemo, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { categories, SITE, type Trend } from "@/lib/content";
@@ -7,7 +7,7 @@ import { fetchAllTrends } from "@/lib/trends-data";
 import { TrendCard } from "@/components/TrendCard";
 import { AdSlot } from "@/components/AdSlot";
 
-export const Route = createFileRoute("/trends")({
+export const Route = createFileRoute("/trends/")({
   head: () => ({
     meta: [
       { title: `Trends — ${SITE.name}` },
@@ -32,6 +32,22 @@ function TrendsPage() {
 
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string | "all">("all");
+  const location = useLocation();
+
+  useEffect(() => {
+    const hash = (location.hash || window.location.hash || "").replace("#", "").trim();
+    if (hash && categories.some((c) => c.slug === hash)) {
+      setCat(hash);
+      setTimeout(() => {
+        const element = document.getElementById("trends-grid-section");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+    } else {
+      setCat("all");
+    }
+  }, [location.hash]);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -70,13 +86,31 @@ function TrendsPage() {
         </div>
       </section>
 
-      <section className="container-page py-10">
+      <section id="trends-grid-section" className="container-page py-10">
         <div className="flex flex-wrap justify-center gap-2">
-          <FilterPill active={cat === "all"} onClick={() => setCat("all")}>All</FilterPill>
+          <Link
+            to="/trends"
+            className={`rounded-full border px-4 py-2 text-sm transition ${
+              cat === "all"
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-surface text-foreground hover:border-primary hover:text-primary"
+            }`}
+          >
+            All
+          </Link>
           {categories.map((c) => (
-            <FilterPill key={c.slug} active={cat === c.slug} onClick={() => setCat(c.slug)}>
+            <Link
+              key={c.slug}
+              to="/trends"
+              hash={c.slug}
+              className={`rounded-full border px-4 py-2 text-sm transition ${
+                cat === c.slug
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-surface text-foreground hover:border-primary hover:text-primary"
+              }`}
+            >
               {c.name}
-            </FilterPill>
+            </Link>
           ))}
         </div>
       </section>
@@ -108,17 +142,4 @@ function TrendsPage() {
   );
 }
 
-function FilterPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`rounded-full border px-4 py-2 text-sm transition ${
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-surface text-foreground hover:border-primary hover:text-primary"
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
+

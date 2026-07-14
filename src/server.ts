@@ -1,4 +1,9 @@
 import "./lib/error-capture";
+import WebSocket from "ws";
+
+if (typeof globalThis.WebSocket === "undefined") {
+  globalThis.WebSocket = WebSocket as any;
+}
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";

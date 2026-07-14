@@ -190,7 +190,7 @@ function Home() {
       {gallery.length > 0 && (
         <section className="container-page py-20">
           <div className="mb-10 text-center">
-            <p className="text-xs uppercase tracking-widest text-primary">@trendlibas</p>
+            <p className="text-xs uppercase tracking-widest text-primary">@pahraan</p>
             <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">
               The inspiration feed
             </h2>

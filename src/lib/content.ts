@@ -7,15 +7,17 @@ import catEid from "@/assets/cat-eid.jpg";
 import catUniversity from "@/assets/cat-university.jpg";
 import catMehndi from "@/assets/cat-mehndi.jpg";
 import catColors from "@/assets/cat-colors.jpg";
+import catVelvet from "@/assets/cat-velvet.jpg";
+import catChikan from "@/assets/cat-chikan.jpg";
 import trendOrganza from "@/assets/trend-organza.jpg";
 import trendCoord from "@/assets/trend-coord.jpg";
 import blogEditorial from "@/assets/blog-editorial.jpg";
 
 export const SITE = {
-  name: "TrendLibas",
+  name: "Pahraan",
   tagline: "Pakistani Fashion, Reimagined",
   description:
-    "TrendLibas is a fashion inspiration platform celebrating Pakistani women's style — from lawn suits and bridal couture to everyday elegance.",
+    "Pahraan is a fashion inspiration platform celebrating Pakistani women's style — from lawn suits and bridal couture to everyday elegance.",
 };
 
 export const imageMap: Record<string, string> = {
@@ -28,6 +30,8 @@ export const imageMap: Record<string, string> = {
   "cat-university": catUniversity,
   "cat-mehndi": catMehndi,
   "cat-colors": catColors,
+  "cat-velvet": catVelvet,
+  "cat-chikan": catChikan,
   "trend-organza": trendOrganza,
   "trend-coord": trendCoord,
   "blog-editorial": blogEditorial,
@@ -49,17 +53,75 @@ export type Category = {
 };
 
 export const categories: Category[] = [
-  { slug: "lawn-suits", name: "Lawn Suits", image: catLawn, blurb: "Airy prints and pastel drapes for effortless summer style." },
-  { slug: "bridal-wear", name: "Bridal Wear", image: catBridal, blurb: "Heirloom-worthy couture in reds, golds and dusky rose." },
-  { slug: "party-wear", name: "Party Wear", image: catParty, blurb: "Statement silhouettes that turn every entrance into a moment." },
-  { slug: "abayas", name: "Abayas", image: catAbaya, blurb: "Modest tailoring with elegant embroidery and quiet luxury." },
-  { slug: "eid-collections", name: "Eid Collections", image: catEid, blurb: "Festive palettes and delicate craftsmanship for celebrations." },
-  { slug: "university-fashion", name: "University Fashion", image: catUniversity, blurb: "Chic, easy-to-style pieces built for campus days." },
-  { slug: "mehndi-outfits", name: "Mehndi Outfits", image: catMehndi, blurb: "Yellows, oranges and mirror-work for the joyful pre-wedding." },
-  { slug: "color-combinations", name: "Color Combinations", image: catColors, blurb: "Curated palette pairings for every season and mood." },
+  {
+    slug: "lawn-suits",
+    name: "Lawn Suits",
+    image: catLawn,
+    blurb: "Airy prints and pastel drapes for effortless summer style.",
+  },
+  {
+    slug: "bridal-wear",
+    name: "Bridal Wear",
+    image: catBridal,
+    blurb: "Heirloom-worthy couture in reds, golds and dusky rose.",
+  },
+  {
+    slug: "party-wear",
+    name: "Party Wear",
+    image: catParty,
+    blurb: "Statement silhouettes that turn every entrance into a moment.",
+  },
+  {
+    slug: "abayas",
+    name: "Abayas",
+    image: catAbaya,
+    blurb: "Modest tailoring with elegant embroidery and quiet luxury.",
+  },
+  {
+    slug: "eid-collections",
+    name: "Eid Collections",
+    image: catEid,
+    blurb: "Festive palettes and delicate craftsmanship for celebrations.",
+  },
+  {
+    slug: "university-fashion",
+    name: "University Fashion",
+    image: catUniversity,
+    blurb: "Chic, easy-to-style pieces built for campus days.",
+  },
+  {
+    slug: "mehndi-outfits",
+    name: "Mehndi Outfits",
+    image: catMehndi,
+    blurb: "Yellows, oranges and mirror-work for the joyful pre-wedding.",
+  },
+  {
+    slug: "color-combinations",
+    name: "Color Combinations",
+    image: catColors,
+    blurb: "Curated palette pairings for every season and mood.",
+  },
+  {
+    slug: "velvet-collections",
+    name: "Velvet Collections",
+    image: catVelvet,
+    blurb: "Rich textures and deep jewel tones for winter weddings and evening elegance.",
+  },
+  {
+    slug: "chikankari",
+    name: "Chikankari",
+    image: catChikan,
+    blurb: "Intricate shadow embroidery on soft cottons, celebrating timeless summer craft.",
+  },
 ];
 
-export const blogCategories = ["styling-guides", "how-to", "occasion", "features", "beauty"] as const;
+export const blogCategories = [
+  "styling-guides",
+  "how-to",
+  "occasion",
+  "features",
+  "beauty",
+] as const;
 
 export function getCategory(slug: string) {
   return categories.find((c) => c.slug === slug);
