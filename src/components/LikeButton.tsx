@@ -45,15 +45,15 @@ export function LikeButton({ trendSlug, baseLikes = 0 }: { trendSlug: string; ba
     <button
       onClick={() => toggle.mutate()}
       disabled={toggle.isPending}
-      className={`inline-flex items-center gap-2 rounded-full border px-5 py-2 text-sm font-medium transition ${
+      className={`group inline-flex items-center gap-2 rounded-full border px-5.5 py-2.5 text-xs font-semibold uppercase tracking-wider transition-all duration-300 transform active:scale-95 cursor-pointer shadow-soft hover:shadow-elegant ${
         liked
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-surface text-foreground hover:border-primary hover:text-primary"
+          ? "border-primary bg-primary text-primary-foreground hover:bg-accent"
+          : "border-border bg-white text-foreground hover:border-primary hover:text-primary hover:-translate-y-0.5"
       }`}
     >
-      <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
+      <Heart className={`h-4 w-4 transition-all duration-300 group-hover:scale-115 ${liked ? "fill-current scale-110 text-rose-500" : ""}`} />
       {liked ? "Loved" : "Love"}
-      <span className="text-xs opacity-70">{total}</span>
+      <span className="text-[10px] font-mono opacity-80">{total}</span>
     </button>
   );
 }

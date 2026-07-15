@@ -1,9 +1,22 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Menu, X, Search, User, Shield } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Menu, X, Search, Shield, ChevronRight } from "lucide-react";
 import { SITE } from "@/lib/content";
 import { useAuth } from "@/lib/auth";
+import { fetchProfile } from "@/lib/user-data";
+import { fetchAllTrends } from "@/lib/trends-data";
+import { fetchAllPosts } from "@/lib/blog-data";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo-pahraan.png";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 const links = [
   { to: "/", label: "Home" },
@@ -15,9 +28,19 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const { session, isAdmin } = useAuth();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { session, isAdmin, user } = useAuth();
+
+  // Load live profile info for navbar avatar and display name
+  const profileQ = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: () => (user ? fetchProfile(user.id) : Promise.resolve(null)),
+    enabled: !!user,
+  });
+  const profile = profileQ.data;
+
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-white/80 backdrop-blur-xl">
       <div className="container-page flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5" aria-label={SITE.name}>
           <img src={logo} alt={`${SITE.name} logo`} className="h-12 w-auto" />
@@ -31,8 +54,8 @@ export function Navbar() {
             <Link
               key={l.to}
               to={l.to}
-              className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-              activeProps={{ className: "text-primary" }}
+              className="text-sm font-medium text-foreground/85 transition-colors hover:text-primary"
+              activeProps={{ className: "text-primary font-semibold" }}
               activeOptions={{ exact: l.to === "/" }}
             >
               {l.label}
@@ -40,46 +63,76 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3.5 md:flex">
           <button
             aria-label="Search"
-            className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 transition hover:bg-secondary/60 hover:text-primary"
+            onClick={() => setIsSearchOpen(true)}
+            className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 transition hover:bg-secondary/60 hover:text-primary cursor-pointer"
           >
-            <Search className="h-4 w-4" />
+            <Search className="h-4.5 w-4.5" />
           </button>
-          {isAdmin && (
-            <Link
-              to="/admin"
-              className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20"
-            >
-              <Shield className="h-3.5 w-3.5" /> Admin
-            </Link>
-          )}
+
           {session ? (
-            <Link
-              to="/profile"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium hover:border-primary hover:text-primary"
-            >
-              <User className="h-4 w-4" /> Profile
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 rounded-full border border-border bg-white p-1 pr-3 hover:border-primary hover:shadow-soft transition outline-none cursor-pointer">
+                  <div className="h-7 w-7 overflow-hidden rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-semibold text-xs text-primary shadow-soft shrink-0">
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      (profile?.display_name || user?.email || "ME").slice(0, 2).toUpperCase()
+                    )}
+                  </div>
+                  <span className="text-xs font-semibold text-foreground truncate max-w-[80px]">
+                    {profile?.display_name || "Profile"}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52 rounded-2xl p-1.5 shadow-elegant border border-border/80 bg-white/95 backdrop-blur-md">
+                <div className="px-3 py-2 text-xs border-b border-border/40 mb-1 shrink-0">
+                  <p className="font-semibold text-foreground">{profile?.display_name || "Anonymous Reader"}</p>
+                  <p className="text-[10px] text-muted-foreground truncate mt-0.5">{user?.email}</p>
+                </div>
+                <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-secondary/20 hover:text-primary focus:bg-secondary/20 focus:text-primary">
+                  <Link to="/profile">My Collections</Link>
+                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-secondary/20 hover:text-primary focus:bg-secondary/20 focus:text-primary text-primary bg-primary/5 border border-primary/10">
+                    <Link to="/admin" className="flex items-center gap-1.5">
+                      <Shield className="h-3.5 w-3.5" /> Admin Panel
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator className="bg-border/40 my-1" />
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.reload();
+                  }}
+                  className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer text-destructive hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
+                >
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Link
               to="/auth"
-              className="text-sm font-medium text-foreground/80 hover:text-primary"
+              className="text-sm font-semibold text-foreground/80 hover:text-primary hover:bg-secondary/25 px-4.5 py-2.5 rounded-full transition"
             >
               Sign in
             </Link>
           )}
           <Link
             to="/trends"
-            className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:bg-accent"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft transition hover:bg-accent hover:shadow-elegant"
           >
             Explore Trends
           </Link>
         </div>
 
         <button
-          className="md:hidden"
+          className="md:hidden text-foreground/80"
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
         >
@@ -88,35 +141,191 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-border bg-background md:hidden">
-          <nav className="container-page flex flex-col py-4">
+        <div className="border-t border-border bg-background md:hidden animate-fade-in">
+          <nav className="container-page flex flex-col py-4 space-y-1">
             {links.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
-                className="py-2 text-sm font-medium text-foreground/80"
-                activeProps={{ className: "text-primary" }}
+                className="py-2.5 px-4 rounded-xl text-sm font-medium text-foreground/80 hover:bg-secondary/20 hover:text-primary"
+                activeProps={{ className: "text-primary bg-secondary/15" }}
                 activeOptions={{ exact: l.to === "/" }}
               >
                 {l.label}
               </Link>
             ))}
+            <button
+              onClick={() => {
+                setOpen(false);
+                setIsSearchOpen(true);
+              }}
+              className="w-full text-left py-2.5 px-4 rounded-xl text-sm font-medium text-foreground/80 hover:bg-secondary/20 hover:text-primary flex items-center gap-2 cursor-pointer"
+            >
+              <Search className="h-4 w-4" /> Searchlook
+            </button>
             {isAdmin && (
-              <Link to="/admin" onClick={() => setOpen(false)} className="py-2 text-sm font-medium text-primary">
-                Admin dashboard
+              <Link
+                to="/admin"
+                onClick={() => setOpen(false)}
+                className="py-2.5 px-4 rounded-xl text-sm font-semibold text-primary hover:bg-secondary/20 flex items-center gap-1.5"
+              >
+                <Shield className="h-4 w-4" /> Admin dashboard
               </Link>
             )}
             <Link
               to={session ? "/profile" : "/auth"}
               onClick={() => setOpen(false)}
-              className="py-2 text-sm font-medium text-primary"
+              className="py-2.5 px-4 rounded-xl text-sm font-medium text-primary hover:bg-secondary/20"
             >
-              {session ? "Your profile" : "Sign in"}
+              {session ? "Your collections" : "Sign in"}
             </Link>
           </nav>
         </div>
       )}
+
+      {/* Fuzzy search look modal */}
+      <SearchModal open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </header>
+  );
+}
+
+function SearchModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<
+    { type: "trend" | "blog"; title: string; slug: string; image: string; category: string }[]
+  >([]);
+
+  const { data: trends = [] } = useQuery({
+    queryKey: ["trends", "published"],
+    queryFn: fetchAllTrends,
+    enabled: open,
+  });
+  const { data: blogs = [] } = useQuery({
+    queryKey: ["blog", "published"],
+    queryFn: fetchAllPosts,
+    enabled: open,
+  });
+
+  useEffect(() => {
+    if (!open) {
+      setQuery("");
+      setResults([]);
+      return;
+    }
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [open, onClose]);
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+    const q = query.toLowerCase().trim();
+
+    const filteredTrends = trends
+      .filter(
+        (t) =>
+          t.title.toLowerCase().includes(q) ||
+          t.excerpt.toLowerCase().includes(q) ||
+          t.tags.some((tag) => tag.toLowerCase().includes(q))
+      )
+      .map((t) => ({
+        type: "trend" as const,
+        title: t.title,
+        slug: t.slug,
+        image: t.image,
+        category: t.category,
+      }));
+
+    const filteredBlogs = blogs
+      .filter((b) => b.title.toLowerCase().includes(q) || b.excerpt.toLowerCase().includes(q))
+      .map((b) => ({
+        type: "blog" as const,
+        title: b.title,
+        slug: b.slug,
+        image: b.image,
+        category: b.category,
+      }));
+
+    setResults([...filteredTrends, ...filteredBlogs].slice(0, 5));
+  }, [query, trends, blogs]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-md p-4 pt-[10vh] animate-fade-in"
+    >
+      <div
+        className="w-full max-w-2xl rounded-3xl border border-border/60 bg-white/95 p-6 shadow-elegant animate-scale-in"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center gap-3 border-b border-border/80 pb-4">
+          <Search className="h-5 w-5 text-primary shrink-0" />
+          <input
+            type="text"
+            placeholder="Search looks, bridal red, organza dupattas, styling guides..."
+            className="flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground outline-none font-medium"
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button
+            onClick={onClose}
+            className="rounded-full bg-secondary/40 p-1.5 text-muted-foreground hover:text-foreground transition cursor-pointer"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="mt-4 max-h-[60vh] overflow-y-auto pr-1 space-y-2.5">
+          {results.map((res, i) => {
+            const linkTo = res.type === "trend" ? `/trends/${res.slug}` : `/blog/${res.slug}`;
+            return (
+              <Link
+                key={i}
+                to={linkTo}
+                onClick={onClose}
+                className="flex gap-4 items-center p-3 rounded-2xl hover:bg-secondary/15 transition border border-transparent hover:border-primary/10"
+              >
+                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-border/40 bg-muted">
+                  <img src={res.image} alt={res.title} className="h-full w-full object-cover" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-[9px] px-1.5 py-0 rounded-md uppercase font-semibold border-primary/20 bg-primary/5 text-primary shrink-0">
+                      {res.type}
+                    </Badge>
+                    <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider truncate">
+                      {res.category.replace("-", " ")}
+                    </span>
+                  </div>
+                  <div className="font-semibold text-foreground text-sm truncate mt-0.5">{res.title}</div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+              </Link>
+            );
+          })}
+
+          {query.trim() && results.length === 0 && (
+            <div className="py-12 text-center text-sm text-muted-foreground italic">
+              No matching visual content found.
+            </div>
+          )}
+
+          {!query.trim() && (
+            <div className="py-8 text-center text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+              Start typing to index fashion editorials & collections...
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

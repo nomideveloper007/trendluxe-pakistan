@@ -174,7 +174,7 @@ export async function deleteMessage(id: string) {
 }
 
 export async function fetchAdminOverview() {
-  const [trends, posts, subs, msgs, likes, favs, comments] = await Promise.all([
+  const [trends, posts, subs, msgs, likes, favs, comments, users] = await Promise.all([
     supabase.from("trends").select("id", { count: "exact", head: true }),
     supabase.from("blog_posts").select("id", { count: "exact", head: true }),
     supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }),
@@ -182,6 +182,7 @@ export async function fetchAdminOverview() {
     supabase.from("trend_likes").select("id", { count: "exact", head: true }),
     supabase.from("favorites").select("id", { count: "exact", head: true }),
     supabase.from("comments").select("id", { count: "exact", head: true }),
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
   ]);
   return {
     trends: trends.count ?? 0,
@@ -191,5 +192,57 @@ export async function fetchAdminOverview() {
     likes: likes.count ?? 0,
     favorites: favs.count ?? 0,
     comments: comments.count ?? 0,
+    users: users.count ?? 0,
   };
+}
+
+export type AdminUser = {
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  created_at: string;
+  role: "admin" | "user";
+};
+
+export async function fetchAdminUsers(): Promise<AdminUser[]> {
+  const { data: profiles, error: pError } = await supabase
+    .from("profiles")
+    .select("id, display_name, avatar_url, bio, created_at")
+    .order("created_at", { ascending: false });
+  if (pError) throw pError;
+
+  const { data: roles, error: rError } = await supabase
+    .from("user_roles")
+    .select("user_id, role");
+  
+  if (rError) {
+    console.warn("Could not fetch user roles, RLS policies might not be updated yet:", rError);
+  }
+
+  const roleMap = new Map((roles ?? []).map((r) => [r.user_id, r.role]));
+  return (profiles ?? []).map((p) => ({
+    id: p.id,
+    display_name: p.display_name,
+    avatar_url: p.avatar_url,
+    bio: p.bio,
+    created_at: p.created_at,
+    role: (roleMap.get(p.id) as "admin" | "user") || "user",
+  }));
+}
+
+export async function updateUserRole(userId: string, role: "admin" | "user") {
+  if (role === "admin") {
+    const { error } = await supabase
+      .from("user_roles")
+      .upsert({ user_id: userId, role: "admin" }, { onConflict: "user_id,role" });
+    if (error) throw error;
+  } else {
+    const { error } = await supabase
+      .from("user_roles")
+      .delete()
+      .eq("user_id", userId)
+      .eq("role", "admin");
+    if (error) throw error;
+  }
 }

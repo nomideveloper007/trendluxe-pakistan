@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  useLocation,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
@@ -142,15 +143,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith("/admin");
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="flex min-h-screen flex-col overflow-x-hidden">
-          <Navbar />
+          {!isAdminPage && <Navbar />}
           <main className="flex-1">
             <Outlet />
           </main>
-          <Footer />
+          {!isAdminPage && <Footer />}
         </div>
         <Toaster position="top-center" richColors />
       </AuthProvider>

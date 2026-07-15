@@ -3,6 +3,7 @@ import catBridal from "@/assets/cat-bridal.jpg";
 import catParty from "@/assets/cat-party.jpg";
 import catLawn from "@/assets/cat-lawn.jpg";
 import catAbaya from "@/assets/cat-abaya.jpg";
+import catBeigeDress from "@/assets/cat-beige-dress.jpg";
 import catEid from "@/assets/cat-eid.jpg";
 import catUniversity from "@/assets/cat-university.jpg";
 import catMehndi from "@/assets/cat-mehndi.jpg";
@@ -26,6 +27,7 @@ export const imageMap: Record<string, string> = {
   "cat-party": catParty,
   "cat-lawn": catLawn,
   "cat-abaya": catAbaya,
+  "cat-beige-dress": catBeigeDress,
   "cat-eid": catEid,
   "cat-university": catUniversity,
   "cat-mehndi": catMehndi,
@@ -86,7 +88,7 @@ export const categories: Category[] = [
   {
     slug: "university-fashion",
     name: "University Fashion",
-    image: catUniversity,
+    image: catBeigeDress,
     blurb: "Chic, easy-to-style pieces built for campus days.",
   },
   {
