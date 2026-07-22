@@ -8,6 +8,9 @@ import { useAuth } from "@/lib/auth";
 import { SITE } from "@/lib/content";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   head: () => ({
     meta: [
       { title: `Sign in — ${SITE.name}` },
@@ -23,6 +26,7 @@ const passwordSchema = z.string().min(6, "Password must be at least 6 characters
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { redirect } = Route.useSearch();
   const { session } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -31,8 +35,10 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (session) navigate({ to: "/profile" });
-  }, [session, navigate]);
+    if (session) {
+      navigate({ to: redirect || "/" });
+    }
+  }, [session, navigate, redirect]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();

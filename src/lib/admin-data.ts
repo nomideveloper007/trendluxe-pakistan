@@ -174,26 +174,45 @@ export async function deleteMessage(id: string) {
 }
 
 export async function fetchAdminOverview() {
-  const [trends, posts, subs, msgs, likes, favs, comments, users] = await Promise.all([
-    supabase.from("trends").select("id", { count: "exact", head: true }),
-    supabase.from("blog_posts").select("id", { count: "exact", head: true }),
-    supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }),
-    supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("handled", false),
-    supabase.from("trend_likes").select("id", { count: "exact", head: true }),
-    supabase.from("favorites").select("id", { count: "exact", head: true }),
-    supabase.from("comments").select("id", { count: "exact", head: true }),
-    supabase.from("profiles").select("id", { count: "exact", head: true }),
-  ]);
-  return {
-    trends: trends.count ?? 0,
-    posts: posts.count ?? 0,
-    subscribers: subs.count ?? 0,
-    openMessages: msgs.count ?? 0,
-    likes: likes.count ?? 0,
-    favorites: favs.count ?? 0,
-    comments: comments.count ?? 0,
-    users: users.count ?? 0,
-  };
+  try {
+    const [trends, posts, subs, msgs, likes, favs, comments, users, orders, products] = await Promise.all([
+      supabase.from("trends").select("id", { count: "exact", head: true }),
+      supabase.from("blog_posts").select("id", { count: "exact", head: true }),
+      supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }),
+      supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("handled", false),
+      supabase.from("trend_likes").select("id", { count: "exact", head: true }),
+      supabase.from("favorites").select("id", { count: "exact", head: true }),
+      supabase.from("comments").select("id", { count: "exact", head: true }),
+      supabase.from("profiles").select("id", { count: "exact", head: true }),
+      supabase.from("orders").select("id", { count: "exact", head: true }),
+      supabase.from("products").select("id", { count: "exact", head: true }),
+    ]);
+    return {
+      trends: trends.count ?? 0,
+      posts: posts.count ?? 0,
+      subscribers: subs.count ?? 0,
+      openMessages: msgs.count ?? 0,
+      likes: likes.count ?? 0,
+      favorites: favs.count ?? 0,
+      comments: comments.count ?? 0,
+      users: users.count ?? 0,
+      orders: orders.count ?? 0,
+      products: products.count ?? 0,
+    };
+  } catch {
+    return {
+      trends: 0,
+      posts: 0,
+      subscribers: 0,
+      openMessages: 0,
+      likes: 0,
+      favorites: 0,
+      comments: 0,
+      users: 0,
+      orders: 0,
+      products: 0
+    };
+  }
 }
 
 export type AdminUser = {
@@ -245,4 +264,112 @@ export async function updateUserRole(userId: string, role: "admin" | "user") {
       .eq("role", "admin");
     if (error) throw error;
   }
+}
+
+// --- E-COMMERCE ADMIN FUNCTIONS ---
+
+// 1. PRODUCTS
+export async function fetchAdminProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function upsertProduct(product: any) {
+  const { id, ...payload } = product;
+  if (id) {
+    const { error } = await supabase.from("products").update(payload).eq("id", id);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase.from("products").insert(payload);
+    if (error) throw error;
+  }
+}
+
+export async function deleteProduct(id: string) {
+  const { error } = await supabase.from("products").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// 2. ORDERS
+export async function fetchAdminOrders() {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*, order_items(*)")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function updateOrderStatus(orderId: string, status: string, trackingNumber?: string, internalNotes?: string) {
+  const payload: any = { status };
+  if (trackingNumber !== undefined) payload.tracking_number = trackingNumber;
+  if (internalNotes !== undefined) payload.order_notes = internalNotes;
+  const { error } = await supabase.from("orders").update(payload).eq("id", orderId);
+  if (error) throw error;
+}
+
+// 3. INVENTORY
+export async function fetchAdminInventory() {
+  const { data, error } = await supabase
+    .from("inventory")
+    .select("*, products(title, sku)")
+    .order("quantity", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function updateInventoryQty(id: string, quantity: number) {
+  const { error } = await supabase.from("inventory").update({ quantity }).eq("id", id);
+  if (error) throw error;
+}
+
+// 4. COUPONS
+export async function fetchAdminCoupons() {
+  const { data, error } = await supabase
+    .from("coupons")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function upsertCoupon(coupon: any) {
+  const { id, ...payload } = coupon;
+  payload.code = payload.code.trim().toUpperCase();
+  if (id) {
+    const { error } = await supabase.from("coupons").update(payload).eq("id", id);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase.from("coupons").insert(payload);
+    if (error) throw error;
+  }
+}
+
+export async function deleteCoupon(id: string) {
+  const { error } = await supabase.from("coupons").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// 5. REVIEWS
+export async function fetchAdminReviews() {
+  const { data, error } = await supabase
+    .from("product_reviews")
+    .select("*, products(title, sku)")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function updateReviewStatus(id: string, status: "visible" | "hidden") {
+  const { error } = await supabase.from("product_reviews").update({ status }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteReview(id: string) {
+  const { error } = await supabase.from("product_reviews").delete().eq("id", id);
+  if (error) throw error;
 }

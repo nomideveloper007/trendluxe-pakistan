@@ -39,12 +39,12 @@ export async function fetchFavorites(userId: string) {
   return data ?? [];
 }
 
-export async function addFavorite(userId: string, itemType: "trend" | "blog", itemSlug: string) {
+export async function addFavorite(userId: string, itemType: "trend" | "blog" | "product", itemSlug: string) {
   const { error } = await supabase.from("favorites").insert({ user_id: userId, item_type: itemType, item_slug: itemSlug });
   if (error && error.code !== "23505") throw error;
 }
 
-export async function removeFavorite(userId: string, itemType: "trend" | "blog", itemSlug: string) {
+export async function removeFavorite(userId: string, itemType: "trend" | "blog" | "product", itemSlug: string) {
   const { error } = await supabase
     .from("favorites")
     .delete()
@@ -54,7 +54,7 @@ export async function removeFavorite(userId: string, itemType: "trend" | "blog",
   if (error) throw error;
 }
 
-export async function isFavorite(userId: string, itemType: "trend" | "blog", itemSlug: string) {
+export async function isFavorite(userId: string, itemType: "trend" | "blog" | "product", itemSlug: string) {
   const { data, error } = await supabase
     .from("favorites")
     .select("id")

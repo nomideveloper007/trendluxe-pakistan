@@ -35,10 +35,10 @@ export function Footer() {
             Explore
           </h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/trends" className="hover:text-primary">All Trends</Link></li>
-            <li><Link to="/blog" className="hover:text-primary">Blog</Link></li>
-            <li><Link to="/about" className="hover:text-primary">About</Link></li>
-            <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
+            <li><Link to="/shop" className="hover:text-primary">Shop Catalog</Link></li>
+            <li><Link to="/cart" className="hover:text-primary">Shopping Bag</Link></li>
+            <li><Link to="/about" className="hover:text-primary">About Us</Link></li>
+            <li><Link to="/contact" className="hover:text-primary">Contact Support</Link></li>
           </ul>
         </div>
 
@@ -49,7 +49,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             {categories.slice(0, 5).map((c) => (
               <li key={c.slug}>
-                <Link to="/trends" hash={c.slug} className="hover:text-primary">
+                <Link to="/shop" search={{ category: c.slug }} className="hover:text-primary">
                   {c.name}
                 </Link>
               </li>
@@ -61,16 +61,16 @@ export function Footer() {
       <div className="border-t border-border/60">
         <div className="container-page grid gap-6 py-10 md:grid-cols-2 md:items-center">
           <div>
-            <h4 className="font-display text-2xl font-semibold">Get inspired weekly</h4>
+            <h4 className="font-display text-2xl font-semibold">Join the Pahraan Atelier</h4>
             <p className="mt-1 text-sm text-muted-foreground">
-              Fresh trends, styling tips and the best of Pakistani fashion — in your inbox.
+              Exclusive collections, seasonal designer drops, and private sales — in your inbox.
             </p>
           </div>
           <NewsletterForm />
         </div>
         <div className="container-page flex flex-col items-center justify-between gap-2 py-6 text-xs text-muted-foreground md:flex-row">
           <p>© {new Date().getFullYear()} {SITE.name}. All rights reserved.</p>
-          <p>Made with care for the Pakistani fashion community.</p>
+          <p>The premium Pakistani women's fashion storefront.</p>
         </div>
       </div>
     </footer>

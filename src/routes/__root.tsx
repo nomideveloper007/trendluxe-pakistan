@@ -17,6 +17,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { SITE } from "@/lib/content";
 import { AuthProvider } from "@/lib/auth";
+import { CartProvider } from "@/hooks/useCart";
 
 function NotFoundComponent() {
   return (
@@ -47,12 +48,19 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
+      <div className="max-w-2xl text-center">
         <h1 className="font-display text-2xl text-foreground">This page didn't load</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. Try refreshing or head back home.
         </p>
+        
+        {/* Error Details */}
+        <div className="mt-6 p-4 rounded-2xl border border-rose-200 bg-rose-50/50 text-left text-xs font-mono text-rose-700 max-h-80 overflow-auto">
+          <p className="font-bold mb-1">Error: {error?.message || String(error)}</p>
+          {error?.stack && <pre className="whitespace-pre-wrap mt-2">{error.stack}</pre>}
+        </div>
+
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => { router.invalidate(); reset(); }}
@@ -149,14 +157,16 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <div className="flex min-h-screen flex-col overflow-x-hidden">
-          {!isAdminPage && <Navbar />}
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          {!isAdminPage && <Footer />}
-        </div>
-        <Toaster position="top-center" richColors />
+        <CartProvider>
+          <div className="flex min-h-screen flex-col overflow-x-clip">
+            {!isAdminPage && <Navbar />}
+            <main className="flex-1">
+              <Outlet />
+            </main>
+            {!isAdminPage && <Footer />}
+          </div>
+          <Toaster position="top-center" richColors />
+        </CartProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

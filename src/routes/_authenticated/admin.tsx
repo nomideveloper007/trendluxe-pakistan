@@ -28,6 +28,11 @@ import {
   Search,
   LayoutGrid,
   Table,
+  ShoppingBag,
+  Copy,
+  PlusCircle,
+  Star,
+  Printer
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SITE, categories, blogCategories, imageKeyOptions, resolveImage } from "@/lib/content";
@@ -49,6 +54,19 @@ import {
   type AdminPost,
   type AdminTrend,
   type AdminUser,
+  fetchAdminProducts,
+  upsertProduct,
+  deleteProduct,
+  fetchAdminOrders,
+  updateOrderStatus,
+  fetchAdminInventory,
+  updateInventoryQty,
+  fetchAdminCoupons,
+  upsertCoupon,
+  deleteCoupon,
+  fetchAdminReviews,
+  updateReviewStatus,
+  deleteReview,
 } from "@/lib/admin-data";
 import {
   deleteComment,
@@ -106,6 +124,11 @@ function AdminDashboard() {
 
   const menuItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "products", label: "Products", icon: LayoutGrid },
+    { id: "orders", label: "Orders", icon: ShoppingBag },
+    { id: "inventory", label: "Inventory", icon: Table },
+    { id: "coupons", label: "Coupons", icon: Bookmark },
+    { id: "reviews", label: "Reviews", icon: MessageCircle },
     { id: "trends", label: "Trends", icon: Sparkles },
     { id: "blog", label: "Blog Journal", icon: BookOpen },
     { id: "comments", label: "Comments", icon: MessageCircle },
@@ -219,6 +242,11 @@ function AdminDashboard() {
         <main className="flex-1 overflow-y-auto p-8">
           <div className="mx-auto max-w-5xl">
             {activeTab === "overview" && <OverviewTab overview={overview} />}
+            {activeTab === "products" && <ProductsTab />}
+            {activeTab === "orders" && <OrdersTab />}
+            {activeTab === "inventory" && <InventoryTab />}
+            {activeTab === "coupons" && <CouponsTab />}
+            {activeTab === "reviews" && <ReviewsTab />}
             {activeTab === "trends" && <TrendsTab />}
             {activeTab === "blog" && <BlogTab />}
             {activeTab === "newsletter" && <NewsletterTab />}
@@ -1655,3 +1683,838 @@ function UsersTab() {
     </div>
   );
 }
+
+/* ---------------- PRODUCTS TAB ---------------- */
+
+function ProductsTab() {
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+
+  // Form states
+  const [sku, setSku] = useState("");
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [shortDesc, setShortDesc] = useState("");
+  const [desc, setDesc] = useState("");
+  const [price, setPrice] = useState(0);
+  const [compPrice, setCompPrice] = useState<number | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [category, setCategory] = useState("lawn-suits");
+  const [sizes, setSizes] = useState<string[]>(["XS", "S", "M", "L", "XL", "XXL"]);
+  const [colors, setColors] = useState<string[]>([]);
+  const [fabric, setFabric] = useState("");
+  const [embroidery, setEmbroidery] = useState("");
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [isTrending, setIsTrending] = useState(false);
+  const [isNewArrival, setIsNewArrival] = useState(true);
+
+  // Loading admin products
+  const productsQ = useQuery({
+    queryKey: ["admin-products"],
+    queryFn: fetchAdminProducts,
+  });
+
+  const upsertMut = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        id: editId || undefined,
+        sku,
+        title,
+        slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        short_description: shortDesc,
+        description: desc,
+        price,
+        compare_at_price: compPrice,
+        images: imageUrls.length > 0 ? imageUrls : ["https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=80"],
+        video_url: videoUrl || null,
+        category,
+        sizes,
+        colors: colors.length > 0 ? colors : ["Default"],
+        fabric: fabric || null,
+        embroidery: embroidery || null,
+        is_featured: isFeatured,
+        is_trending: isTrending,
+        is_new_arrival: isNewArrival,
+        stock_status: "in_stock",
+      };
+      await upsertProduct(payload);
+    },
+    onSuccess: () => {
+      toast.success(editId ? "Product updated" : "Product added");
+      setOpen(false);
+      qc.invalidateQueries({ queryKey: ["admin-products"] });
+      // Reset form
+      setEditId(null);
+      setSku("");
+      setTitle("");
+      setSlug("");
+      setShortDesc("");
+      setDesc("");
+      setPrice(0);
+      setCompPrice(null);
+      setImageUrls([]);
+      setVideoUrl("");
+      setColors([]);
+      setFabric("");
+      setEmbroidery("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      toast.success("Product deleted successfully");
+      qc.invalidateQueries({ queryKey: ["admin-products"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const handleEdit = (prod: any) => {
+    setEditId(prod.id);
+    setSku(prod.sku);
+    setTitle(prod.title);
+    setSlug(prod.slug);
+    setShortDesc(prod.short_description);
+    setDesc(prod.description);
+    setPrice(prod.price);
+    setCompPrice(prod.compare_at_price);
+    setImageUrls(prod.images || []);
+    setVideoUrl(prod.video_url || "");
+    setCategory(prod.category);
+    setSizes(prod.sizes || []);
+    setColors(prod.colors || []);
+    setFabric(prod.fabric || "");
+    setEmbroidery(prod.embroidery || "");
+    setIsFeatured(prod.is_featured);
+    setIsTrending(prod.is_trending);
+    setIsNewArrival(prod.is_new_arrival);
+    setOpen(true);
+  };
+
+  const handleDuplicate = (prod: any) => {
+    setEditId(null); // Save as new
+    setSku(`${prod.sku}-COPY`);
+    setTitle(`${prod.title} (Copy)`);
+    setSlug(`${prod.slug}-copy`);
+    setShortDesc(prod.short_description);
+    setDesc(prod.description);
+    setPrice(prod.price);
+    setCompPrice(prod.compare_at_price);
+    setImageUrls(prod.images || []);
+    setVideoUrl(prod.video_url || "");
+    setCategory(prod.category);
+    setSizes(prod.sizes || []);
+    setColors(prod.colors || []);
+    setFabric(prod.fabric || "");
+    setEmbroidery(prod.embroidery || "");
+    setIsFeatured(prod.is_featured);
+    setIsTrending(prod.is_trending);
+    setIsNewArrival(prod.is_new_arrival);
+    setOpen(true);
+  };
+
+  const handleSizeToggle = (sz: string) => {
+    if (sizes.includes(sz)) {
+      setSizes(sizes.filter((s) => s !== sz));
+    } else {
+      setSizes([...sizes, sz]);
+    }
+  };
+
+  const products = productsQ.data ?? [];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="font-display text-2xl font-bold">Catalog Management</h2>
+          <p className="text-xs text-muted-foreground mt-1">Manage designer products and variants</p>
+        </div>
+        <Button onClick={() => { setEditId(null); setOpen(true); }} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-4.5 py-2 cursor-pointer shadow-soft">
+          <PlusCircle className="mr-1 h-4 w-4" /> Add Product
+        </Button>
+      </div>
+
+      <div className="rounded-3xl border border-border/80 bg-white overflow-hidden shadow-soft">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-secondary/10 border-b border-border/80 text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+              <th className="px-5 py-4">Image & Title</th>
+              <th className="px-5 py-4">SKU</th>
+              <th className="px-5 py-4">Price</th>
+              <th className="px-5 py-4">Category</th>
+              <th className="px-5 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/40 text-xs">
+            {products.map((prod: any) => (
+              <tr key={prod.id} className="hover:bg-secondary/5 transition">
+                <td className="px-5 py-3">
+                  <div className="flex items-center gap-3">
+                    <img src={prod.images?.[0] || ""} alt="" className="h-11 w-9 object-cover rounded-lg border border-border shadow-soft" />
+                    <div>
+                      <div className="font-bold text-foreground">{prod.title}</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">{prod.slug}</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-5 py-3 font-mono text-muted-foreground">{prod.sku}</td>
+                <td className="px-5 py-3 font-bold text-primary">PKR {prod.price.toLocaleString()}</td>
+                <td className="px-5 py-3 capitalize text-muted-foreground">{prod.category.replace("-", " ")}</td>
+                <td className="px-5 py-3 text-right space-x-1">
+                  <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-secondary/20 text-muted-foreground hover:text-foreground" onClick={() => handleEdit(prod)}>
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-secondary/20 text-primary" onClick={() => handleDuplicate(prod)}>
+                    <Copy className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => confirm("Delete this product?") && deleteMut.mutate(prod.id)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* CREATE / EDIT DIALOG FORM */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-3xl rounded-3xl border border-border bg-white p-6 shadow-elegant max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display text-lg font-bold">{editId ? "Edit Product" : "Create Product"}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2 text-xs">
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Product SKU *">
+                <Input value={sku} onChange={(e) => setSku(e.target.value)} placeholder="PAH-LWN-101" required />
+              </Field>
+              <Field label="Product Title *">
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="E.g. Rose Garden Kurta" required />
+              </Field>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Category *">
+                <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary">
+                  <option value="lawn-suits">Lawn Collection</option>
+                  <option value="pret-wear">Pret Wear</option>
+                  <option value="casual-wear">Casual Wear</option>
+                  <option value="formal-wear">Formal Wear</option>
+                  <option value="luxury-pret">Luxury Pret</option>
+                  <option value="bridal-wear">Bridal Wear</option>
+                  <option value="eid-collections">Eid Collection</option>
+                </select>
+              </Field>
+              <Field label="Slug URL (optional)">
+                <Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="rose-garden-kurta" />
+              </Field>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Selling Price (PKR) *">
+                <Input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} required />
+              </Field>
+              <Field label="Original Price (for discount display)">
+                <Input type="number" value={compPrice || ""} onChange={(e) => setCompPrice(e.target.value ? Number(e.target.value) : null)} />
+              </Field>
+            </div>
+
+            <Field label="Short Description *">
+              <Input value={shortDesc} onChange={(e) => setShortDesc(e.target.value)} placeholder="Brief summary of item card..." required />
+            </Field>
+
+            <Field label="Full Description *">
+              <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Elaborate details about styling, look and structure..." rows={3} required />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Fabric Type">
+                <Input value={fabric} onChange={(e) => setFabric(e.target.value)} placeholder="Pure raw silk / Chiffon / Lawn" />
+              </Field>
+              <Field label="Embroidery Style">
+                <Input value={embroidery} onChange={(e) => setEmbroidery(e.target.value)} placeholder="Zardozi handcraft / None" />
+              </Field>
+            </div>
+
+            {/* List builders */}
+            <ListBuilder label="Image URLs" values={imageUrls} onChange={setImageUrls} placeholder="Insert Unsplash image link..." />
+
+            <div className="space-y-1.5">
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Available Sizes</Label>
+              <div className="flex gap-2">
+                {["XS", "S", "M", "L", "XL", "XXL"].map((sz) => {
+                  const selected = sizes.includes(sz);
+                  return (
+                    <button type="button" key={sz} onClick={() => handleSizeToggle(sz)} className={`h-8 w-10 rounded-lg border text-[10px] font-bold ${
+                      selected ? "bg-primary border-primary text-white" : "border-border bg-white"
+                    }`}>
+                      {sz}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <ListBuilder label="Available Colors" values={colors} onChange={setColors} placeholder="E.g. Lilac, Peach, Emerald" />
+
+            {/* Badges indicators */}
+            <div className="grid grid-cols-3 gap-4 border-t border-border/40 pt-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="featured-cb" className="text-xs">Featured Product</Label>
+                <input id="featured-cb" type="checkbox" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} className="h-4.5 w-4.5" />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="trending-cb" className="text-xs">Trending Now</Label>
+                <input id="trending-cb" type="checkbox" checked={isTrending} onChange={(e) => setIsTrending(e.target.checked)} className="h-4.5 w-4.5" />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="newarrival-cb" className="text-xs">New Arrival</Label>
+                <input id="newarrival-cb" type="checkbox" checked={isNewArrival} onChange={(e) => setIsNewArrival(e.target.checked)} className="h-4.5 w-4.5" />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4 gap-2">
+            <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-full text-xs font-semibold px-4">Cancel</Button>
+            <Button onClick={() => upsertMut.mutate()} disabled={upsertMut.isPending} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft">
+              {upsertMut.isPending ? "Syncing..." : editId ? "Save Changes" : "Create Product"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+/* ---------------- ORDERS TAB ---------------- */
+
+function OrdersTab() {
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+
+  // Status controls
+  const [status, setStatus] = useState("pending");
+  const [trackingNo, setTrackingNo] = useState("");
+  const [internalNotes, setInternalNotes] = useState("");
+
+  const ordersQ = useQuery({
+    queryKey: ["admin-orders"],
+    queryFn: fetchAdminOrders,
+  });
+
+  const updateMut = useMutation({
+    mutationFn: async () => {
+      if (!selectedOrder) return;
+      await updateOrderStatus(selectedOrder.id, status, trackingNo, internalNotes);
+    },
+    onSuccess: () => {
+      toast.success("Order status modified");
+      setOpen(false);
+      qc.invalidateQueries({ queryKey: ["admin-orders"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const handleOpenDetail = (order: any) => {
+    setSelectedOrder(order);
+    setStatus(order.status);
+    setTrackingNo(order.tracking_number || "");
+    setInternalNotes(order.order_notes || "");
+    setOpen(true);
+  };
+
+  const handlePrintInvoice = (order: any) => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Invoice - Order #${order.id}</title>
+          <style>
+            body { font-family: 'Poppins', sans-serif; padding: 40px; color: #2D2D2D; }
+            h1 { font-family: 'Playfair Display', serif; color: #C2185B; }
+            table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+            th, td { padding: 12px; border-bottom: 1px solid #E5E7EB; text-align: left; }
+            th { background-color: #FFF9FB; }
+            .totals { text-align: right; margin-top: 30px; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <h1>PAHRAAN COUTURE</h1>
+          <p>Order Date: ${new Date(order.created_at).toLocaleDateString()}</p>
+          <p>Recipient: ${order.first_name} ${order.last_name} (${order.email})</p>
+          <p>Address: ${order.shipping_address.address_line1}, ${order.shipping_address.city}</p>
+          <table>
+            <thead>
+              <tr><th>Item</th><th>Detail</th><th>Qty</th><th>Subtotal</th></tr>
+            </thead>
+            <tbody>
+              ${(order.order_items || []).map((i: any) => `
+                <tr>
+                  <td>${i.product_title}</td>
+                  <td>${i.size} / ${i.color}</td>
+                  <td>${i.quantity}</td>
+                  <td>PKR ${(i.price * i.quantity).toLocaleString()}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+          <div class="totals">
+            <p>Subtotal: PKR ${order.subtotal.toLocaleString()}</p>
+            <p>Final Paid: PKR ${order.total.toLocaleString()}</p>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const orders = ordersQ.data ?? [];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="font-display text-2xl font-bold">Order Management</h2>
+        <p className="text-xs text-muted-foreground mt-1">Review customer shipments and payment status</p>
+      </div>
+
+      <div className="rounded-3xl border border-border/80 bg-white overflow-hidden shadow-soft">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-secondary/10 border-b border-border/80 text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+              <th className="px-5 py-4">Order ID</th>
+              <th className="px-5 py-4">Customer</th>
+              <th className="px-5 py-4">Date</th>
+              <th className="px-5 py-4">Total</th>
+              <th className="px-5 py-4">Status</th>
+              <th className="px-5 py-4 text-right">Invoice</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/40 text-xs">
+            {orders.map((ord: any) => (
+              <tr key={ord.id} className="hover:bg-secondary/5 transition cursor-pointer" onClick={() => handleOpenDetail(ord)}>
+                <td className="px-5 py-3 font-mono text-primary font-semibold">{ord.id.slice(0, 8).toUpperCase()}</td>
+                <td className="px-5 py-3">
+                  <p className="font-semibold">{ord.first_name} {ord.last_name}</p>
+                  <p className="text-[10px] text-muted-foreground truncate max-w-[120px]">{ord.email}</p>
+                </td>
+                <td className="px-5 py-3 text-muted-foreground">{new Date(ord.created_at).toLocaleDateString()}</td>
+                <td className="px-5 py-3 font-bold">PKR {ord.total.toLocaleString()}</td>
+                <td className="px-5 py-3">
+                  <span className={`px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider ${
+                    ord.status === "delivered" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                    ord.status === "cancelled" ? "bg-rose-50 text-rose-700 border-rose-200" :
+                    "bg-amber-50 text-amber-700 border-amber-200"
+                  }`}>
+                    {ord.status}
+                  </span>
+                </td>
+                <td className="px-5 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-secondary/15 rounded-full" onClick={() => handlePrintInvoice(ord)}>
+                    <Printer className="h-3.5 w-3.5 text-muted-foreground" />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* DETAIL MODAL & SHIPMENT CONTROLS */}
+      {selectedOrder && (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="max-w-md rounded-3xl border border-border bg-white p-6 shadow-elegant">
+            <DialogHeader>
+              <DialogTitle className="font-display text-lg font-bold">Order Details & Status</DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-4 py-2 text-xs">
+              <div className="border border-border/40 rounded-2xl bg-secondary/5 p-4 space-y-1.5 text-muted-foreground">
+                <p>Order ID: <strong className="text-foreground">{selectedOrder.id}</strong></p>
+                <p>Placed By: <strong className="text-foreground">{selectedOrder.first_name} {selectedOrder.last_name} ({selectedOrder.email})</strong></p>
+                <p>Phone: <strong className="text-foreground">{selectedOrder.phone}</strong></p>
+                <p>Ship Address: <strong className="text-foreground">{selectedOrder.shipping_address.address_line1}, {selectedOrder.shipping_address.city}</strong></p>
+                <p>Payment: <strong className="text-foreground uppercase">{selectedOrder.payment_method} ({selectedOrder.payment_status})</strong></p>
+              </div>
+
+              {/* Items */}
+              <div className="divide-y divide-border/40 max-h-40 overflow-y-auto">
+                {(selectedOrder.order_items || []).map((item: any) => (
+                  <div key={item.id} className="py-2.5 flex justify-between">
+                    <div>
+                      <p className="font-bold text-foreground">{item.product_title}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5 capitalize">{item.size} / {item.color} · Qty: {item.quantity}</p>
+                    </div>
+                    <span className="font-semibold">PKR {(item.price * item.quantity).toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Edit Status fields */}
+              <div className="space-y-3.5 border-t border-border/40 pt-4">
+                <Field label="Order Fulfillment Status">
+                  <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary">
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="refunded">Refunded</option>
+                  </select>
+                </Field>
+
+                <Field label="Courier Tracking Number">
+                  <Input value={trackingNo} onChange={(e) => setTrackingNo(e.target.value)} placeholder="TCS12998811" />
+                </Field>
+
+                <Field label="Internal Order Notes">
+                  <Input value={internalNotes} onChange={(e) => setInternalNotes(e.target.value)} placeholder="Gate verification pending..." />
+                </Field>
+              </div>
+            </div>
+
+            <DialogFooter className="mt-4 gap-2">
+              <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-full text-xs font-semibold px-4">Cancel</Button>
+              <Button onClick={() => updateMut.mutate()} disabled={updateMut.isPending} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft">
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- INVENTORY TAB ---------------- */
+
+function InventoryTab() {
+  const qc = useQueryClient();
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+
+  const inventoryQ = useQuery({
+    queryKey: ["admin-inventory"],
+    queryFn: fetchAdminInventory,
+  });
+
+  const updateMut = useMutation({
+    mutationFn: async ({ id, qty }: { id: string; qty: number }) => {
+      await updateInventoryQty(id, qty);
+    },
+    onSuccess: () => {
+      toast.success("Inventory stock level updated");
+      qc.invalidateQueries({ queryKey: ["admin-inventory"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const inventory = inventoryQ.data ?? [];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="font-display text-2xl font-bold">Inventory Management</h2>
+        <p className="text-xs text-muted-foreground mt-1">Adjust variant stock limits and levels</p>
+      </div>
+
+      <div className="rounded-3xl border border-border/80 bg-white overflow-hidden shadow-soft">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-secondary/10 border-b border-border/80 text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+              <th className="px-5 py-4">Product Name</th>
+              <th className="px-5 py-4">SKU</th>
+              <th className="px-5 py-4">Size / Color</th>
+              <th className="px-5 py-4">Quantity Stock</th>
+              <th className="px-5 py-4 text-right">Adjustment</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/40 text-xs">
+            {inventory.map((item: any) => {
+              const localVal = quantities[item.id] !== undefined ? quantities[item.id] : item.quantity;
+              return (
+                <tr key={item.id} className="hover:bg-secondary/5 transition">
+                  <td className="px-5 py-3 font-semibold text-foreground">{item.products?.title || "Unknown product"}</td>
+                  <td className="px-5 py-3 font-mono text-muted-foreground">{item.products?.sku}</td>
+                  <td className="px-5 py-3 capitalize text-muted-foreground">{item.size} / {item.color}</td>
+                  <td className="px-5 py-3 font-bold">
+                    <span className={`px-2 py-0.5 rounded-full ${item.quantity === 0 ? "bg-rose-50 text-rose-700" : "bg-emerald-50 text-emerald-700"}`}>
+                      {item.quantity} In Stock
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 text-right">
+                    <div className="flex gap-2 items-center justify-end">
+                      <input
+                        type="number"
+                        value={localVal}
+                        onChange={(e) => setQuantities({ ...quantities, [item.id]: Number(e.target.value) })}
+                        className="w-16 rounded-xl border border-border bg-background px-2.5 py-1.5 text-center text-xs outline-none focus:border-primary"
+                      />
+                      <Button size="sm" className="bg-primary text-white rounded-xl text-[10px]" onClick={() => updateMut.mutate({ id: item.id, qty: localVal })} disabled={updateMut.isPending}>
+                        Update
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- COUPONS TAB ---------------- */
+
+function CouponsTab() {
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+
+  // Form states
+  const [code, setCode] = useState("");
+  const [discType, setDiscType] = useState("percentage");
+  const [discValue, setDiscValue] = useState(0);
+  const [minSpend, setMinSpend] = useState(0);
+  const [limit, setLimit] = useState<number | null>(null);
+  const [endDate, setEndDate] = useState("");
+
+  const couponsQ = useQuery({
+    queryKey: ["admin-coupons"],
+    queryFn: fetchAdminCoupons,
+  });
+
+  const upsertMut = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        id: editId || undefined,
+        code,
+        discount_type: discType,
+        discount_value: discValue,
+        min_purchase_amount: minSpend,
+        usage_limit: limit,
+        end_date: endDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      };
+      await upsertCoupon(payload);
+    },
+    onSuccess: () => {
+      toast.success(editId ? "Coupon updated" : "Coupon generated");
+      setOpen(false);
+      qc.invalidateQueries({ queryKey: ["admin-coupons"] });
+      // Reset form
+      setEditId(null);
+      setCode("");
+      setDiscValue(0);
+      setMinSpend(0);
+      setLimit(null);
+      setEndDate("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: deleteCoupon,
+    onSuccess: () => {
+      toast.success("Coupon code deleted");
+      qc.invalidateQueries({ queryKey: ["admin-coupons"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const coupons = couponsQ.data ?? [];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="font-display text-2xl font-bold">Coupon Codes</h2>
+          <p className="text-xs text-muted-foreground mt-1">Manage marketing promotions and discounts</p>
+        </div>
+        <Button onClick={() => { setEditId(null); setOpen(true); }} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-4.5 py-2 cursor-pointer shadow-soft">
+          <Plus className="mr-1 h-4 w-4" /> Add Coupon
+        </Button>
+      </div>
+
+      <div className="rounded-3xl border border-border/80 bg-white overflow-hidden shadow-soft">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-secondary/10 border-b border-border/80 text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+              <th className="px-5 py-4">Coupon Code</th>
+              <th className="px-5 py-4">Discount</th>
+              <th className="px-5 py-4">Min Spend</th>
+              <th className="px-5 py-4">Usages</th>
+              <th className="px-5 py-4">Expiry</th>
+              <th className="px-5 py-4 text-right">Delete</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/40 text-xs">
+            {coupons.map((cp: any) => (
+              <tr key={cp.id} className="hover:bg-secondary/5 transition">
+                <td className="px-5 py-3 font-mono font-bold text-primary">{cp.code}</td>
+                <td className="px-5 py-3 capitalize text-foreground">
+                  {cp.discount_type === "percentage" ? `${cp.discount_value}% Off` :
+                   cp.discount_type === "fixed" ? `PKR ${cp.discount_value} Off` : "Free Shipping"}
+                </td>
+                <td className="px-5 py-3 font-medium">PKR {cp.min_purchase_amount.toLocaleString()}</td>
+                <td className="px-5 py-3 font-semibold text-muted-foreground">{cp.usage_count} / {cp.usage_limit || "∞"}</td>
+                <td className="px-5 py-3 text-muted-foreground">{new Date(cp.end_date).toLocaleDateString()}</td>
+                <td className="px-5 py-3 text-right">
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => confirm("Delete this coupon?") && deleteMut.mutate(cp.id)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ADD COUPON DIALOG */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-md rounded-3xl border border-border bg-white p-6 shadow-elegant">
+          <DialogHeader>
+            <DialogTitle className="font-display text-lg font-bold">Generate Coupon Code</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2 text-xs">
+            <Field label="Coupon Code Name *">
+              <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="SUMMER25" required />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Discount Type">
+                <select value={discType} onChange={(e) => setDiscType(e.target.value)} className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary">
+                  <option value="percentage">Percentage %</option>
+                  <option value="fixed">Fixed Price Amount</option>
+                  <option value="free_shipping">Free Shipping</option>
+                </select>
+              </Field>
+              <Field label="Discount Value *">
+                <Input type="number" value={discValue} onChange={(e) => setDiscValue(Number(e.target.value))} required />
+              </Field>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Minimum Spend threshold">
+                <Input type="number" value={minSpend} onChange={(e) => setMinSpend(Number(e.target.value))} />
+              </Field>
+              <Field label="Usage Limit count">
+                <Input type="number" value={limit || ""} onChange={(e) => setLimit(e.target.value ? Number(e.target.value) : null)} placeholder="Unlimited" />
+              </Field>
+            </div>
+
+            <Field label="Expiration Date *">
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
+            </Field>
+          </div>
+
+          <DialogFooter className="mt-4 gap-2">
+            <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-full text-xs font-semibold px-4">Cancel</Button>
+            <Button onClick={() => upsertMut.mutate()} disabled={upsertMut.isPending} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft">
+              {upsertMut.isPending ? "Generating..." : "Generate Coupon"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+/* ---------------- REVIEWS TAB ---------------- */
+
+function ReviewsTab() {
+  const qc = useQueryClient();
+
+  const reviewsQ = useQuery({
+    queryKey: ["admin-reviews"],
+    queryFn: fetchAdminReviews,
+  });
+
+  const toggleMut = useMutation({
+    mutationFn: async ({ id, newStatus }: { id: string; newStatus: "visible" | "hidden" }) => {
+      await updateReviewStatus(id, newStatus);
+    },
+    onSuccess: () => {
+      toast.success("Review visibility altered");
+      qc.invalidateQueries({ queryKey: ["admin-reviews"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: deleteReview,
+    onSuccess: () => {
+      toast.success("Review deleted");
+      qc.invalidateQueries({ queryKey: ["admin-reviews"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const reviews = reviewsQ.data ?? [];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="font-display text-2xl font-bold">Feedback Reviews</h2>
+        <p className="text-xs text-muted-foreground mt-1">Moderate customer reviews and stars rating</p>
+      </div>
+
+      <div className="rounded-3xl border border-border/80 bg-white overflow-hidden shadow-soft">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-secondary/10 border-b border-border/80 text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+              <th className="px-5 py-4">Product Name</th>
+              <th className="px-5 py-4">Author</th>
+              <th className="px-5 py-4">Stars</th>
+              <th className="px-5 py-4">Comments</th>
+              <th className="px-5 py-4">Status</th>
+              <th className="px-5 py-4 text-right">Delete</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/40 text-xs">
+            {reviews.map((rev: any) => (
+              <tr key={rev.id} className="hover:bg-secondary/5 transition">
+                <td className="px-5 py-3">
+                  <p className="font-bold">{rev.products?.title}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{rev.products?.sku}</p>
+                </td>
+                <td className="px-5 py-3 font-semibold text-foreground">{rev.display_name}</td>
+                <td className="px-5 py-3">
+                  <div className="flex text-amber-400">
+                    {[...Array(rev.rating)].map((_, i) => (
+                      <Star key={i} className="h-3 w-3 fill-current" />
+                    ))}
+                  </div>
+                </td>
+                <td className="px-5 py-3 max-w-[200px] truncate text-muted-foreground" title={rev.comment}>{rev.comment}</td>
+                <td className="px-5 py-3">
+                  <button
+                    onClick={() => toggleMut.mutate({ id: rev.id, newStatus: rev.status === "visible" ? "hidden" : "visible" })}
+                    className={`px-3 py-1 rounded-full border text-[9px] font-bold uppercase cursor-pointer transition ${
+                      rev.status === "visible" ? "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100" : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {rev.status}
+                  </button>
+                </td>
+                <td className="px-5 py-3 text-right">
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => confirm("Delete this review?") && deleteMut.mutate(rev.id)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+

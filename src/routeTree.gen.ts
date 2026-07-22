@@ -9,19 +9,29 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrendsIndexRouteImport } from './routes/trends.index'
+import { Route as ShopIndexRouteImport } from './routes/shop.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as TrendsSlugRouteImport } from './routes/trends_.$slug'
+import { Route as ShopSlugRouteImport } from './routes/shop_.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -30,6 +40,16 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -56,6 +76,11 @@ const TrendsIndexRoute = TrendsIndexRouteImport.update({
   path: '/trends/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopIndexRoute = ShopIndexRouteImport.update({
+  id: '/shop/',
+  path: '/shop/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -64,6 +89,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
 const TrendsSlugRoute = TrendsSlugRouteImport.update({
   id: '/trends_/$slug',
   path: '/trends/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopSlugRoute = ShopSlugRouteImport.update({
+  id: '/shop_/$slug',
+  path: '/shop/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
@@ -86,26 +116,36 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/wishlist': typeof WishlistRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/shop/$slug': typeof ShopSlugRoute
   '/trends/$slug': typeof TrendsSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/shop/': typeof ShopIndexRoute
   '/trends/': typeof TrendsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/wishlist': typeof WishlistRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/shop/$slug': typeof ShopSlugRoute
   '/trends/$slug': typeof TrendsSlugRoute
   '/blog': typeof BlogIndexRoute
+  '/shop': typeof ShopIndexRoute
   '/trends': typeof TrendsIndexRoute
 }
 export interface FileRoutesById {
@@ -114,13 +154,18 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/wishlist': typeof WishlistRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/blog_/$slug': typeof BlogSlugRoute
+  '/shop_/$slug': typeof ShopSlugRoute
   '/trends_/$slug': typeof TrendsSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/shop/': typeof ShopIndexRoute
   '/trends/': typeof TrendsIndexRoute
 }
 export interface FileRouteTypes {
@@ -129,26 +174,36 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/cart'
+    | '/checkout'
     | '/contact'
     | '/sitemap.xml'
+    | '/wishlist'
     | '/admin'
     | '/profile'
     | '/blog/$slug'
+    | '/shop/$slug'
     | '/trends/$slug'
     | '/blog/'
+    | '/shop/'
     | '/trends/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/auth'
+    | '/cart'
+    | '/checkout'
     | '/contact'
     | '/sitemap.xml'
+    | '/wishlist'
     | '/admin'
     | '/profile'
     | '/blog/$slug'
+    | '/shop/$slug'
     | '/trends/$slug'
     | '/blog'
+    | '/shop'
     | '/trends'
   id:
     | '__root__'
@@ -156,13 +211,18 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/about'
     | '/auth'
+    | '/cart'
+    | '/checkout'
     | '/contact'
     | '/sitemap.xml'
+    | '/wishlist'
     | '/_authenticated/admin'
     | '/_authenticated/profile'
     | '/blog_/$slug'
+    | '/shop_/$slug'
     | '/trends_/$slug'
     | '/blog/'
+    | '/shop/'
     | '/trends/'
   fileRoutesById: FileRoutesById
 }
@@ -171,16 +231,28 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  WishlistRoute: typeof WishlistRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  ShopSlugRoute: typeof ShopSlugRoute
   TrendsSlugRoute: typeof TrendsSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  ShopIndexRoute: typeof ShopIndexRoute
   TrendsIndexRoute: typeof TrendsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -193,6 +265,20 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -230,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrendsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/': {
+      id: '/shop/'
+      path: '/shop'
+      fullPath: '/shop/'
+      preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -242,6 +335,13 @@ declare module '@tanstack/react-router' {
       path: '/trends/$slug'
       fullPath: '/trends/$slug'
       preLoaderRoute: typeof TrendsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop_/$slug': {
+      id: '/shop_/$slug'
+      path: '/shop/$slug'
+      fullPath: '/shop/$slug'
+      preLoaderRoute: typeof ShopSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog_/$slug': {
@@ -286,11 +386,16 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  WishlistRoute: WishlistRoute,
   BlogSlugRoute: BlogSlugRoute,
+  ShopSlugRoute: ShopSlugRoute,
   TrendsSlugRoute: TrendsSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
+  ShopIndexRoute: ShopIndexRoute,
   TrendsIndexRoute: TrendsIndexRoute,
 }
 export const routeTree = rootRouteImport
