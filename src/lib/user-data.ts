@@ -39,12 +39,22 @@ export async function fetchFavorites(userId: string) {
   return data ?? [];
 }
 
-export async function addFavorite(userId: string, itemType: "trend" | "blog" | "product", itemSlug: string) {
-  const { error } = await supabase.from("favorites").insert({ user_id: userId, item_type: itemType, item_slug: itemSlug });
+export async function addFavorite(
+  userId: string,
+  itemType: "trend" | "blog" | "product",
+  itemSlug: string,
+) {
+  const { error } = await supabase
+    .from("favorites")
+    .insert({ user_id: userId, item_type: itemType, item_slug: itemSlug });
   if (error && error.code !== "23505") throw error;
 }
 
-export async function removeFavorite(userId: string, itemType: "trend" | "blog" | "product", itemSlug: string) {
+export async function removeFavorite(
+  userId: string,
+  itemType: "trend" | "blog" | "product",
+  itemSlug: string,
+) {
   const { error } = await supabase
     .from("favorites")
     .delete()
@@ -54,7 +64,11 @@ export async function removeFavorite(userId: string, itemType: "trend" | "blog" 
   if (error) throw error;
 }
 
-export async function isFavorite(userId: string, itemType: "trend" | "blog" | "product", itemSlug: string) {
+export async function isFavorite(
+  userId: string,
+  itemType: "trend" | "blog" | "product",
+  itemSlug: string,
+) {
   const { data, error } = await supabase
     .from("favorites")
     .select("id")
@@ -87,7 +101,9 @@ export async function fetchUserLikedTrend(userId: string, trendSlug: string) {
 }
 
 export async function likeTrend(userId: string, trendSlug: string) {
-  const { error } = await supabase.from("trend_likes").insert({ user_id: userId, trend_slug: trendSlug });
+  const { error } = await supabase
+    .from("trend_likes")
+    .insert({ user_id: userId, trend_slug: trendSlug });
   if (error && error.code !== "23505") throw error;
 }
 
@@ -116,7 +132,71 @@ export async function subscribeToNewsletter(email: string) {
   if (error && error.code !== "23505") throw error;
 }
 
-export async function sendContactMessage(payload: { name: string; email: string; subject: string; message: string }) {
+export async function sendContactMessage(payload: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}) {
   const { error } = await supabase.from("contact_messages").insert(payload);
   if (error) throw error;
+}
+
+export type RemoteCartPayload = {
+  cart_items: unknown[];
+  saved_items: unknown[];
+  coupon_code: string | null;
+  gift_note: string;
+};
+
+/** Load synced cart for a logged-in user. Returns null if table missing or no row. */
+export async function fetchUserCart(userId: string): Promise<RemoteCartPayload | null> {
+  try {
+    const { data, error } = await supabase
+      .from("user_carts")
+      .select("cart_items, saved_items, coupon_code, gift_note")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (error) return null;
+    if (!data) return null;
+    return {
+      cart_items: Array.isArray(data.cart_items) ? data.cart_items : [],
+      saved_items: Array.isArray(data.saved_items) ? data.saved_items : [],
+      coupon_code: data.coupon_code ?? null,
+      gift_note: data.gift_note ?? "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Upsert cart snapshot for cross-device persistence. Silently no-ops if unavailable. */
+export async function upsertUserCart(
+  userId: string,
+  payload: {
+    cart_items: unknown[];
+    saved_items: unknown[];
+    coupon_code: string | null;
+    gift_note: string;
+  },
+) {
+  try {
+    const { error } = await supabase.from("user_carts").upsert(
+      {
+        user_id: userId,
+        cart_items: payload.cart_items,
+        saved_items: payload.saved_items,
+        coupon_code: payload.coupon_code,
+        gift_note: payload.gift_note,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" },
+    );
+    if (error) {
+      // Table may not be migrated yet — guest localStorage still works
+      console.warn("Cart sync skipped:", error.message);
+    }
+  } catch (e) {
+    console.warn("Cart sync skipped:", e);
+  }
 }

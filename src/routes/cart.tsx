@@ -50,15 +50,15 @@ function CartPage() {
         <div className="rounded-full bg-secondary/15 p-5 text-primary shrink-0 animate-bounce">
           <ShoppingBag className="h-8 w-8" />
         </div>
-        <h2 className="mt-6 font-display text-3xl font-bold">Your Cart is Empty</h2>
-        <p className="mt-2 text-sm text-muted-foreground max-w-xs leading-relaxed">
-          Looks like you haven't added any luxury Pakistani pieces to your bag yet.
+        <h2 className="mt-6 font-display text-3xl font-bold">Your bag is waiting</h2>
+        <p className="mt-2 text-sm text-muted-foreground max-w-sm leading-relaxed">
+          Your shopping bag is waiting for something beautiful.
         </p>
         <Link
           to="/shop"
           className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-xs font-semibold text-primary-foreground shadow-elegant hover:bg-accent transition"
         >
-          Explore Shop
+          Continue Shopping
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>

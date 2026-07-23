@@ -1,417 +1,472 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import { ArrowRight, Sparkles, Star, ShieldCheck, Award, Truck, ChevronLeft, ChevronRight } from "lucide-react";
-import { categories, heroImage, SITE } from "@/lib/content";
-import { fetchFeaturedProducts, fetchTrendingProducts, fetchNewArrivals } from "@/lib/ecommerce-data";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowRight,
+  Clock,
+  Package,
+  RotateCcw,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Truck,
+} from "lucide-react";
+import { resolveImage } from "@/lib/content";
+import {
+  fetchFeaturedProducts,
+  fetchNewArrivals,
+  fetchProducts,
+  fetchTrendingProducts,
+} from "@/lib/ecommerce-data";
 import { ProductCard } from "@/components/ProductCard";
 
-import lawnBanner from "@/assets/lawn_banner.png";
-import bridalBanner from "@/assets/bridal_banner.png";
-import festiveBanner from "@/assets/festive_banner.png";
-import casualBanner from "@/assets/casual_banner.png";
+import lawnBanner from "@/assets/hero-lawn-summer.png";
+import bridalBanner from "@/assets/hero-campaign-2026.png";
+import festiveBanner from "@/assets/hero-festive-edit.png";
+import casualBanner from "@/assets/hero-casual-comfort.png";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [featured, trending, newArrivals] = await Promise.all([
+    const [featured, trending, newArrivals, all] = await Promise.all([
       fetchFeaturedProducts(),
       fetchTrendingProducts(),
-      fetchNewArrivals()
+      fetchNewArrivals(),
+      fetchProducts(),
     ]);
-    return { featured, trending, newArrivals };
+    return { featured, trending, newArrivals, all };
   },
   component: Home,
 });
 
-const HERO_SLIDES = [
+const SHOP_CATEGORIES = [
   {
-    tag: "Premium Pakistani Wear",
-    title: "Where quiet luxury meets heritage.",
-    titleHighlight: "quiet luxury",
-    desc: "Explore Pahraan's curated designer lawn collections, premium ready-to-wear pret, and mastercrafted bridal couture. Bespoke elegance for the modern woman.",
-    image: lawnBanner,
-    buttonText: "Shop Storefront",
-    buttonLink: "/shop",
-    buttonSearch: {},
-    stats: [
-      { k: "1,500+", v: "Happy Buyers" },
-      { k: "Premium", v: "Lawn & Silk" },
-      { k: "Flat Rate", v: "Pak Delivery" },
-    ]
+    slug: "luxury-pret",
+    name: "Luxury Pret",
+    image: "cat-party",
+    blurb: "Ready-to-wear elegance for evenings and celebrations.",
   },
   {
-    tag: "Signature Bridal Couture",
-    title: "Exquisite craftsmanship, bespoke fit.",
-    titleHighlight: "bespoke fit",
-    desc: "Experience the timeless grandeur of gold kora and pearl handwork on custom-fitted heavy velvet lehengas and wedding couture.",
-    image: bridalBanner,
-    buttonText: "Shop Bridal Couture",
-    buttonLink: "/shop",
-    buttonSearch: { category: "bridal-wear" },
-    stats: [
-      { k: "Custom", v: "Tailoring" },
-      { k: "Handwork", v: "Tilla & Kora" },
-      { k: "Free", v: "Luxury Packing" },
-    ]
+    slug: "lawn-suits",
+    name: "Lawn Collection",
+    image: "cat-lawn",
+    blurb: "Breathable prints for Pakistan summers.",
   },
   {
-    tag: "Luxury Festive Wear",
-    title: "Enchanting shades for celebrations.",
-    titleHighlight: "celebrations",
-    desc: "Step into seasonal festivities with our hand-worked raw silk ensembles, shadow thread embroidery, and tilla sitara luxury pret sets.",
-    image: festiveBanner,
-    buttonText: "Shop Luxury Pret",
-    buttonLink: "/shop",
-    buttonSearch: { category: "luxury-pret" },
-    stats: [
-      { k: "Raw Silk", v: "Festive wear" },
-      { k: "Shadow", v: "Work tilla" },
-      { k: "Fast", v: "Nationwide Shipping" },
-    ]
+    slug: "casual-wear",
+    name: "Casual Wear",
+    image: "cat-university",
+    blurb: "Everyday chic for campus and city days.",
   },
   {
-    tag: "Everyday Chic Lawn",
-    title: "Comfortable elegance for daily life.",
-    titleHighlight: "daily life",
-    desc: "Discover premium unstitched two-piece and three-piece lawn suits tailored for your everyday workplace and casual styling statements.",
-    image: casualBanner,
-    buttonText: "Shop Casual Lawn",
-    buttonLink: "/shop",
-    buttonSearch: { category: "casual-wear" },
-    stats: [
-      { k: "100% Pure", v: "Premium Cotton" },
-      { k: "Lightweight", v: "Breathable" },
-      { k: "Unstitched", v: "Designer Sets" },
-    ]
-  }
+    slug: "party-wear",
+    name: "Party Wear",
+    image: "cat-party",
+    blurb: "Statement silhouettes that turn heads.",
+  },
+  {
+    slug: "formal-wear",
+    name: "Formal Wear",
+    image: "cat-beige-dress",
+    blurb: "Refined pieces for dinners and events.",
+  },
+  {
+    slug: "bridal-wear",
+    name: "Bridal Collection",
+    image: "cat-bridal",
+    blurb: "Heirloom couture in reds, golds and rose.",
+  },
 ];
 
-function Home() {
-  const { featured, trending, newArrivals } = Route.useLoaderData();
-  const [activeTab, setActiveTab] = useState<"new" | "featured" | "trending">("new");
-  const [currentSlide, setCurrentSlide] = useState(0);
+const COLLECTION_BANNERS = [
+  {
+    title: "Luxury Pret",
+    subtitle: "Evening-ready polish",
+    image: festiveBanner,
+    search: { category: "luxury-pret" },
+  },
+  {
+    title: "Summer Bloom",
+    subtitle: "Lawn & light layers",
+    image: lawnBanner,
+    search: { category: "lawn-suits" },
+  },
+  {
+    title: "Everyday Elegance",
+    subtitle: "Soft everyday wear",
+    image: casualBanner,
+    search: { category: "casual-wear" },
+  },
+  {
+    title: "Festive Edit",
+    subtitle: "Celebration looks",
+    image: festiveBanner,
+    search: { category: "eid-collections" },
+  },
+  {
+    title: "Casual Comfort",
+    subtitle: "Easy luxury basics",
+    image: casualBanner,
+    search: { tag: "new-arrivals" },
+  },
+];
 
-  // Auto-play timer for hero slides
+function useFlashCountdown(hours = 18) {
+  const [endsAt] = useState(() => Date.now() + hours * 60 * 60 * 1000);
+  const [now, setNow] = useState(Date.now());
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 5500); // Transitions every 5.5 seconds
-    return () => clearInterval(timer);
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
   }, []);
 
-  const displayProducts = 
-    activeTab === "new" 
-      ? newArrivals 
-      : activeTab === "featured" 
-        ? featured 
-        : trending;
+  const diff = Math.max(0, endsAt - now);
+  const h = Math.floor(diff / 3_600_000);
+  const m = Math.floor((diff % 3_600_000) / 60_000);
+  const s = Math.floor((diff % 60_000) / 1000);
+  return { h, m, s };
+}
 
-  const tabTitle = 
-    activeTab === "new"
-      ? "Just Dropped"
-      : activeTab === "featured"
-        ? "Editor's Pick"
-        : "Trending Right Now";
+function Home() {
+  const { featured, trending, newArrivals, all } = Route.useLoaderData();
+  const countdown = useFlashCountdown(18);
+  const [parallax, setParallax] = useState(0);
 
-  const tabSubtitle = 
-    activeTab === "new"
-      ? "Our latest unstitched and ready-to-wear drops, crafted from premium lawn and silks."
-      : activeTab === "featured"
-        ? "Hand-picked luxury couture featuring mastercraft tilla, kora, and Sitara handwork."
-        : "The seasonal favorites flying off the shelves across Lahore, Karachi, and Islamabad.";
+  useEffect(() => {
+    const onScroll = () => setParallax(Math.min(40, window.scrollY * 0.08));
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const categoryCounts = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const p of all) {
+      map[p.category] = (map[p.category] || 0) + 1;
+    }
+    return map;
+  }, [all]);
+
+  const saleProducts = useMemo(
+    () => all.filter((p) => p.compare_at_price && p.compare_at_price > p.price).slice(0, 4),
+    [all],
+  );
+
+  const flashProduct = saleProducts[0] || featured[0] || newArrivals[0];
 
   return (
-    <div className="font-body text-foreground bg-background">
-      {/* FULL-BLEED HERO CAROUSEL */}
-      <section className="group relative w-full h-[580px] md:h-[680px] overflow-hidden bg-black">
-        {/* Slides Container */}
-        <div className="relative w-full h-full">
-          {HERO_SLIDES.map((s, idx) => {
-            const isActive = idx === currentSlide;
-            return (
-              <div
-                key={idx}
-                className={`absolute inset-0 w-full h-full transition-all duration-1000 ${
-                  isActive 
-                    ? "opacity-100 scale-100 z-10 pointer-events-auto" 
-                    : "opacity-0 scale-105 z-0 pointer-events-none"
-                }`}
-              >
-                {/* Background image */}
-                <img
-                  src={s.image}
-                  alt={s.title}
-                  loading={idx === 0 ? "eager" : "lazy"}
-                  className="absolute inset-0 w-full h-full object-cover object-top"
-                />
-                
-                {/* Overlay gradient mask */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/25 md:from-black/80 md:via-black/40 md:to-transparent" />
-                
-                {/* Content Overlay */}
-                <div className="container-page h-full flex flex-col justify-center relative z-10 text-white select-none">
-                  <div className="max-w-2xl">
-                    <span className="inline-flex items-center gap-2 rounded-full border border-[#F8BBD0]/30 bg-black/45 px-4 py-1.5 text-xs font-semibold tracking-wider text-[#F8BBD0] backdrop-blur">
-                      <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" /> {s.tag}
-                    </span>
-                    <h1 className="mt-6 font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-white">
-                      {s.title.split(s.titleHighlight)[0]}
-                      <span className="text-[#F8BBD0]">{s.titleHighlight}</span>
-                      {s.title.split(s.titleHighlight)[1]}
-                    </h1>
-                    <p className="mt-6 text-sm sm:text-base md:text-lg text-white/90 leading-relaxed max-w-lg">
-                      {s.desc}
-                    </p>
-                    <div className="mt-8 flex flex-wrap gap-4">
-                      <Link
-                        to={s.buttonLink as any}
-                        search={s.buttonSearch}
-                        className="group inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-xs font-bold uppercase tracking-wider text-white shadow-elegant transition hover:bg-accent cursor-pointer"
-                      >
-                        {s.buttonText}
-                        <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                      </Link>
-                      <Link
-                        to="/about"
-                        className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 hover:bg-white/20 hover:border-white px-8 py-4 text-xs font-bold uppercase tracking-wider text-white backdrop-blur transition"
-                      >
-                        Our Story
-                      </Link>
-                    </div>
-                    
-                    {/* Stats banner row */}
-                    <div className="mt-12 flex gap-8 border-t border-white/15 pt-6">
-                      {s.stats.map((st) => (
-                        <div key={st.v}>
-                          <div className="font-display text-2xl sm:text-3xl font-bold text-white">{st.k}</div>
-                          <div className="text-[9px] uppercase tracking-widest text-[#F8BBD0] mt-0.5 font-extrabold">{st.v}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+    <div className="font-body text-foreground bg-background pb-16 md:pb-0">
+      {/* CONVERSION HERO — full dress on right, text on left */}
+      <section className="relative min-h-[100svh] overflow-hidden bg-[#FFF9FB] md:min-h-[92vh]">
+        <div
+          className="absolute inset-0 will-change-transform"
+          style={{ transform: `translate3d(0, ${parallax * 0.5}px, 0)` }}
+        >
+          <img
+            src={bridalBanner}
+            alt="Pahraan bridal collection — full dress"
+            className="h-full w-full object-cover object-[88%_center] sm:object-[85%_center] md:object-right"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+          {/* Soft text readability only — does not cover the dress on the right */}
+          <div
+            className="absolute inset-y-0 left-0 w-[70%] max-w-xl bg-gradient-to-r from-[#FFF9FB]/90 via-[#FFF9FB]/45 to-transparent md:w-[42%] md:max-w-none md:from-[#FFF9FB]/70 md:via-[#FFF9FB]/20"
+            aria-hidden
+          />
         </div>
 
-        {/* Carousel slide actions (Previous / Next arrows overlay) */}
-        <button
-          onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full border border-white/20 bg-black/35 hover:bg-primary text-white flex items-center justify-center backdrop-blur transition opacity-0 group-hover:opacity-100 md:opacity-50 hover:scale-105 cursor-pointer"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <button
-          onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full border border-white/20 bg-black/35 hover:bg-primary text-white flex items-center justify-center backdrop-blur transition opacity-0 group-hover:opacity-100 md:opacity-50 hover:scale-105 cursor-pointer"
-          aria-label="Next slide"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
+        <div className="pointer-events-none absolute -left-16 top-28 h-36 w-36 rounded-full bg-secondary/25 blur-3xl animate-float" />
 
-        {/* Dots indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2.5 z-20">
-          {HERO_SLIDES.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                idx === currentSlide 
-                  ? "w-7.5 bg-primary" 
-                  : "w-2.5 bg-white/40 hover:bg-white/70"
-              }`}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
+        <div className="container-page relative z-10 flex min-h-[100svh] flex-col justify-center py-24 md:min-h-[92vh] md:py-28">
+          <div className="max-w-md animate-fade-up md:max-w-lg">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-primary shadow-soft backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5" />
+              Summer Collection 2026
+            </span>
+
+            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-5xl md:text-6xl">
+              Where Pakistani Fashion Meets <span className="text-gradient">Timeless Elegance</span>
+            </h1>
+
+            <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">
+              Discover lawn, luxury pret, and bridal couture crafted for the modern Pakistani woman
+              — soft silhouettes, heritage embroidery, effortless polish.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/shop"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-elegant transition hover:bg-accent"
+              >
+                Shop Collection
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/shop"
+                search={{ tag: "new-arrivals" }}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-foreground backdrop-blur transition hover:border-primary hover:text-primary"
+              >
+                Explore New Arrivals
+              </Link>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-2.5">
+              {[
+                { icon: Truck, label: "Free Shipping" },
+                { icon: Package, label: "Cash on Delivery" },
+                { icon: RotateCcw, label: "Easy Returns" },
+                { icon: ShieldCheck, label: "Secure Checkout" },
+              ].map(({ icon: Icon, label }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white/85 px-3 py-1.5 text-[11px] font-semibold text-foreground/80 shadow-soft backdrop-blur"
+                >
+                  <Icon className="h-3.5 w-3.5 text-primary" />
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* SHOP BY CATEGORIES SECTION */}
-      <section className="container-page py-24">
-        <div className="mb-10 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-widest text-primary font-bold">Curated Closets</p>
-            <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">Browse Categories</h2>
+      {/* CATEGORIES */}
+      <section className="container-page py-20 md:py-24">
+        <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="animate-fade-up">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary">
+              Shop by category
+            </p>
+            <h2 className="mt-2 font-display text-3xl text-foreground md:text-5xl">
+              Curated closets
+            </h2>
           </div>
-          <Link to="/shop" className="text-sm text-primary hover:underline font-semibold shrink-0">
-            View All Categories →
+          <Link to="/shop" className="text-sm font-semibold text-primary hover:underline">
+            View all →
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((c) => (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {SHOP_CATEGORIES.map((c) => (
             <Link
               key={c.slug}
               to="/shop"
               search={{ category: c.slug }}
-              className="group relative overflow-hidden rounded-2xl shadow-soft transition hover:shadow-elegant border border-border/30 cursor-pointer"
+              className="group relative overflow-hidden rounded-3xl border border-border/40 shadow-soft transition hover:shadow-elegant"
             >
               <div className="aspect-[4/5] overflow-hidden bg-muted">
                 <img
-                  src={c.image}
+                  src={resolveImage(c.image)}
                   alt={c.name}
                   loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                <span className="inline-block bg-[#F8BBD0]/10 border border-[#F8BBD0]/20 rounded-full px-2.5 py-0.5 text-[9px] uppercase font-bold tracking-wider mb-2">
-                  Atelier Drop
-                </span>
-                <div className="font-display text-2xl font-bold">{c.name}</div>
-                <div className="mt-1.5 text-xs opacity-90 line-clamp-2 leading-relaxed font-light">{c.blurb}</div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#F8BBD0]">
+                  {categoryCounts[c.slug] || 0} pieces
+                </p>
+                <h3 className="mt-1 font-display text-2xl font-semibold">{c.name}</h3>
+                <p className="mt-1 text-xs text-white/80 line-clamp-2">{c.blurb}</p>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* TRUST FACTORS SECTION */}
-      <section className="bg-blush border-y border-border/40 py-12 my-6">
-        <div className="container-page grid gap-8 md:grid-cols-3">
-          {[
-            {
-              icon: Award,
-              title: "Heritage Mastercraft",
-              desc: "100% hand-crafted tilla, zardozi work, and sitara details designed on premium unstitched fabrics.",
-            },
-            {
-              icon: ShieldCheck,
-              title: "Bespoke Size Options",
-              desc: "From XS to XXL, we offer size charts tailored to Pakistani fit parameters with premium stitch options.",
-            },
-            {
-              icon: Truck,
-              title: "Nationwide Safe Delivery",
-              desc: "Flat-rate PKR 250 delivery across Pakistan. Free shipping on all cart totals over PKR 5,000.",
-            },
-          ].map((t, idx) => (
-            <div key={idx} className="flex gap-4 items-start">
-              <span className="p-3 bg-white rounded-2xl text-primary shadow-soft shrink-0 border border-primary/5">
-                <t.icon className="h-5 w-5" />
-              </span>
-              <div>
-                <h4 className="font-display font-bold text-base text-foreground">{t.title}</h4>
-                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{t.desc}</p>
+      {/* FLASH SALE */}
+      {flashProduct && (
+        <section className="border-y border-border/50 bg-blush py-16 md:py-20">
+          <div className="container-page grid items-center gap-10 lg:grid-cols-2">
+            <div className="relative overflow-hidden rounded-[2rem] border border-border/40 bg-white shadow-elegant">
+              <div className="absolute left-4 top-4 z-10 flex flex-col gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-soft animate-float">
+                  Flash Sale
+                </span>
+                {flashProduct.compare_at_price && (
+                  <span className="rounded-full bg-white/95 px-3 py-1 text-[10px] font-bold text-primary shadow-soft">
+                    {Math.round(
+                      ((flashProduct.compare_at_price - flashProduct.price) /
+                        flashProduct.compare_at_price) *
+                        100,
+                    )}
+                    % OFF
+                  </span>
+                )}
               </div>
+              <img
+                src={resolveImage(flashProduct.images[0])}
+                alt={flashProduct.title}
+                className="aspect-[4/5] w-full object-cover md:aspect-[5/4]"
+              />
             </div>
+
+            <div>
+              <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary">
+                <Clock className="h-3.5 w-3.5" /> Limited time
+              </p>
+              <h2 className="mt-3 font-display text-3xl text-foreground md:text-5xl">
+                Summer Sale Drop
+              </h2>
+              <p className="mt-3 max-w-md text-sm text-muted-foreground leading-relaxed">
+                Premium lawn and pret pieces at atelier prices — while stock lasts.
+              </p>
+
+              <div className="mt-6 flex gap-2">
+                {[
+                  ["Hrs", countdown.h],
+                  ["Min", countdown.m],
+                  ["Sec", countdown.s],
+                ].map(([label, value]) => (
+                  <div
+                    key={label as string}
+                    className="min-w-[4.5rem] rounded-2xl border border-border/60 bg-white px-3 py-3 text-center shadow-soft"
+                  >
+                    <div className="font-display text-2xl font-bold text-primary">
+                      {String(value).padStart(2, "0")}
+                    </div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                      {label as string}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <p className="mt-4 text-xs font-semibold text-foreground/80">
+                {flashProduct.title}
+                {flashProduct.stock_status === "low_stock" && (
+                  <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-primary">
+                    Limited stock
+                  </span>
+                )}
+              </p>
+
+              <Link
+                to="/shop"
+                search={{ tag: "sale" }}
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-elegant hover:bg-accent transition"
+              >
+                Shop Now
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* NEW ARRIVALS */}
+      <section className="container-page py-20 md:py-24">
+        <div className="mb-10 text-center">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary">Just dropped</p>
+          <h2 className="mt-2 font-display text-3xl text-foreground md:text-5xl">New Arrivals</h2>
+          <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+            Fresh lawn, pret, and festive pieces curated for the season.
+          </p>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {(newArrivals.length ? newArrivals : featured).slice(0, 8).map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
-      </section>
-
-      {/* ATELIER CATALOG TABS SECTION */}
-      <section className="container-page py-20">
-        <div className="mb-10 text-center">
-          <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-primary font-bold">
-            <Sparkles className="h-3.5 w-3.5 fill-primary" /> Curated Catalog
-          </span>
-          <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">Featured Collections</h2>
-          <p className="mt-3 text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-            Switch between our collections to find premium lawn ensembles, wedding bridal lehengas, and designer pret wear.
-          </p>
-
-          {/* Interactive Collection Selector tabs */}
-          <div className="flex items-center justify-center gap-2 mt-8 border-b border-border/40 max-w-md mx-auto pb-0.5">
-            {[
-              { id: "new", label: "New Arrivals" },
-              { id: "featured", label: "Editor's picks" },
-              { id: "trending", label: "Trending" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex-1 py-3 text-xs font-semibold tracking-wider uppercase transition cursor-pointer relative ${
-                  activeTab === tab.id
-                    ? "text-primary font-bold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {tab.label}
-                {activeTab === tab.id && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full" />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Tab Context detail */}
-        <div className="mb-8 text-center max-w-xl mx-auto">
-          <span className="text-[10px] uppercase font-bold tracking-widest text-primary/80 bg-primary/5 border border-primary/10 px-3 py-1 rounded-full">
-            {tabTitle}
-          </span>
-          <p className="text-xs text-muted-foreground mt-2.5 leading-relaxed italic">{tabSubtitle}</p>
-        </div>
-
-        {/* Dynamic Display Grid */}
-        {displayProducts.length === 0 ? (
-          <p className="text-center text-xs text-muted-foreground py-16 bg-white border border-dashed rounded-3xl shadow-soft">
-            No products loaded for this collection.
-          </p>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {displayProducts.slice(0, 6).map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-
-        <div className="mt-12 text-center">
+        <div className="mt-10 text-center">
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-white hover:border-primary px-8 py-3.5 text-xs font-semibold text-foreground hover:text-primary transition shadow-soft cursor-pointer"
+            search={{ tag: "new-arrivals" }}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-7 py-3 text-xs font-semibold shadow-soft transition hover:border-primary hover:text-primary"
           >
-            Explore Complete Catalog ({newArrivals.length + featured.length} items) <ArrowRight className="h-3.5 w-3.5" />
+            View all new arrivals <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
       </section>
 
-      {/* TESTIMONIALS SECTION */}
-      <section className="bg-blush border-t border-border/40 py-20">
+      {/* FEATURED COLLECTIONS */}
+      <section className="bg-blush/60 border-y border-border/40 py-16 md:py-20">
         <div className="container-page">
-          <div className="mb-12 text-center">
-            <p className="text-xs uppercase tracking-widest text-primary font-bold">Reviews</p>
-            <h2 className="mt-2 font-display text-4xl text-foreground md:text-5xl">Atelier Stories</h2>
-            <p className="text-xs text-muted-foreground mt-2">What verified buyers are saying about Pahraan's fabrics and fit.</p>
+          <div className="mb-8">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary">Collections</p>
+            <h2 className="mt-2 font-display text-3xl text-foreground md:text-4xl">
+              Featured edits
+            </h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {COLLECTION_BANNERS.map((banner) => (
+              <Link
+                key={banner.title}
+                to="/shop"
+                search={banner.search}
+                className="group relative h-56 w-[78vw] shrink-0 snap-start overflow-hidden rounded-3xl border border-border/40 shadow-soft sm:w-[340px] md:h-64"
+              >
+                <img
+                  src={banner.image}
+                  alt={banner.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#F8BBD0]">
+                    {banner.subtitle}
+                  </p>
+                  <h3 className="mt-1 font-display text-2xl font-semibold">{banner.title}</h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TRENDING / EDITOR PICKS */}
+      <section className="container-page py-20">
+        <div className="mb-10 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-primary">Bestsellers</p>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl">Trending now</h2>
+          </div>
+          <Link
+            to="/shop"
+            search={{ tag: "best-sellers" }}
+            className="text-sm font-semibold text-primary hover:underline"
+          >
+            Shop bestsellers →
+          </Link>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {(trending.length ? trending : featured).slice(0, 6).map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      {/* TRUST + REVIEWS */}
+      <section className="border-t border-border/40 bg-blush py-16">
+        <div className="container-page">
+          <div className="mb-10 grid gap-6 md:grid-cols-3">
             {[
               {
-                name: "Amna Khan",
-                city: "Karachi",
-                stars: 5,
-                title: "Premium Fabric Quality",
-                comment: "The embroidered lawn is extremely soft, light, and premium. Best for Karachi summers. Sizing guide is 100% accurate.",
+                icon: Star,
+                title: "Loved by thousands",
+                desc: "Verified buyers across Karachi, Lahore & Islamabad.",
               },
               {
-                name: "Sana Ahmed",
-                city: "Lahore",
-                stars: 5,
-                title: "Bespoke Bridal Couture",
-                comment: "Ordered a custom bridal velvet lehenga. The hand-worked tilla detail is stunning. Arrived on time with safe wooden packaging.",
+                icon: Truck,
+                title: "Nationwide delivery",
+                desc: "Flat PKR 250 — free over PKR 5,000.",
               },
               {
-                name: "Zainab Malik",
-                city: "Islamabad",
-                stars: 4,
-                title: "Fast Shipping & Packaging",
-                comment: "Highly impressed by the flat-rate delivery speed. Ordered on Sunday and arrived in Islamabad by Tuesday evening. Very elegant boxes.",
+                icon: ShieldCheck,
+                title: "Secure payments",
+                desc: "COD, bank transfer, and card-ready checkout.",
               },
-            ].map((testi, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-3xl border border-border/50 shadow-soft flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="flex text-amber-400">
-                    {Array.from({ length: testi.stars }).map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-current" />
-                    ))}
-                  </div>
-                  <h4 className="font-bold text-sm text-foreground">{testi.title}</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed italic">"{testi.comment}"</p>
-                </div>
-                <div className="mt-6 pt-3 border-t border-border/30 flex justify-between items-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  <span>{testi.name}</span>
-                  <span className="text-primary">{testi.city}</span>
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="flex gap-3 rounded-3xl border border-border/40 bg-white p-5 shadow-soft"
+              >
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
+                  <item.icon className="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 className="font-display text-lg font-semibold">{item.title}</h3>
+                  <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}

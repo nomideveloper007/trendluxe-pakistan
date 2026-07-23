@@ -8,13 +8,15 @@ import {
   Scripts,
   useLocation,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { CartDrawer } from "@/components/CartDrawer";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { SITE } from "@/lib/content";
 import { AuthProvider } from "@/lib/auth";
 import { CartProvider } from "@/hooks/useCart";
@@ -153,18 +155,23 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith("/admin");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
           <div className="flex min-h-screen flex-col overflow-x-clip">
-            {!isAdminPage && <Navbar />}
+            {!isAdminPage && (
+              <Navbar searchOpen={searchOpen} onSearchOpenChange={setSearchOpen} />
+            )}
             <main className="flex-1">
               <Outlet />
             </main>
             {!isAdminPage && <Footer />}
           </div>
+          {!isAdminPage && <CartDrawer />}
+          {!isAdminPage && <MobileBottomNav onSearch={() => setSearchOpen(true)} />}
           <Toaster position="top-center" richColors />
         </CartProvider>
       </AuthProvider>

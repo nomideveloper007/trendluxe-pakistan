@@ -146,6 +146,33 @@ export type Database = {
         }
         Relationships: []
       }
+      user_carts: {
+        Row: {
+          user_id: string
+          cart_items: Json
+          saved_items: Json
+          coupon_code: string | null
+          gift_note: string
+          updated_at: string
+        }
+        Insert: {
+          user_id: string
+          cart_items?: Json
+          saved_items?: Json
+          coupon_code?: string | null
+          gift_note?: string
+          updated_at?: string
+        }
+        Update: {
+          user_id?: string
+          cart_items?: Json
+          saved_items?: Json
+          coupon_code?: string | null
+          gift_note?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           created_at: string
