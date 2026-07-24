@@ -613,19 +613,21 @@ export async function createOrder(orderInput: OrderInput): Promise<string> {
     // Update Inventory and Coupon Usage (if coupon applied)
     for (const item of items) {
       if (!item.product_id.startsWith("prod-mock-")) {
-        await supabase.rpc("decrement_inventory", {
+        const { error: invErr } = await supabase.rpc("decrement_inventory", {
           p_id: item.product_id,
           sz: item.size,
           col: item.color,
           qty: item.quantity,
-        }).catch((err) => console.warn("Failed to decrement inventory using RPC:", err));
+        });
+        if (invErr) console.warn("Failed to decrement inventory using RPC:", invErr);
       }
     }
 
     if (orderData.coupon_code) {
-      await supabase.rpc("increment_coupon_usage", {
+      const { error: couponErr } = await supabase.rpc("increment_coupon_usage", {
         coupon_code: orderData.coupon_code,
-      }).catch((err) => console.warn("Failed to increment coupon usage using RPC:", err));
+      });
+      if (couponErr) console.warn("Failed to increment coupon usage using RPC:", couponErr);
     }
 
     return orderId;

@@ -704,7 +704,7 @@ function ShopIndexPage() {
                         search={banner.search}
                         onClick={() => {
                           if (banner.search.category) setCategory(banner.search.category);
-                          if (banner.search.tag === "new-arrivals") setOnlyNew(true);
+                          if ("tag" in banner.search && banner.search.tag === "new-arrivals") setOnlyNew(true);
                         }}
                         className="col-span-2 md:col-span-3 lg:col-span-4 group relative my-2 h-44 overflow-hidden rounded-[20px] border border-[#F8BBD0]/30 shadow-soft sm:h-52 md:h-56"
                       >

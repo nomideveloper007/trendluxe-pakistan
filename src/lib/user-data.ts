@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 
 export type Profile = {
   id: string;
@@ -184,8 +185,8 @@ export async function upsertUserCart(
     const { error } = await supabase.from("user_carts").upsert(
       {
         user_id: userId,
-        cart_items: payload.cart_items,
-        saved_items: payload.saved_items,
+        cart_items: payload.cart_items as Json,
+        saved_items: payload.saved_items as Json,
         coupon_code: payload.coupon_code,
         gift_note: payload.gift_note,
         updated_at: new Date().toISOString(),

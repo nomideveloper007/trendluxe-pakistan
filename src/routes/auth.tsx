@@ -8,9 +8,12 @@ import { useAuth } from "@/lib/auth";
 import { SITE } from "@/lib/content";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => {
+    if (typeof search.redirect === "string" && search.redirect.length > 0) {
+      return { redirect: search.redirect };
+    }
+    return {};
+  },
   head: () => ({
     meta: [
       { title: `Sign in — ${SITE.name}` },
