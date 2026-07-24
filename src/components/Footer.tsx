@@ -102,7 +102,7 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="hover:text-primary transition">
+              <Link to="/profile" search={{ tab: "orders" }} className="hover:text-primary transition">
                 Track Order
               </Link>
             </li>

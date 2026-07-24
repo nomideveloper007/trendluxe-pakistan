@@ -38,10 +38,48 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/lib/auth";
 import { addFavorite, isFavorite, removeFavorite } from "@/lib/user-data";
 import { ProductCard } from "@/components/ProductCard";
-import { resolveImage } from "@/lib/content";
+import { resolveImage, SITE } from "@/lib/content";
+import { absoluteUrl } from "@/lib/site-config";
+import { breadcrumbSchema, buildPageHead, productSchema } from "@/lib/seo";
 
 export const Route = createFileRoute("/shop_/$slug")({
-  loader: async ({ params }) => ({ slug: params.slug }),
+  loader: async ({ params }) => {
+    const product = await fetchProductBySlug(params.slug);
+    return { slug: params.slug, product };
+  },
+  head: ({ loaderData, params }) => {
+    const product = loaderData?.product;
+    if (!product) {
+      return {
+        meta: [
+          { title: `Product — ${SITE.name}` },
+          { name: "robots", content: "noindex" },
+        ],
+      };
+    }
+    const image = resolveImage(product.images[0]);
+    const imageUrl = image.startsWith("http") ? image : absoluteUrl(image);
+    const description = product.short_description || product.description.slice(0, 160);
+    const keywords = [product.title, product.brand, product.category, product.fabric, ...(product.tags || [])]
+      .filter(Boolean)
+      .join(", ");
+    return buildPageHead({
+      title: product.title,
+      description,
+      path: `/shop/${params.slug}`,
+      keywords,
+      image: imageUrl,
+      type: "product",
+      jsonLd: [
+        productSchema(product, imageUrl),
+        breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Shop", path: "/shop" },
+          { name: product.title, path: `/shop/${product.slug}` },
+        ]),
+      ],
+    });
+  },
   component: ProductDetailPage,
 });
 

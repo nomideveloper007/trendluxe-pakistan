@@ -11,7 +11,12 @@ export function MobileBottomNav({ onSearch }: Props) {
   const { cart, openCart } = useCart();
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  if (pathname.startsWith("/admin") || pathname.startsWith("/checkout")) return null;
+  if (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/profile")
+  )
+    return null;
 
   const itemClass = (active: boolean) =>
     `flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-semibold tracking-wide transition ${

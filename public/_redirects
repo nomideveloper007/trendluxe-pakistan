@@ -1,0 +1,10 @@
+/home / 301
+/store /shop 301
+/products /shop 301
+/collection /shop 301
+/login /auth 301
+/signin /auth 301
+/account /profile 301
+/my-account /profile 301
+/product/* /shop/:splat 301
+/collections/:slug /shop?category=:slug 302

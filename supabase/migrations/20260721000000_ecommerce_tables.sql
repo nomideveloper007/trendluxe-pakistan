@@ -38,7 +38,7 @@ CREATE POLICY "Allow public read access to products" ON public.products
     FOR SELECT USING (true);
 
 CREATE POLICY "Allow admin write access to products" ON public.products
-    FOR ALL USING (public.has_role('admin', auth.uid()));
+    FOR ALL USING (public.has_role(auth.uid(), 'admin'));
 
 -- 2. INVENTORY
 CREATE TABLE IF NOT EXISTS public.inventory (
@@ -58,7 +58,7 @@ CREATE POLICY "Allow public read access to inventory" ON public.inventory
     FOR SELECT USING (true);
 
 CREATE POLICY "Allow admin write access to inventory" ON public.inventory
-    FOR ALL USING (public.has_role('admin', auth.uid()));
+    FOR ALL USING (public.has_role(auth.uid(), 'admin'));
 
 -- 3. COUPONS
 CREATE TABLE IF NOT EXISTS public.coupons (
@@ -81,7 +81,7 @@ CREATE POLICY "Allow authenticated and anonymous to read coupons" ON public.coup
     FOR SELECT USING (true);
 
 CREATE POLICY "Allow admin write access to coupons" ON public.coupons
-    FOR ALL USING (public.has_role('admin', auth.uid()));
+    FOR ALL USING (public.has_role(auth.uid(), 'admin'));
 
 -- 4. ORDERS
 CREATE TABLE IF NOT EXISTS public.orders (
@@ -120,7 +120,7 @@ CREATE POLICY "Allow public to create orders" ON public.orders
     FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Allow admin write access to orders" ON public.orders
-    FOR ALL USING (public.has_role('admin', auth.uid()));
+    FOR ALL USING (public.has_role(auth.uid(), 'admin'));
 
 -- 5. ORDER ITEMS
 CREATE TABLE IF NOT EXISTS public.order_items (
@@ -149,7 +149,7 @@ CREATE POLICY "Allow public to create order items" ON public.order_items
     FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Allow admin write access to order items" ON public.order_items
-    FOR ALL USING (public.has_role('admin', auth.uid()));
+    FOR ALL USING (public.has_role(auth.uid(), 'admin'));
 
 -- 6. REVIEWS
 CREATE TABLE IF NOT EXISTS public.product_reviews (
@@ -176,7 +176,7 @@ CREATE POLICY "Allow authenticated users to write reviews" ON public.product_rev
     FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Allow owners and admin write access to reviews" ON public.product_reviews
-    FOR ALL USING (auth.uid() = user_id OR public.has_role('admin', auth.uid()));
+    FOR ALL USING (auth.uid() = user_id OR public.has_role(auth.uid(), 'admin'));
 
 -- 7. USER ADDRESSES
 CREATE TABLE IF NOT EXISTS public.user_addresses (

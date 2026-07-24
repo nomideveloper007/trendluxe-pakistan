@@ -10,7 +10,7 @@ import {
   Star,
   Truck,
 } from "lucide-react";
-import { resolveImage } from "@/lib/content";
+import { resolveImage, SITE } from "@/lib/content";
 import {
   fetchFeaturedProducts,
   fetchNewArrivals,
@@ -18,6 +18,7 @@ import {
   fetchTrendingProducts,
 } from "@/lib/ecommerce-data";
 import { ProductCard } from "@/components/ProductCard";
+import { buildPageHead, faqSchema } from "@/lib/seo";
 
 import lawnBanner from "@/assets/hero-lawn-summer.png";
 import bridalBanner from "@/assets/hero-campaign-2026.png";
@@ -25,6 +26,27 @@ import festiveBanner from "@/assets/hero-festive-edit.png";
 import casualBanner from "@/assets/hero-casual-comfort.png";
 
 export const Route = createFileRoute("/")({
+  head: () =>
+    buildPageHead({
+      title: `${SITE.name} — ${SITE.tagline}`,
+      description: SITE.description,
+      path: "/",
+      keywords: "Pahraan, Pakistani women's fashion, lawn, bridal, luxury pret",
+      jsonLd: faqSchema([
+        {
+          question: "Does Pahraan ship nationwide in Pakistan?",
+          answer: "Yes. We deliver across Pakistan with standard and express courier options.",
+        },
+        {
+          question: "What is your return policy?",
+          answer: "Unworn pieces with tags may be returned within 7 days of delivery.",
+        },
+        {
+          question: "Are products authentic Pahraan designs?",
+          answer: "Every piece is curated or crafted for the Pahraan atelier aesthetic.",
+        },
+      ]),
+    }),
   loader: async () => {
     const [featured, trending, newArrivals, all] = await Promise.all([
       fetchFeaturedProducts(),

@@ -259,10 +259,10 @@ export function Navbar({ searchOpen, onSearchOpenChange }: NavbarProps) {
                   <p className="text-[10px] text-muted-foreground truncate mt-0.5">{user?.email}</p>
                 </div>
                 <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer">
-                  <Link to="/profile">My Account</Link>
+                  <Link to="/profile" search={{ tab: "home" }}>My Account</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer">
-                  <Link to="/profile">Orders</Link>
+                  <Link to="/profile" search={{ tab: "orders" }}>Orders</Link>
                 </DropdownMenuItem>
                 {isAdmin && (
                   <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer text-primary">
@@ -286,7 +286,7 @@ export function Navbar({ searchOpen, onSearchOpenChange }: NavbarProps) {
           ) : (
             <Link
               to="/auth"
-              search={{}}
+              search={{ redirect: undefined }}
               className="hidden md:grid h-9 w-9 place-items-center rounded-full text-foreground/70 hover:bg-secondary/60 hover:text-primary transition"
               title="Account"
             >
@@ -376,7 +376,7 @@ export function Navbar({ searchOpen, onSearchOpenChange }: NavbarProps) {
             </div>
             <Link
               to={session ? "/profile" : "/auth"}
-              search={session ? undefined : {}}
+              search={session ? { tab: "home" } : { redirect: undefined }}
               onClick={() => setOpen(false)}
               className="py-2.5 px-4 rounded-xl text-sm font-medium text-primary hover:bg-secondary/20"
             >

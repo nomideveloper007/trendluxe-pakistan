@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { LuxurySelect } from "@/components/LuxurySelect";
 import { resolveImage } from "@/lib/content";
+import { breadcrumbSchema, buildPageHead } from "@/lib/seo";
 
 import lawnBanner from "@/assets/hero-lawn-summer.png";
 import festiveBanner from "@/assets/hero-festive-edit.png";
@@ -25,6 +26,18 @@ export const Route = createFileRoute("/shop/")({
     tag: search.tag as string | undefined,
     search: search.search as string | undefined,
   }),
+  head: () =>
+    buildPageHead({
+      title: `Shop Luxury Pakistani Fashion`,
+      description:
+        "Browse Pahraan lawn suits, bridal wear, party pret, and embroidered collections. Free nationwide shipping on select orders.",
+      path: "/shop",
+      keywords: "shop Pakistani fashion, lawn suits, bridal, pret, Pahraan",
+      jsonLd: breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Shop", path: "/shop" },
+      ]),
+    }),
   component: ShopIndexPage,
 });
 

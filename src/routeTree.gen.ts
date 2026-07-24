@@ -23,6 +23,8 @@ import { Route as ShopIndexRouteImport } from './routes/shop.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as TrendsSlugRouteImport } from './routes/trends_.$slug'
 import { Route as ShopSlugRouteImport } from './routes/shop_.$slug'
+import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as CollectionsSlugRouteImport } from './routes/collections.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -96,6 +98,16 @@ const ShopSlugRoute = ShopSlugRouteImport.update({
   path: '/shop/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductSlugRoute = ProductSlugRouteImport.update({
+  id: '/product/$slug',
+  path: '/product/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionsSlugRoute = CollectionsSlugRouteImport.update({
+  id: '/collections/$slug',
+  path: '/collections/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog_/$slug',
   path: '/blog/$slug',
@@ -124,6 +136,8 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/collections/$slug': typeof CollectionsSlugRoute
+  '/product/$slug': typeof ProductSlugRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/trends/$slug': typeof TrendsSlugRoute
   '/blog/': typeof BlogIndexRoute
@@ -142,6 +156,8 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/collections/$slug': typeof CollectionsSlugRoute
+  '/product/$slug': typeof ProductSlugRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/trends/$slug': typeof TrendsSlugRoute
   '/blog': typeof BlogIndexRoute
@@ -162,6 +178,8 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/blog_/$slug': typeof BlogSlugRoute
+  '/collections/$slug': typeof CollectionsSlugRoute
+  '/product/$slug': typeof ProductSlugRoute
   '/shop_/$slug': typeof ShopSlugRoute
   '/trends_/$slug': typeof TrendsSlugRoute
   '/blog/': typeof BlogIndexRoute
@@ -182,6 +200,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/profile'
     | '/blog/$slug'
+    | '/collections/$slug'
+    | '/product/$slug'
     | '/shop/$slug'
     | '/trends/$slug'
     | '/blog/'
@@ -200,6 +220,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/profile'
     | '/blog/$slug'
+    | '/collections/$slug'
+    | '/product/$slug'
     | '/shop/$slug'
     | '/trends/$slug'
     | '/blog'
@@ -219,6 +241,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/profile'
     | '/blog_/$slug'
+    | '/collections/$slug'
+    | '/product/$slug'
     | '/shop_/$slug'
     | '/trends_/$slug'
     | '/blog/'
@@ -237,6 +261,8 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WishlistRoute: typeof WishlistRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  CollectionsSlugRoute: typeof CollectionsSlugRoute
+  ProductSlugRoute: typeof ProductSlugRoute
   ShopSlugRoute: typeof ShopSlugRoute
   TrendsSlugRoute: typeof TrendsSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -344,6 +370,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/product/$slug': {
+      id: '/product/$slug'
+      path: '/product/$slug'
+      fullPath: '/product/$slug'
+      preLoaderRoute: typeof ProductSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collections/$slug': {
+      id: '/collections/$slug'
+      path: '/collections/$slug'
+      fullPath: '/collections/$slug'
+      preLoaderRoute: typeof CollectionsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog_/$slug': {
       id: '/blog_/$slug'
       path: '/blog/$slug'
@@ -392,6 +432,8 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WishlistRoute: WishlistRoute,
   BlogSlugRoute: BlogSlugRoute,
+  CollectionsSlugRoute: CollectionsSlugRoute,
+  ProductSlugRoute: ProductSlugRoute,
   ShopSlugRoute: ShopSlugRoute,
   TrendsSlugRoute: TrendsSlugRoute,
   BlogIndexRoute: BlogIndexRoute,

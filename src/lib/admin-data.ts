@@ -175,7 +175,20 @@ export async function deleteMessage(id: string) {
 
 export async function fetchAdminOverview() {
   try {
-    const [trends, posts, subs, msgs, likes, favs, comments, users, orders, products] = await Promise.all([
+    const [
+      trends,
+      posts,
+      subs,
+      msgs,
+      likes,
+      favs,
+      comments,
+      users,
+      orders,
+      products,
+      orderRows,
+      inventoryRows,
+    ] = await Promise.all([
       supabase.from("trends").select("id", { count: "exact", head: true }),
       supabase.from("blog_posts").select("id", { count: "exact", head: true }),
       supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }),
@@ -186,7 +199,58 @@ export async function fetchAdminOverview() {
       supabase.from("profiles").select("id", { count: "exact", head: true }),
       supabase.from("orders").select("id", { count: "exact", head: true }),
       supabase.from("products").select("id", { count: "exact", head: true }),
+      supabase.from("orders").select("id, total, status, created_at, email, first_name, last_name"),
+      supabase.from("inventory").select("id, quantity, reserved_quantity, products(title, sku)"),
     ]);
+
+    const allOrders = (orderRows.data ?? []) as {
+      id: string;
+      total: number;
+      status: string;
+      created_at: string;
+      email: string;
+      first_name: string;
+      last_name: string;
+    }[];
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+    const paidLike = allOrders.filter((o) =>
+      ["pending", "processing", "shipped", "delivered", "confirmed", "packed"].includes(o.status),
+    );
+    const totalRevenue = paidLike.reduce((s, o) => s + Number(o.total || 0), 0);
+    const todaySales = paidLike
+      .filter((o) => o.created_at >= startOfDay)
+      .reduce((s, o) => s + Number(o.total || 0), 0);
+    const monthlySales = paidLike
+      .filter((o) => o.created_at >= startOfMonth)
+      .reduce((s, o) => s + Number(o.total || 0), 0);
+    const pendingOrders = allOrders.filter((o) =>
+      ["pending", "processing", "confirmed", "packed"].includes(o.status),
+    ).length;
+    const returnedOrders = allOrders.filter((o) =>
+      ["returned", "refunded"].includes(o.status),
+    ).length;
+    const inv = inventoryRows.data ?? [];
+    const lowStock = inv.filter((i: any) => Number(i.quantity) > 0 && Number(i.quantity) <= 5).length;
+    const outOfStock = inv.filter((i: any) => Number(i.quantity) <= 0).length;
+    const conversionRate =
+      (users.count ?? 0) > 0 ? Math.round(((orders.count ?? 0) / (users.count ?? 1)) * 1000) / 10 : 0;
+
+    const last7: { label: string; sales: number; orders: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      const dayOrders = paidLike.filter((o) => o.created_at.slice(0, 10) === key);
+      last7.push({
+        label: d.toLocaleDateString(undefined, { weekday: "short" }),
+        sales: dayOrders.reduce((s, o) => s + Number(o.total || 0), 0),
+        orders: dayOrders.length,
+      });
+    }
+
     return {
       trends: trends.count ?? 0,
       posts: posts.count ?? 0,
@@ -198,6 +262,28 @@ export async function fetchAdminOverview() {
       users: users.count ?? 0,
       orders: orders.count ?? 0,
       products: products.count ?? 0,
+      totalRevenue,
+      todaySales,
+      monthlySales,
+      pendingOrders,
+      returnedOrders,
+      lowStock,
+      outOfStock,
+      conversionRate,
+      salesSeries: last7,
+      recentOrders: [...allOrders]
+        .sort((a, b) => b.created_at.localeCompare(a.created_at))
+        .slice(0, 8),
+      lowStockItems: inv
+        .filter((i: any) => Number(i.quantity) <= 5)
+        .slice(0, 8)
+        .map((i: any) => ({
+          id: i.id,
+          title: i.products?.title || "Product",
+          sku: i.products?.sku || "—",
+          quantity: i.quantity,
+          reserved: i.reserved_quantity ?? 0,
+        })),
     };
   } catch {
     return {
@@ -210,7 +296,18 @@ export async function fetchAdminOverview() {
       comments: 0,
       users: 0,
       orders: 0,
-      products: 0
+      products: 0,
+      totalRevenue: 0,
+      todaySales: 0,
+      monthlySales: 0,
+      pendingOrders: 0,
+      returnedOrders: 0,
+      lowStock: 0,
+      outOfStock: 0,
+      conversionRate: 0,
+      salesSeries: [],
+      recentOrders: [],
+      lowStockItems: [],
     };
   }
 }

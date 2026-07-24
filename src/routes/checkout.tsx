@@ -362,6 +362,7 @@ function OrderSuccess({
           </button>
           <Link
             to="/profile"
+            search={{ tab: "orders" }}
             className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-white px-5 py-3.5 text-xs font-bold uppercase tracking-wider transition hover:border-primary hover:text-primary"
           >
             <Package className="h-3.5 w-3.5" /> Track Order

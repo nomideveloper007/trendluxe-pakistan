@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY}
+        VITE_SITE_URL: ${VITE_SITE_URL:-http://localhost:3000}
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      FORCE_HTTPS: "false"
+      SITE_URL: ${SITE_URL:-http://localhost:3000}

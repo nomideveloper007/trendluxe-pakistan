@@ -1,2 +1,11 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /checkout
+Disallow: /auth
+Disallow: /profile
+Disallow: /cart
+Disallow: /wishlist
+
+Sitemap: https://pahraan.com/sitemap.xml
