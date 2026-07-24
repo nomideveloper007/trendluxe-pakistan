@@ -35,10 +35,7 @@ export const Route = createFileRoute("/_authenticated/profile")({
     order: typeof search.order === "string" ? search.order : undefined,
   }),
   head: () => ({
-    meta: [
-      { title: `My Account — ${SITE.name}` },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: `My Account — ${SITE.name}` }, { name: "robots", content: "noindex" }],
   }),
   component: ProfilePage,
 });
@@ -88,10 +85,7 @@ function ProfilePage() {
     "Member";
 
   const productSlugs = useMemo(
-    () =>
-      (favQ.data ?? [])
-        .filter((f) => f.item_type === "product")
-        .map((f) => f.item_slug),
+    () => (favQ.data ?? []).filter((f) => f.item_type === "product").map((f) => f.item_slug),
     [favQ.data],
   );
 
@@ -152,10 +146,7 @@ function ProfilePage() {
               <Badge className="border-none bg-primary text-white">
                 <Shield className="mr-1.5 h-3 w-3" /> Admin
               </Badge>
-              <Link
-                to="/admin"
-                className="text-xs font-bold text-primary hover:underline"
-              >
+              <Link to="/admin" className="text-xs font-bold text-primary hover:underline">
                 Open admin dashboard →
               </Link>
             </div>

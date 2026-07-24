@@ -1,5 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Heart, Share2, Eye, Calendar, ArrowLeft, X, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Heart,
+  Share2,
+  Eye,
+  Calendar,
+  ArrowLeft,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { getCategory, SITE, type Trend } from "@/lib/content";
 import { fetchTrendBySlug, fetchAllTrends } from "@/lib/trends-data";
@@ -15,7 +24,9 @@ export const Route = createFileRoute("/trends_/$slug")({
     const trend = await fetchTrendBySlug(params.slug);
     if (!trend) throw notFound();
     const all = await fetchAllTrends();
-    const related = all.filter((x) => x.slug !== trend.slug && x.category === trend.category).slice(0, 3);
+    const related = all
+      .filter((x) => x.slug !== trend.slug && x.category === trend.category)
+      .slice(0, 3);
     return { trend, related };
   },
   head: ({ loaderData, params }) => {
@@ -34,7 +45,10 @@ export const Route = createFileRoute("/trends_/$slug")({
         { property: "og:image", content: trend.image },
         { property: "og:url", content: `/trends/${params.slug}` },
         { name: "twitter:image", content: trend.image },
-        { name: "keywords", content: [...trend.tags, cat?.name, "Pakistani fashion"].filter(Boolean).join(", ") },
+        {
+          name: "keywords",
+          content: [...trend.tags, cat?.name, "Pakistani fashion"].filter(Boolean).join(", "),
+        },
       ],
       links: [{ rel: "canonical", href: `/trends/${params.slug}` }],
       scripts: [
@@ -98,7 +112,11 @@ function TrendDetail() {
   async function onShare() {
     const url = typeof window !== "undefined" ? window.location.href : "";
     if (navigator.share) {
-      try { await navigator.share({ title: trend.title, text: trend.excerpt, url }); } catch {/* noop */}
+      try {
+        await navigator.share({ title: trend.title, text: trend.excerpt, url });
+      } catch {
+        /* noop */
+      }
     } else {
       await navigator.clipboard.writeText(url);
       toast.success("Link copied");
@@ -108,7 +126,10 @@ function TrendDetail() {
   return (
     <article className="pb-20">
       <div className="container-page pt-8">
-        <Link to="/trends" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
+        <Link
+          to="/trends"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
+        >
           <ArrowLeft className="h-4 w-4" /> Back to trends
         </Link>
       </div>
@@ -126,9 +147,22 @@ function TrendDetail() {
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">{trend.excerpt}</p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-5 text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5"><Calendar className="h-4 w-4" />{new Date(trend.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
-          <span className="inline-flex items-center gap-1.5"><Eye className="h-4 w-4" />{trend.views.toLocaleString()} views</span>
-          <span className="inline-flex items-center gap-1.5"><Heart className="h-4 w-4" />{trend.likes} loves</span>
+          <span className="inline-flex items-center gap-1.5">
+            <Calendar className="h-4 w-4" />
+            {new Date(trend.date).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Eye className="h-4 w-4" />
+            {trend.views.toLocaleString()} views
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Heart className="h-4 w-4" />
+            {trend.likes} loves
+          </span>
         </div>
       </header>
 
@@ -222,7 +256,10 @@ function TrendDetail() {
 
           <div className="mt-10 flex flex-wrap gap-2">
             {trend.tags.map((t: string) => (
-              <span key={t} className="rounded-full bg-secondary/60 px-3 py-1 text-xs text-secondary-foreground">
+              <span
+                key={t}
+                className="rounded-full bg-secondary/60 px-3 py-1 text-xs text-secondary-foreground"
+              >
                 #{t}
               </span>
             ))}
@@ -237,7 +274,10 @@ function TrendDetail() {
             <p className="mt-2 text-sm text-muted-foreground">
               The best of Pakistani fashion, straight to your inbox.
             </p>
-            <Link to="/" className="mt-4 inline-block rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-accent">
+            <Link
+              to="/"
+              className="mt-4 inline-block rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-accent"
+            >
               Subscribe
             </Link>
           </div>
@@ -250,7 +290,9 @@ function TrendDetail() {
         <section className="container-page mt-24">
           <h2 className="mb-8 font-display text-3xl">You might also love</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((r: Trend) => <TrendCard key={r.slug} trend={r} />)}
+            {related.map((r: Trend) => (
+              <TrendCard key={r.slug} trend={r} />
+            ))}
           </div>
         </section>
       )}
@@ -312,7 +354,10 @@ function TrendNotFound() {
     <div className="container-page py-24 text-center">
       <h1 className="font-display text-4xl">Trend not found</h1>
       <p className="mt-3 text-muted-foreground">The trend you're looking for doesn't exist.</p>
-      <Link to="/trends" className="mt-6 inline-block rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground">
+      <Link
+        to="/trends"
+        className="mt-6 inline-block rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground"
+      >
         Back to trends
       </Link>
     </div>

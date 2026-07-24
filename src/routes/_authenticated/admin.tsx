@@ -72,10 +72,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
     if (!data) throw redirect({ to: "/" });
   },
   head: () => ({
-    meta: [
-      { title: `Admin Workspace — ${SITE.name}` },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: `Admin Workspace — ${SITE.name}` }, { name: "robots", content: "noindex" }],
   }),
   component: AdminDashboard,
 });

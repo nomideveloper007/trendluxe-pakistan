@@ -2,7 +2,13 @@ import { useState } from "react";
 import { Star, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { loadJson, saveJson } from "./account-utils";
 
 type ReviewDraft = {
@@ -131,7 +137,9 @@ export function AccountReviews({ orders, userId }: Props) {
         <section className="rounded-3xl border border-border/60 bg-white p-5 shadow-soft">
           <h3 className="font-display text-lg font-bold">Your reviews</h3>
           {reviews.length === 0 ? (
-            <p className="mt-4 text-xs text-muted-foreground">You haven&apos;t reviewed any pieces yet.</p>
+            <p className="mt-4 text-xs text-muted-foreground">
+              You haven&apos;t reviewed any pieces yet.
+            </p>
           ) : (
             <div className="mt-4 space-y-4">
               {reviews.map((review) => (

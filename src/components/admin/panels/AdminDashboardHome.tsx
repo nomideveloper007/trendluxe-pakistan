@@ -130,7 +130,9 @@ export function AdminDashboardHome({
                     style={{ height: `${Math.max(8, (point.sales / maxSales) * 100)}%` }}
                     title={money(point.sales)}
                   />
-                  <span className="text-[10px] font-semibold text-muted-foreground">{point.label}</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground">
+                    {point.label}
+                  </span>
                 </div>
               ))
             )}
@@ -165,11 +167,7 @@ export function AdminDashboardHome({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-        <Panel
-          title="Recent Orders"
-          icon={ShoppingBag}
-          action={() => onNavigate("orders")}
-        >
+        <Panel title="Recent Orders" icon={ShoppingBag} action={() => onNavigate("orders")}>
           {(o.recentOrders ?? []).length === 0 ? (
             <Empty text="No orders yet" />
           ) : (

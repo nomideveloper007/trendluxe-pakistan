@@ -36,7 +36,9 @@ export function buildPageHead(input: PageSeoInput) {
       { title },
       { name: "description", content: input.description },
       ...(input.keywords ? [{ name: "keywords", content: input.keywords }] : []),
-      ...(input.noindex ? [{ name: "robots", content: "noindex,nofollow" }] : [{ name: "robots", content: "index,follow" }]),
+      ...(input.noindex
+        ? [{ name: "robots", content: "noindex,nofollow" }]
+        : [{ name: "robots", content: "index,follow" }]),
       { property: "og:site_name", content: SITE.name },
       { property: "og:title", content: title },
       { property: "og:description", content: input.description },
@@ -149,12 +151,14 @@ export function faqSchema(faqs: { question: string; answer: string }[]) {
   };
 }
 
-export function reviewSchema(reviews: {
-  author: string;
-  rating: number;
-  body: string;
-  date?: string;
-}[]) {
+export function reviewSchema(
+  reviews: {
+    author: string;
+    rating: number;
+    body: string;
+    date?: string;
+  }[],
+) {
   return reviews.map((r) => ({
     "@context": "https://schema.org",
     "@type": "Review",

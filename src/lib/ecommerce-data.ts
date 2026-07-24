@@ -116,14 +116,12 @@ export const MOCK_PRODUCTS: Product[] = [
     id: "prod-mock-1",
     slug: "gul-rukh-embroidered-lawn",
     title: "Gul Rukh Embroidered Lawn",
-    description: "Experience the epitome of elegance with this premium 3-piece embroidered lawn suit. Adorned with intricate chikan shadow work on soft pastel cotton and paired with a digitally printed silk dupatta, it represents the finest craftsmanship of Pakistani heritage.",
+    description:
+      "Experience the epitome of elegance with this premium 3-piece embroidered lawn suit. Adorned with intricate chikan shadow work on soft pastel cotton and paired with a digitally printed silk dupatta, it represents the finest craftsmanship of Pakistani heritage.",
     short_description: "Premium 3-piece pastel pink embroidered lawn suit with pure silk dupatta.",
     price: 6800,
     compare_at_price: 8500,
-    images: [
-      "cat-lawn",
-      "cat-chikan"
-    ],
+    images: ["cat-lawn", "cat-chikan"],
     video_url: null,
     stock_status: "in_stock",
     sku: "PAH-LWN-001",
@@ -141,20 +139,19 @@ export const MOCK_PRODUCTS: Product[] = [
     is_best_seller: false,
     is_new_arrival: true,
     created_at: "2026-07-10T10:00:00Z",
-    updated_at: "2026-07-21T10:00:00Z"
+    updated_at: "2026-07-21T10:00:00Z",
   },
   {
     id: "prod-mock-2",
     slug: "shehnai-red-velvet-lehenga",
     title: "Shehnai Red Velvet Lehenga",
-    description: "An heirloom-worthy red velvet bridal lehenga set. The panelled skirt is heavy-laden with gold tilla, zardozi work, and dabka embroideries, accompanied by a raw silk blouse and a gold metallic net dupatta bordered in velvet lace.",
-    short_description: "Heirloom-grade crimson red velvet bridal lehenga with heavy zardozi handcraft.",
+    description:
+      "An heirloom-worthy red velvet bridal lehenga set. The panelled skirt is heavy-laden with gold tilla, zardozi work, and dabka embroideries, accompanied by a raw silk blouse and a gold metallic net dupatta bordered in velvet lace.",
+    short_description:
+      "Heirloom-grade crimson red velvet bridal lehenga with heavy zardozi handcraft.",
     price: 145000,
     compare_at_price: 185000,
-    images: [
-      "cat-bridal",
-      "cat-velvet"
-    ],
+    images: ["cat-bridal", "cat-velvet"],
     video_url: null,
     stock_status: "in_stock",
     sku: "PAH-BDL-002",
@@ -172,20 +169,18 @@ export const MOCK_PRODUCTS: Product[] = [
     is_best_seller: false,
     is_new_arrival: false,
     created_at: "2026-07-05T08:00:00Z",
-    updated_at: "2026-07-20T12:00:00Z"
+    updated_at: "2026-07-20T12:00:00Z",
   },
   {
     id: "prod-mock-3",
     slug: "afsoon-organza-peshwas",
     title: "Afsoon Organza Peshwas",
-    description: "Drape yourself in romantic details. This dusky rose organza Peshwas highlights mirror work borders, fine needle tilla on the bodice, and an elegant screen-printed satin slip. Comes with a matching dupatta with sitara spraying.",
+    description:
+      "Drape yourself in romantic details. This dusky rose organza Peshwas highlights mirror work borders, fine needle tilla on the bodice, and an elegant screen-printed satin slip. Comes with a matching dupatta with sitara spraying.",
     short_description: "Dusky rose organza Peshwas with delicate mirror-work and tilla borders.",
     price: 24500,
     compare_at_price: 29500,
-    images: [
-      "cat-party",
-      "trend-organza"
-    ],
+    images: ["cat-party", "trend-organza"],
     video_url: null,
     stock_status: "in_stock",
     sku: "PAH-PRT-003",
@@ -203,20 +198,19 @@ export const MOCK_PRODUCTS: Product[] = [
     is_best_seller: true,
     is_new_arrival: false,
     created_at: "2026-07-12T11:00:00Z",
-    updated_at: "2026-07-21T08:00:00Z"
+    updated_at: "2026-07-21T08:00:00Z",
   },
   {
     id: "prod-mock-4",
     slug: "darya-blue-printed-kurta",
     title: "Darya Blue Printed Kurta",
-    description: "A breezy, summer-ready digital printed cotton kurta. Designed in a relaxed silhouette with drop shoulders, delicate organza trims, and a loop-button detailed V-neck. Perfect for everyday campus or casual wear.",
-    short_description: "Classic teal blue printed cotton kurta with relaxed fit and organza sleeves insert.",
+    description:
+      "A breezy, summer-ready digital printed cotton kurta. Designed in a relaxed silhouette with drop shoulders, delicate organza trims, and a loop-button detailed V-neck. Perfect for everyday campus or casual wear.",
+    short_description:
+      "Classic teal blue printed cotton kurta with relaxed fit and organza sleeves insert.",
     price: 3800,
     compare_at_price: null,
-    images: [
-      "cat-university",
-      "cat-colors"
-    ],
+    images: ["cat-university", "cat-colors"],
     video_url: null,
     stock_status: "in_stock",
     sku: "PAH-CSL-004",
@@ -234,20 +228,19 @@ export const MOCK_PRODUCTS: Product[] = [
     is_best_seller: true,
     is_new_arrival: true,
     created_at: "2026-07-18T14:00:00Z",
-    updated_at: "2026-07-21T09:00:00Z"
+    updated_at: "2026-07-21T09:00:00Z",
   },
   {
     id: "prod-mock-5",
     slug: "noor-jehan-velvet-kaftan",
     title: "Noor Jehan Velvet Kaftan",
-    description: "Channel royalty in this fluid, emerald green silk velvet kaftan. Embroidered with heavy gold kora, dabka and pearl work surrounding the neckline and sleeves, this Kaftan ensures a commanding presence for wedding mehndis and winter soirées.",
-    short_description: "Royal emerald green velvet kaftan embellished with handcrafted pearl and gold kora.",
+    description:
+      "Channel royalty in this fluid, emerald green silk velvet kaftan. Embroidered with heavy gold kora, dabka and pearl work surrounding the neckline and sleeves, this Kaftan ensures a commanding presence for wedding mehndis and winter soirées.",
+    short_description:
+      "Royal emerald green velvet kaftan embellished with handcrafted pearl and gold kora.",
     price: 29500,
     compare_at_price: 38000,
-    images: [
-      "cat-velvet",
-      "cat-party"
-    ],
+    images: ["cat-velvet", "cat-party"],
     video_url: null,
     stock_status: "in_stock",
     sku: "PAH-LUX-005",
@@ -265,20 +258,18 @@ export const MOCK_PRODUCTS: Product[] = [
     is_best_seller: false,
     is_new_arrival: false,
     created_at: "2026-07-02T15:00:00Z",
-    updated_at: "2026-07-19T06:00:00Z"
+    updated_at: "2026-07-19T06:00:00Z",
   },
   {
     id: "prod-mock-6",
     slug: "yasmin-chikankari-anarkali",
     title: "Yasmin Chikankari Anarkali",
-    description: "Indulge in classic ivory. This beautiful georgette Anarkali dress features shadow chikankari patterns across the panels, offset by a heavy crochet lace hemline and a gossamer chiffon dupatta.",
+    description:
+      "Indulge in classic ivory. This beautiful georgette Anarkali dress features shadow chikankari patterns across the panels, offset by a heavy crochet lace hemline and a gossamer chiffon dupatta.",
     short_description: "Intricately detailed ivory chikankari georgette Anarkali with cotton lace.",
     price: 18500,
     compare_at_price: 24000,
-    images: [
-      "cat-chikan",
-      "cat-beige-dress"
-    ],
+    images: ["cat-chikan", "cat-beige-dress"],
     video_url: null,
     stock_status: "in_stock",
     sku: "PAH-PRT-006",
@@ -296,8 +287,8 @@ export const MOCK_PRODUCTS: Product[] = [
     is_best_seller: false,
     is_new_arrival: true,
     created_at: "2026-07-20T09:00:00Z",
-    updated_at: "2026-07-21T09:00:00Z"
-  }
+    updated_at: "2026-07-21T09:00:00Z",
+  },
 ];
 
 export const MOCK_REVIEWS: Record<string, ProductReview[]> = {
@@ -309,10 +300,11 @@ export const MOCK_REVIEWS: Record<string, ProductReview[]> = {
       display_name: "Amna Khan",
       rating: 5,
       title: "Absolutely Gorgeous!",
-      comment: "The colors are so soft and beautiful. The fabric is extremely light and premium, perfect for Karachi summers. I received so many compliments when I wore this for an Eid brunch!",
+      comment:
+        "The colors are so soft and beautiful. The fabric is extremely light and premium, perfect for Karachi summers. I received so many compliments when I wore this for an Eid brunch!",
       images: [],
       verified_purchase: true,
-      created_at: "2026-07-15T12:00:00Z"
+      created_at: "2026-07-15T12:00:00Z",
     },
     {
       id: "rev-mock-2",
@@ -321,12 +313,13 @@ export const MOCK_REVIEWS: Record<string, ProductReview[]> = {
       display_name: "Sana Ahmed",
       rating: 4,
       title: "Lovely Print, Fast Delivery",
-      comment: "Highly impressed by Pahraan's service. The order arrived in just 2 days. The dress is beautiful, though the sizing runs slightly larger than usual. Highly recommended!",
+      comment:
+        "Highly impressed by Pahraan's service. The order arrived in just 2 days. The dress is beautiful, though the sizing runs slightly larger than usual. Highly recommended!",
       images: [],
       verified_purchase: true,
-      created_at: "2026-07-18T10:00:00Z"
-    }
-  ]
+      created_at: "2026-07-18T10:00:00Z",
+    },
+  ],
 };
 
 // 1. PRODUCTS
@@ -382,7 +375,12 @@ export async function fetchProducts(filters?: {
 
     // Client-side tagging filters
     if (filters?.tag) {
-      results = results.filter((p) => p.tags.includes(filters.tag!) || (filters.tag === "sale" && p.compare_at_price && p.compare_at_price > p.price) || (filters.tag === "new-arrivals" && p.is_new_arrival));
+      results = results.filter(
+        (p) =>
+          p.tags.includes(filters.tag!) ||
+          (filters.tag === "sale" && p.compare_at_price && p.compare_at_price > p.price) ||
+          (filters.tag === "new-arrivals" && p.is_new_arrival),
+      );
     }
 
     // Client-side search filters
@@ -394,7 +392,7 @@ export async function fetchProducts(filters?: {
           p.description.toLowerCase().includes(s) ||
           p.sku.toLowerCase().includes(s) ||
           p.category.toLowerCase().includes(s) ||
-          p.fabric?.toLowerCase().includes(s)
+          p.fabric?.toLowerCase().includes(s),
       );
     }
 
@@ -402,7 +400,9 @@ export async function fetchProducts(filters?: {
       results = results.filter((p) => p.sizes.includes(filters.size!));
     }
     if (filters?.color) {
-      results = results.filter((p) => p.colors.some((c) => c.toLowerCase() === filters.color!.toLowerCase()));
+      results = results.filter((p) =>
+        p.colors.some((c) => c.toLowerCase() === filters.color!.toLowerCase()),
+      );
     }
 
     // Sorting
@@ -422,7 +422,9 @@ export async function fetchProducts(filters?: {
           break;
         case "newest":
         default:
-          results.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+          results.sort(
+            (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+          );
           break;
       }
     }
@@ -512,7 +514,9 @@ export async function fetchProductReviews(productId: string): Promise<ProductRev
   }
 }
 
-export async function addProductReview(review: Omit<ProductReview, "id" | "created_at" | "status">) {
+export async function addProductReview(
+  review: Omit<ProductReview, "id" | "created_at" | "status">,
+) {
   const { error } = await supabase.from("product_reviews").insert(review);
   if (error) throw error;
 }
@@ -527,7 +531,7 @@ export async function verifyCoupon(code: string, subtotal: number): Promise<Coup
       .maybeSingle();
 
     if (error) throw error;
-    
+
     let coupon: Coupon;
     if (!data) {
       // Mock coupons for fallback
@@ -542,7 +546,7 @@ export async function verifyCoupon(code: string, subtotal: number): Promise<Coup
           start_date: "2026-01-01T00:00:00Z",
           end_date: "2027-01-01T00:00:00Z",
           usage_limit: null,
-          usage_count: 0
+          usage_count: 0,
         };
       } else if (upperCode === "FREE200") {
         coupon = {
@@ -554,7 +558,7 @@ export async function verifyCoupon(code: string, subtotal: number): Promise<Coup
           start_date: "2026-01-01T00:00:00Z",
           end_date: "2027-01-01T00:00:00Z",
           usage_limit: null,
-          usage_count: 0
+          usage_count: 0,
         };
       } else {
         throw new Error("Coupon code is invalid.");
@@ -686,12 +690,13 @@ export async function createUserAddress(address: Omit<UserAddress, "id">) {
 export async function updateUserAddress(id: string, userId: string, patch: Partial<UserAddress>) {
   try {
     if (patch.is_default) {
-      await supabase
-        .from("user_addresses")
-        .update({ is_default: false })
-        .eq("user_id", userId);
+      await supabase.from("user_addresses").update({ is_default: false }).eq("user_id", userId);
     }
-    const { error } = await supabase.from("user_addresses").update(patch).eq("id", id).eq("user_id", userId);
+    const { error } = await supabase
+      .from("user_addresses")
+      .update(patch)
+      .eq("id", id)
+      .eq("user_id", userId);
     if (error) throw error;
   } catch (err) {
     console.warn("Failed to update address in DB:", err);
@@ -700,7 +705,11 @@ export async function updateUserAddress(id: string, userId: string, patch: Parti
 
 export async function deleteUserAddress(id: string, userId: string) {
   try {
-    const { error } = await supabase.from("user_addresses").delete().eq("id", id).eq("user_id", userId);
+    const { error } = await supabase
+      .from("user_addresses")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", userId);
     if (error) throw error;
   } catch (err) {
     console.warn("Failed to delete address in DB:", err);

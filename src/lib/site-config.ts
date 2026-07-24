@@ -3,8 +3,7 @@ import { SITE } from "@/lib/content";
 /** Absolute site origin for canonical / OG / sitemap */
 export function getSiteUrl(): string {
   const fromEnv =
-    (typeof import.meta !== "undefined" &&
-      (import.meta as any).env?.VITE_SITE_URL) ||
+    (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_SITE_URL) ||
     process.env.VITE_SITE_URL ||
     process.env.SITE_URL ||
     "";

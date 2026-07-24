@@ -11,9 +11,16 @@ export const Route = createFileRoute("/trends/")({
   head: () => ({
     meta: [
       { title: `Trends — ${SITE.name}` },
-      { name: "description", content: "Explore the trends shaping Pakistani women's fashion — lawn, bridal, party, abayas and more." },
+      {
+        name: "description",
+        content:
+          "Explore the trends shaping Pakistani women's fashion — lawn, bridal, party, abayas and more.",
+      },
       { property: "og:title", content: `Trends — ${SITE.name}` },
-      { property: "og:description", content: "Explore the trends shaping Pakistani women's fashion." },
+      {
+        property: "og:description",
+        content: "Explore the trends shaping Pakistani women's fashion.",
+      },
       { property: "og:url", content: "/trends" },
     ],
     links: [{ rel: "canonical", href: "/trends" }],
@@ -67,9 +74,7 @@ function TrendsPage() {
       <section className="bg-hero py-16 md:py-20">
         <div className="container-page text-center">
           <p className="text-xs uppercase tracking-widest text-primary">Discover</p>
-          <h1 className="mt-3 font-display text-5xl text-foreground md:text-6xl">
-            Fashion trends
-          </h1>
+          <h1 className="mt-3 font-display text-5xl text-foreground md:text-6xl">Fashion trends</h1>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
             Every silhouette, every season — the styles Pakistani women are wearing now.
           </p>
@@ -122,7 +127,9 @@ function TrendsPage() {
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((t: Trend) => <TrendCard key={t.slug} trend={t} />)}
+            {filtered.map((t: Trend) => (
+              <TrendCard key={t.slug} trend={t} />
+            ))}
           </div>
         )}
 
@@ -131,9 +138,14 @@ function TrendsPage() {
         <div className="mt-10 flex items-center justify-between rounded-2xl bg-blush p-6">
           <div>
             <div className="font-display text-xl">Looking for something specific?</div>
-            <div className="text-sm text-muted-foreground">Browse by category or drop us a request.</div>
+            <div className="text-sm text-muted-foreground">
+              Browse by category or drop us a request.
+            </div>
           </div>
-          <Link to="/contact" className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-accent">
+          <Link
+            to="/contact"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-accent"
+          >
             Get in touch
           </Link>
         </div>
@@ -141,5 +153,3 @@ function TrendsPage() {
     </div>
   );
 }
-
-

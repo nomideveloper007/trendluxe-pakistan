@@ -67,9 +67,7 @@ export function AdminShell({
     if (!term) return [];
     return searchIndex
       .filter(
-        (item) =>
-          item.label.toLowerCase().includes(term) ||
-          item.type.toLowerCase().includes(term),
+        (item) => item.label.toLowerCase().includes(term) || item.type.toLowerCase().includes(term),
       )
       .slice(0, 12);
   }, [q, searchIndex]);
@@ -96,18 +94,29 @@ export function AdminShell({
       >
         <div className="flex h-16 items-center justify-between border-b px-5 border-[color:var(--admin-border)]">
           <Link to="/" className="flex items-center gap-2">
-            <span className="font-display text-xl font-bold tracking-wider text-primary">PAHRAAN</span>
-            <Badge variant="outline" className="border-primary/20 bg-primary/5 text-[10px] uppercase text-primary/80">
+            <span className="font-display text-xl font-bold tracking-wider text-primary">
+              PAHRAAN
+            </span>
+            <Badge
+              variant="outline"
+              className="border-primary/20 bg-primary/5 text-[10px] uppercase text-primary/80"
+            >
               Admin
             </Badge>
           </Link>
-          <button type="button" className="lg:hidden cursor-pointer" onClick={() => setMobileOpen(false)}>
+          <button
+            type="button"
+            className="lg:hidden cursor-pointer"
+            onClick={() => setMobileOpen(false)}
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         <div className="border-b p-4 border-[color:var(--admin-border)]">
-          <div className={`flex items-center gap-3 rounded-2xl p-3 ${dark ? "bg-zinc-800" : "bg-secondary/15"}`}>
+          <div
+            className={`flex items-center gap-3 rounded-2xl p-3 ${dark ? "bg-zinc-800" : "bg-secondary/15"}`}
+          >
             <div className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/25 bg-primary/10 font-display text-xs font-semibold text-primary">
               {email?.slice(0, 2).toUpperCase() || "AD"}
             </div>

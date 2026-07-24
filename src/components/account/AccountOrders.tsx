@@ -265,10 +265,16 @@ function OrderDetail({ order, onBack }: { order: any; onBack: () => void }) {
                   <div key={step} className="flex flex-col items-center text-center">
                     <span
                       className={`flex h-7 w-7 items-center justify-center rounded-full border-2 bg-white transition ${
-                        active ? "border-primary text-primary" : "border-border text-muted-foreground"
+                        active
+                          ? "border-primary text-primary"
+                          : "border-border text-muted-foreground"
                       }`}
                     >
-                      {active ? <CheckCircle className="h-4 w-4" /> : <Package className="h-3.5 w-3.5" />}
+                      {active ? (
+                        <CheckCircle className="h-4 w-4" />
+                      ) : (
+                        <Package className="h-3.5 w-3.5" />
+                      )}
                     </span>
                     <p
                       className={`mt-2 text-[10px] font-bold uppercase tracking-wider ${
@@ -296,7 +302,10 @@ function OrderDetail({ order, onBack }: { order: any; onBack: () => void }) {
           <h3 className="font-display text-lg font-bold">Order Summary</h3>
           <div className="mt-4 divide-y divide-border/40">
             {(order.order_items || []).map((item: any) => (
-              <div key={item.id || `${item.product_title}-${item.size}`} className="flex justify-between py-3 text-xs">
+              <div
+                key={item.id || `${item.product_title}-${item.size}`}
+                className="flex justify-between py-3 text-xs"
+              >
                 <div>
                   <p className="font-bold">{item.product_title}</p>
                   <p className="mt-0.5 text-[10px] text-muted-foreground capitalize">
@@ -358,7 +367,8 @@ function OrderDetail({ order, onBack }: { order: any; onBack: () => void }) {
               {billing.city || shipping.city}
             </p>
             <p className="mt-3 text-xs font-bold uppercase tracking-wider text-primary">
-              {(order.payment_method || "cod").replace("_", " ")} · {order.payment_status || "pending"}
+              {(order.payment_method || "cod").replace("_", " ")} ·{" "}
+              {order.payment_status || "pending"}
             </p>
           </div>
         </div>

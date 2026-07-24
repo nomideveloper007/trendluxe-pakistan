@@ -199,7 +199,9 @@ export function AdminReportsPanel() {
             type="button"
             onClick={() => setRange(r)}
             className={`rounded-full px-4 py-2 text-xs font-bold capitalize cursor-pointer ${
-              range === r ? "bg-primary text-white" : "border border-border bg-[var(--admin-panel,#fff)]"
+              range === r
+                ? "bg-primary text-white"
+                : "border border-border bg-[var(--admin-panel,#fff)]"
             }`}
           >
             {r}
@@ -308,9 +310,7 @@ export function AdminHomepagePanel() {
               <Switch
                 checked={s.enabled}
                 onCheckedChange={(v) =>
-                  setSections((prev) =>
-                    prev.map((x) => (x.id === s.id ? { ...x, enabled: v } : x)),
-                  )
+                  setSections((prev) => prev.map((x) => (x.id === s.id ? { ...x, enabled: v } : x)))
                 }
               />
               <span className="flex-1 font-semibold">{s.label}</span>
@@ -377,7 +377,10 @@ export function AdminHomepagePanel() {
 
 export function AdminMediaPanel() {
   const [assets, setAssets] = useState(() =>
-    loadAdminJson("pahraan_admin_media", [] as { id: string; name: string; url: string; alt: string; folder: string }[]),
+    loadAdminJson(
+      "pahraan_admin_media",
+      [] as { id: string; name: string; url: string; alt: string; folder: string }[],
+    ),
   );
   const [q, setQ] = useState("");
 
@@ -431,7 +434,9 @@ export function AdminMediaPanel() {
           >
             <div className="aspect-square bg-secondary/20">
               {asset.url.match(/\.(mp4|webm)$/i) ? (
-                <div className="grid h-full place-items-center text-xs text-muted-foreground">Video</div>
+                <div className="grid h-full place-items-center text-xs text-muted-foreground">
+                  Video
+                </div>
               ) : (
                 <img src={asset.url} alt={asset.alt} className="h-full w-full object-cover" />
               )}
@@ -588,7 +593,11 @@ export function AdminSettingsPanel() {
             value={settings.contactPhone}
             onChange={(v) => set("contactPhone", v)}
           />
-          <Field label="Instagram" value={settings.instagram} onChange={(v) => set("instagram", v)} />
+          <Field
+            label="Instagram"
+            value={settings.instagram}
+            onChange={(v) => set("instagram", v)}
+          />
           <Field label="WhatsApp" value={settings.whatsapp} onChange={(v) => set("whatsapp", v)} />
         </Card>
         <Card title="Templates & Keys">
@@ -611,7 +620,10 @@ export function AdminSettingsPanel() {
 
 export function AdminStaffPanel() {
   return (
-    <AdminPanelShell title="Staff Management" subtitle="Admin, Manager, Editor, Support, Warehouse.">
+    <AdminPanelShell
+      title="Staff Management"
+      subtitle="Admin, Manager, Editor, Support, Warehouse."
+    >
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {["Admin", "Manager", "Editor", "Support", "Warehouse", "Custom Role"].map((role) => (
           <div
@@ -657,7 +669,10 @@ export function AdminRolesPanel() {
   useEffect(() => saveAdminJson("pahraan_admin_roles", matrix), [matrix]);
 
   return (
-    <AdminPanelShell title="Roles & Permissions" subtitle="Permission matrix + activity log placeholder.">
+    <AdminPanelShell
+      title="Roles & Permissions"
+      subtitle="Permission matrix + activity log placeholder."
+    >
       <div className="overflow-x-auto rounded-3xl border border-border/60 bg-[var(--admin-panel,#fff)] shadow-soft">
         <table className="w-full min-w-[640px] text-left text-xs">
           <thead className="bg-secondary/15 text-[10px] font-bold uppercase tracking-wider">
@@ -757,7 +772,11 @@ function Field({
       <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
         {label}
       </label>
-      <Input value={value} onChange={(e) => onChange(e.target.value)} className="rounded-xl text-xs" />
+      <Input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded-xl text-xs"
+      />
     </div>
   );
 }

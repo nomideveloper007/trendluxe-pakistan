@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Camera, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
-  loadJson,
-  orderRef,
-  saveJson,
-  type ReturnRequest,
-} from "./account-utils";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { loadJson, orderRef, saveJson, type ReturnRequest } from "./account-utils";
 
 const REASONS = [
   "Wrong size",
@@ -117,7 +118,9 @@ export function AccountReturns({ orders, userId }: { orders: any[]; userId?: str
                 <div className="mt-2 flex gap-2">
                   {["submitted", "reviewing", "approved", "completed"].map((step, i) => {
                     const order = ["submitted", "reviewing", "approved", "completed"];
-                    const current = order.indexOf(req.status === "rejected" ? "reviewing" : req.status);
+                    const current = order.indexOf(
+                      req.status === "rejected" ? "reviewing" : req.status,
+                    );
                     const active = i <= current;
                     return (
                       <div

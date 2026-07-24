@@ -26,10 +26,16 @@ export const Route = createFileRoute("/sitemap.xml")({
         const [{ data: trends }, { data: posts }, productsRes] = await Promise.all([
           supabase.from("trends").select("slug,published_at,updated_at").eq("published", true),
           supabase.from("blog_posts").select("slug,published_at,updated_at").eq("published", true),
-          (supabase as any).from("products").select("slug,updated_at").order("updated_at", { ascending: false }),
+          (supabase as any)
+            .from("products")
+            .select("slug,updated_at")
+            .order("updated_at", { ascending: false }),
         ]);
 
-        const products = ((productsRes as any)?.data ?? []) as { slug: string; updated_at?: string }[];
+        const products = ((productsRes as any)?.data ?? []) as {
+          slug: string;
+          updated_at?: string;
+        }[];
 
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "daily", priority: "1.0" },

@@ -76,7 +76,10 @@ export function AdminCategoriesPanel() {
       title="Categories"
       subtitle="Unlimited categories, subcategories, banners & SEO."
       action={
-        <Button onClick={add} className="rounded-full bg-primary text-xs text-white hover:bg-accent cursor-pointer">
+        <Button
+          onClick={add}
+          className="rounded-full bg-primary text-xs text-white hover:bg-accent cursor-pointer"
+        >
           <Plus className="mr-1 h-3.5 w-3.5" /> Add Category
         </Button>
       }
@@ -96,7 +99,11 @@ export function AdminCategoriesPanel() {
                 </div>
                 <div className="flex items-center gap-3">
                   <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    {cat.visible ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                    {cat.visible ? (
+                      <Eye className="h-3.5 w-3.5" />
+                    ) : (
+                      <EyeOff className="h-3.5 w-3.5" />
+                    )}
                     Visible
                     <Switch
                       checked={cat.visible}
@@ -258,9 +265,7 @@ export function AdminCollectionsPanel() {
               <Switch
                 checked={col.featured}
                 onCheckedChange={(v) =>
-                  setItems((prev) =>
-                    prev.map((c) => (c.id === col.id ? { ...c, featured: v } : c)),
-                  )
+                  setItems((prev) => prev.map((c) => (c.id === col.id ? { ...c, featured: v } : c)))
                 }
               />
             </div>

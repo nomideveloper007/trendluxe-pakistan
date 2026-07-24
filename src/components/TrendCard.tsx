@@ -28,8 +28,14 @@ export function TrendCard({ trend, priority = false }: { trend: Trend; priority?
         </h3>
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{trend.excerpt}</p>
         <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1"><Eye className="h-3.5 w-3.5" />{trend.views.toLocaleString()}</span>
-          <span className="inline-flex items-center gap-1"><Heart className="h-3.5 w-3.5" />{trend.likes}</span>
+          <span className="inline-flex items-center gap-1">
+            <Eye className="h-3.5 w-3.5" />
+            {trend.views.toLocaleString()}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Heart className="h-3.5 w-3.5" />
+            {trend.likes}
+          </span>
         </div>
       </div>
     </Link>

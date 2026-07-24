@@ -43,9 +43,7 @@ function WishlistPage() {
     .filter((f) => f.item_type === "product")
     .map((f) => f.item_slug);
 
-  const wishlistedProducts = (productsQ.data ?? []).filter((p) =>
-    wishlistedSlugs.includes(p.slug)
-  );
+  const wishlistedProducts = (productsQ.data ?? []).filter((p) => wishlistedSlugs.includes(p.slug));
 
   if (!user) {
     return (

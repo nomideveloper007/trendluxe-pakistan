@@ -3,7 +3,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit3, MapPin, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   createUserAddress,
@@ -323,7 +329,11 @@ export function AccountAddresses({ addresses, loading, userId }: Props) {
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-full text-xs cursor-pointer">
+            <Button
+              variant="ghost"
+              onClick={() => setOpen(false)}
+              className="rounded-full text-xs cursor-pointer"
+            >
               Cancel
             </Button>
             <Button

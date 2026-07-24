@@ -2,7 +2,11 @@ import { Link } from "@tanstack/react-router";
 import type { BlogPost } from "@/lib/content";
 
 export function BlogCard({ post }: { post: BlogPost }) {
-  const date = new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const date = new Date(post.date).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
   return (
     <Link
       to="/blog/$slug"
@@ -18,12 +22,16 @@ export function BlogCard({ post }: { post: BlogPost }) {
         />
       </div>
       <div className="flex flex-col justify-center">
-        <div className="text-xs uppercase tracking-wider text-primary">{post.category.replace("-", " ")}</div>
+        <div className="text-xs uppercase tracking-wider text-primary">
+          {post.category.replace("-", " ")}
+        </div>
         <h3 className="mt-2 font-display text-xl leading-snug text-foreground transition group-hover:text-primary">
           {post.title}
         </h3>
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{post.excerpt}</p>
-        <div className="mt-3 text-xs text-muted-foreground">{date} · {post.readMinutes} min read</div>
+        <div className="mt-3 text-xs text-muted-foreground">
+          {date} · {post.readMinutes} min read
+        </div>
       </div>
     </Link>
   );

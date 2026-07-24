@@ -93,7 +93,9 @@ export function Comments({
   });
 
   const comments = listQ.data ?? [];
-  const visibleCount = comments.filter((c) => c.status === "visible" || c.user_id === user?.id || isAdmin).length;
+  const visibleCount = comments.filter(
+    (c) => c.status === "visible" || c.user_id === user?.id || isAdmin,
+  ).length;
 
   return (
     <section className="container-page mt-16" id="comments">
@@ -124,13 +126,17 @@ export function Comments({
               className="w-full resize-none rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-muted-foreground/80"
             />
             <div className="mt-2 flex items-center justify-between">
-              <span className="text-[10px] font-mono text-muted-foreground">{draft.length}/2000 characters</span>
+              <span className="text-[10px] font-mono text-muted-foreground">
+                {draft.length}/2000 characters
+              </span>
               <button
                 type="submit"
                 disabled={!draft.trim() || create.isPending}
                 className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground hover:bg-accent disabled:opacity-50 transition cursor-pointer"
               >
-                {create.isPending ? "Posting..." : (
+                {create.isPending ? (
+                  "Posting..."
+                ) : (
                   <>
                     <Send className="h-3 w-3" /> Post Comment
                   </>
@@ -140,7 +146,10 @@ export function Comments({
           </form>
         ) : (
           <div className="mb-8 rounded-2xl border border-dashed border-border bg-[#FFF9FB]/50 p-6 text-center text-sm text-muted-foreground shadow-soft">
-            <Link to="/auth" className="font-semibold text-primary hover:underline">Sign in</Link> to participate in the lookbook reviews.
+            <Link to="/auth" className="font-semibold text-primary hover:underline">
+              Sign in
+            </Link>{" "}
+            to participate in the lookbook reviews.
           </div>
         )}
 
@@ -210,12 +219,18 @@ function CommentItem({
   const name = comment.author?.display_name || "Anonymous";
   const hidden = comment.status === "hidden";
   return (
-    <div className={`rounded-2xl border border-border bg-white p-4.5 shadow-soft transition-all hover:shadow-elegant animate-fade-in ${hidden ? "opacity-60" : ""}`}>
+    <div
+      className={`rounded-2xl border border-border bg-white p-4.5 shadow-soft transition-all hover:shadow-elegant animate-fade-in ${hidden ? "opacity-60" : ""}`}
+    >
       <div className="flex items-start gap-4">
         {/* User initials bubble avatar */}
         <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blush text-xs font-semibold text-primary border border-primary/20 shadow-soft shrink-0">
           {comment.author?.avatar_url ? (
-            <img src={comment.author.avatar_url} alt={name} className="h-full w-full object-cover" />
+            <img
+              src={comment.author.avatar_url}
+              alt={name}
+              className="h-full w-full object-cover"
+            />
           ) : (
             initials(name)
           )}
@@ -223,7 +238,9 @@ function CommentItem({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-foreground">{name}</span>
-            <span className="text-[10px] text-muted-foreground font-medium">{timeAgo(comment.created_at)}</span>
+            <span className="text-[10px] text-muted-foreground font-medium">
+              {timeAgo(comment.created_at)}
+            </span>
             {hidden && (
               <span className="rounded-full bg-secondary px-2 py-0.5 text-[8px] uppercase tracking-wider font-semibold text-muted-foreground border border-border">
                 Hidden by mod
@@ -239,8 +256,8 @@ function CommentItem({
                 className="w-full resize-none rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition"
               />
               <div className="mt-2 flex justify-end gap-1.5">
-                <button 
-                  onClick={onEditCancel} 
+                <button
+                  onClick={onEditCancel}
                   className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-3.5 py-1.5 text-[10px] font-semibold text-muted-foreground hover:bg-secondary/15 transition cursor-pointer"
                 >
                   <X className="h-3 w-3" /> Cancel
@@ -255,7 +272,9 @@ function CommentItem({
               </div>
             </div>
           ) : (
-            <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-foreground/90 font-medium">{comment.body}</p>
+            <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-foreground/90 font-medium">
+              {comment.body}
+            </p>
           )}
         </div>
         {!isEditing && (canEdit || canDelete) && (

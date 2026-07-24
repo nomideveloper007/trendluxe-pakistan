@@ -53,7 +53,9 @@ export function FavoriteButton({
           : "border-border bg-white text-foreground hover:border-primary hover:text-primary hover:-translate-y-0.5"
       }`}
     >
-      <Bookmark className={`h-4 w-4 transition-all duration-300 group-hover:scale-115 ${saved ? "fill-current scale-110 text-amber-500" : ""}`} />
+      <Bookmark
+        className={`h-4 w-4 transition-all duration-300 group-hover:scale-115 ${saved ? "fill-current scale-110 text-amber-500" : ""}`}
+      />
       {saved ? "Saved" : "Save"}
     </button>
   );

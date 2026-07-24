@@ -101,7 +101,11 @@ export function SearchModal({ open, onClose }: Props) {
     }
 
     for (const c of categories) {
-      if (c.name.toLowerCase().includes(q) || c.slug.includes(q) || c.blurb.toLowerCase().includes(q)) {
+      if (
+        c.name.toLowerCase().includes(q) ||
+        c.slug.includes(q) ||
+        c.blurb.toLowerCase().includes(q)
+      ) {
         hits.push({
           type: "category",
           label: c.name,
@@ -120,7 +124,12 @@ export function SearchModal({ open, onClose }: Props) {
 
     for (const trend of trends) {
       if (trend.title.toLowerCase().includes(q) || trend.excerpt?.toLowerCase().includes(q)) {
-        hits.push({ type: "trend", label: trend.title, href: `/trends/${trend.slug}`, meta: "Trend" });
+        hits.push({
+          type: "trend",
+          label: trend.title,
+          href: `/trends/${trend.slug}`,
+          meta: "Trend",
+        });
       }
       if (hits.filter((h) => h.type === "trend").length >= 3) break;
     }
@@ -226,7 +235,9 @@ export function SearchModal({ open, onClose }: Props) {
           )}
 
           {query.trim() && results.length === 0 && (
-            <p className="py-10 text-center text-sm text-muted-foreground">No matches for “{query}”</p>
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              No matches for “{query}”
+            </p>
           )}
 
           {results.length > 0 && (

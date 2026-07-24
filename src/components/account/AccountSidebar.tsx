@@ -58,7 +58,9 @@ export function AccountSidebar({ active, onNavigate, onLogout, mobileOpen, onClo
         }`}
       >
         <div className="border-b border-border/50 px-5 py-5">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">My Account</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+            My Account
+          </p>
           <p className="mt-1 font-display text-lg font-bold text-foreground">Pahraan Atelier</p>
         </div>
 

@@ -40,7 +40,8 @@ export function normalizeTrend(r: Row): Trend {
   };
 }
 
-const SELECT = "id,slug,title,category_slug,image_key,gallery_keys,excerpt,content,tips,tags,views_seed,likes_seed,published_at,created_at";
+const SELECT =
+  "id,slug,title,category_slug,image_key,gallery_keys,excerpt,content,tips,tags,views_seed,likes_seed,published_at,created_at";
 
 export async function fetchAllTrends(): Promise<Trend[]> {
   const { data, error } = await supabase
@@ -49,7 +50,7 @@ export async function fetchAllTrends(): Promise<Trend[]> {
     .eq("published", true)
     .order("published_at", { ascending: false, nullsFirst: false });
   if (error) throw error;
-  return (data as Row[] | null ?? []).map(normalizeTrend);
+  return ((data as Row[] | null) ?? []).map(normalizeTrend);
 }
 
 export async function fetchTrendBySlug(slug: string): Promise<Trend | null> {
@@ -71,5 +72,5 @@ export async function fetchTrendsBySlugs(slugs: string[]): Promise<Trend[]> {
     .in("slug", slugs)
     .eq("published", true);
   if (error) throw error;
-  return (data as Row[] | null ?? []).map(normalizeTrend);
+  return ((data as Row[] | null) ?? []).map(normalizeTrend);
 }

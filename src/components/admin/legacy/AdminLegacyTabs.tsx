@@ -66,11 +66,7 @@ import {
   updateReviewStatus,
   deleteReview,
 } from "@/lib/admin-data";
-import {
-  deleteComment,
-  fetchAllCommentsAdmin,
-  setCommentStatus,
-} from "@/lib/comments-data";
+import { deleteComment, fetchAllCommentsAdmin, setCommentStatus } from "@/lib/comments-data";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -95,7 +91,9 @@ import { Badge } from "@/components/ui/badge";
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="grid gap-1.5">
-      <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">{label}</Label>
+      <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+        {label}
+      </Label>
       {children}
     </div>
   );
@@ -113,7 +111,9 @@ export function ImagePicker({
   const resolved = resolveImage(value);
   return (
     <div className="grid gap-3 border border-border/40 rounded-2xl bg-secondary/5 p-4">
-      <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">{label}</Label>
+      <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+        {label}
+      </Label>
       <div className="grid gap-4 md:grid-cols-3 items-start">
         <div className="md:col-span-2">
           <Input
@@ -190,9 +190,7 @@ export function ListBuilder({
         urls.push(url);
       }
       onChange([...values, ...urls]);
-      toast.success(
-        urls.length === 1 ? "Image uploaded" : `${urls.length} images uploaded`,
-      );
+      toast.success(urls.length === 1 ? "Image uploaded" : `${urls.length} images uploaded`);
     } catch (err: any) {
       toast.error(err?.message || "Upload failed");
     } finally {
@@ -201,13 +199,13 @@ export function ListBuilder({
   };
 
   const isImageValue = (val: string) =>
-    val.startsWith("data:image/") ||
-    /^https?:\/\//i.test(val) ||
-    val.startsWith("/");
+    val.startsWith("data:image/") || /^https?:\/\//i.test(val) || val.startsWith("/");
 
   return (
     <div className="grid gap-3 border border-border/40 rounded-2xl bg-secondary/5 p-4">
-      <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">{label}</Label>
+      <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+        {label}
+      </Label>
       <div className="flex flex-wrap gap-2">
         <Input
           placeholder={placeholder}
@@ -221,7 +219,12 @@ export function ListBuilder({
           }}
           className="min-w-[12rem] flex-1"
         />
-        <Button type="button" onClick={handleAdd} size="sm" className="bg-primary hover:bg-accent text-white rounded-full cursor-pointer">
+        <Button
+          type="button"
+          onClick={handleAdd}
+          size="sm"
+          className="bg-primary hover:bg-accent text-white rounded-full cursor-pointer"
+        >
           <Plus className="h-4 w-4 mr-1" /> Add
         </Button>
         {allowUpload && (
@@ -264,7 +267,9 @@ export function ListBuilder({
                 className="h-12 w-10 shrink-0 rounded-lg object-cover border border-border"
               />
             ) : null}
-            <span className="flex-1 break-all leading-relaxed text-xs">{val.startsWith("data:") ? "Uploaded image" : val}</span>
+            <span className="flex-1 break-all leading-relaxed text-xs">
+              {val.startsWith("data:") ? "Uploaded image" : val}
+            </span>
             <div className="flex items-center gap-1 shrink-0">
               <Button
                 type="button"
@@ -299,7 +304,9 @@ export function ListBuilder({
           </div>
         ))}
         {values.length === 0 && (
-          <p className="text-center text-xs text-muted-foreground py-3 italic">No items added yet.</p>
+          <p className="text-center text-xs text-muted-foreground py-3 italic">
+            No items added yet.
+          </p>
         )}
       </div>
     </div>
@@ -317,14 +324,62 @@ export function OverviewTab({ overview: propOverview }: { overview?: any }) {
   const data = queryOverview || propOverview;
 
   const stats = [
-    { label: "Trends", value: data?.trends ?? 0, desc: "Total visual trendboards", color: "from-[#C2185B]/5 to-[#A01048]/10 text-primary border-primary/20", icon: Sparkles },
-    { label: "Blog Posts", value: data?.posts ?? 0, desc: "Published and draft articles", color: "from-blue-500/5 to-indigo-500/10 text-blue-700 border-blue-200", icon: BookOpen },
-    { label: "Subscribers", value: data?.subscribers ?? 0, desc: "Active newsletter readers", color: "from-emerald-500/5 to-teal-500/10 text-emerald-700 border-emerald-200", icon: Mail },
-    { label: "Open Messages", value: data?.openMessages ?? 0, desc: "Awaiting customer response", color: "from-amber-500/5 to-orange-500/10 text-amber-700 border-amber-200", icon: Inbox },
-    { label: "Total Likes", value: data?.likes ?? 0, desc: "User likes on trends", color: "from-rose-500/5 to-pink-500/10 text-rose-700 border-rose-200", icon: Heart },
-    { label: "Total Saved", value: data?.favorites ?? 0, desc: "Bookmarked articles & trends", color: "from-purple-500/5 to-fuchsia-500/10 text-purple-700 border-purple-200", icon: Bookmark },
-    { label: "Comments", value: data?.comments ?? 0, desc: "User engagement threads", color: "from-cyan-500/5 to-blue-500/10 text-cyan-700 border-cyan-200", icon: MessageCircle },
-    { label: "Total Users", value: data?.users ?? 0, desc: "Registered member profiles", color: "from-slate-500/5 to-neutral-500/10 text-slate-700 border-slate-200", icon: Users },
+    {
+      label: "Trends",
+      value: data?.trends ?? 0,
+      desc: "Total visual trendboards",
+      color: "from-[#C2185B]/5 to-[#A01048]/10 text-primary border-primary/20",
+      icon: Sparkles,
+    },
+    {
+      label: "Blog Posts",
+      value: data?.posts ?? 0,
+      desc: "Published and draft articles",
+      color: "from-blue-500/5 to-indigo-500/10 text-blue-700 border-blue-200",
+      icon: BookOpen,
+    },
+    {
+      label: "Subscribers",
+      value: data?.subscribers ?? 0,
+      desc: "Active newsletter readers",
+      color: "from-emerald-500/5 to-teal-500/10 text-emerald-700 border-emerald-200",
+      icon: Mail,
+    },
+    {
+      label: "Open Messages",
+      value: data?.openMessages ?? 0,
+      desc: "Awaiting customer response",
+      color: "from-amber-500/5 to-orange-500/10 text-amber-700 border-amber-200",
+      icon: Inbox,
+    },
+    {
+      label: "Total Likes",
+      value: data?.likes ?? 0,
+      desc: "User likes on trends",
+      color: "from-rose-500/5 to-pink-500/10 text-rose-700 border-rose-200",
+      icon: Heart,
+    },
+    {
+      label: "Total Saved",
+      value: data?.favorites ?? 0,
+      desc: "Bookmarked articles & trends",
+      color: "from-purple-500/5 to-fuchsia-500/10 text-purple-700 border-purple-200",
+      icon: Bookmark,
+    },
+    {
+      label: "Comments",
+      value: data?.comments ?? 0,
+      desc: "User engagement threads",
+      color: "from-cyan-500/5 to-blue-500/10 text-cyan-700 border-cyan-200",
+      icon: MessageCircle,
+    },
+    {
+      label: "Total Users",
+      value: data?.users ?? 0,
+      desc: "Registered member profiles",
+      color: "from-slate-500/5 to-neutral-500/10 text-slate-700 border-slate-200",
+      icon: Users,
+    },
   ];
 
   return (
@@ -347,14 +402,20 @@ export function OverviewTab({ overview: propOverview }: { overview?: any }) {
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{s.label}</span>
-                  <div className="mt-2 font-display text-4xl font-semibold text-foreground">{s.value}</div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {s.label}
+                  </span>
+                  <div className="mt-2 font-display text-4xl font-semibold text-foreground">
+                    {s.value}
+                  </div>
                 </div>
                 <div className="rounded-2xl bg-white p-3 shadow-soft text-primary border border-border/20 shrink-0">
                   <Icon className="h-5 w-5" />
                 </div>
               </div>
-              <p className="mt-4 text-xs text-muted-foreground font-medium leading-relaxed">{s.desc}</p>
+              <p className="mt-4 text-xs text-muted-foreground font-medium leading-relaxed">
+                {s.desc}
+              </p>
             </div>
           );
         })}
@@ -413,7 +474,7 @@ export function TrendsTab() {
   const filtered = (listQ.data ?? []).filter(
     (t) =>
       t.title.toLowerCase().includes(search.toLowerCase()) ||
-      t.slug.toLowerCase().includes(search.toLowerCase())
+      t.slug.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -421,9 +482,14 @@ export function TrendsTab() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="font-display text-2xl">Visual Trends ({filtered.length})</h2>
-          <p className="text-xs text-muted-foreground mt-1">Manage content lookbooks, style guides and category filters.</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Manage content lookbooks, style guides and category filters.
+          </p>
         </div>
-        <Button onClick={startNew} className="bg-primary hover:bg-accent text-white rounded-full px-5 py-2">
+        <Button
+          onClick={startNew}
+          className="bg-primary hover:bg-accent text-white rounded-full px-5 py-2"
+        >
           <Plus className="mr-2 h-4 w-4" /> New Trend
         </Button>
       </div>
@@ -495,36 +561,55 @@ export function TrendsTab() {
               {filtered.map((t) => {
                 const imgUrl = resolveImage(t.image_key);
                 return (
-                  <tr key={t.id} className="border-t border-border/60 hover:bg-secondary/5 transition">
+                  <tr
+                    key={t.id}
+                    className="border-t border-border/60 hover:bg-secondary/5 transition"
+                  >
                     <td className="px-5 py-3.5 font-medium">
                       <div className="flex items-center gap-3">
                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-border/40 bg-muted shadow-soft">
                           <img src={imgUrl} alt={t.title} className="h-full w-full object-cover" />
                         </div>
                         <div className="min-w-0">
-                          <div className="font-semibold text-foreground truncate max-w-sm md:max-w-md">{t.title}</div>
-                          <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1 max-w-xs md:max-w-sm">{t.excerpt}</div>
-                          <div className="text-[10px] text-muted-foreground mt-0.5 font-mono">/{t.slug}</div>
+                          <div className="font-semibold text-foreground truncate max-w-sm md:max-w-md">
+                            {t.title}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1 max-w-xs md:max-w-sm">
+                            {t.excerpt}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground mt-0.5 font-mono">
+                            /{t.slug}
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-5 py-3.5">
                       <Badge variant="outline" className="border-border/80 bg-[#FFF9FB]/50">
-                        {categories.find((c) => c.slug === t.category_slug)?.name ?? t.category_slug}
+                        {categories.find((c) => c.slug === t.category_slug)?.name ??
+                          t.category_slug}
                       </Badge>
                     </td>
                     <td className="px-5 py-3.5">
                       {t.published ? (
-                        <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-none">Published</Badge>
+                        <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-none">
+                          Published
+                        </Badge>
                       ) : (
-                        <Badge variant="secondary" className="bg-muted text-muted-foreground">Draft</Badge>
+                        <Badge variant="secondary" className="bg-muted text-muted-foreground">
+                          Draft
+                        </Badge>
                       )}
                     </td>
                     <td className="px-5 py-3.5 text-muted-foreground">
                       {new Date(t.updated_at).toLocaleDateString()}
                     </td>
                     <td className="px-5 py-3.5 text-right">
-                      <Button variant="ghost" size="icon" onClick={() => startEdit(t)} className="hover:bg-secondary/20 mr-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => startEdit(t)}
+                        className="hover:bg-secondary/20 mr-1"
+                      >
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
@@ -583,7 +668,11 @@ export function AdminTrendCard({
     <div className="group relative overflow-hidden rounded-3xl bg-white border border-border/80 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant flex flex-col h-full">
       {/* Image container */}
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
-        <img src={imgUrl} alt={trend.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <img
+          src={imgUrl}
+          alt={trend.title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
         <div className="absolute top-3 left-3">
           <Badge className="bg-white/90 text-primary hover:bg-white text-[10px] uppercase font-semibold border-none shadow-soft">
             {categories.find((c) => c.slug === trend.category_slug)?.name ?? trend.category_slug}
@@ -591,7 +680,12 @@ export function AdminTrendCard({
         </div>
         {!trend.published && (
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center">
-            <Badge variant="secondary" className="bg-black/60 text-white border-none uppercase text-[10px] tracking-wider font-semibold">Draft</Badge>
+            <Badge
+              variant="secondary"
+              className="bg-black/60 text-white border-none uppercase text-[10px] tracking-wider font-semibold"
+            >
+              Draft
+            </Badge>
           </div>
         )}
       </div>
@@ -641,7 +735,8 @@ export function TrendForm({ initial, onDone }: { initial: AdminTrend; onDone: ()
 
   const save = useMutation({
     mutationFn: async () => {
-      if (!f.slug || !f.title || !f.excerpt) throw new Error("Slug, title and excerpt are required");
+      if (!f.slug || !f.title || !f.excerpt)
+        throw new Error("Slug, title and excerpt are required");
       await upsertTrend({
         id: f.id || undefined,
         slug: f.slug.trim(),
@@ -669,13 +764,19 @@ export function TrendForm({ initial, onDone }: { initial: AdminTrend; onDone: ()
   return (
     <div className="space-y-6">
       <DialogHeader>
-        <DialogTitle className="font-display text-2xl">{isEdit ? "Modify Lookbook Trend" : "New Visual Trend"}</DialogTitle>
+        <DialogTitle className="font-display text-2xl">
+          {isEdit ? "Modify Lookbook Trend" : "New Visual Trend"}
+        </DialogTitle>
       </DialogHeader>
-      
+
       <div className="grid gap-5 py-2">
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Title">
-            <Input value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} placeholder="e.g. Sage & Rose: The Palette Of The Season" />
+            <Input
+              value={f.title}
+              onChange={(e) => setF({ ...f, title: e.target.value })}
+              placeholder="e.g. Sage & Rose: The Palette Of The Season"
+            />
           </Field>
           <Field label="Slug">
             <Input
@@ -689,7 +790,9 @@ export function TrendForm({ initial, onDone }: { initial: AdminTrend; onDone: ()
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Category">
             <Select value={f.category_slug} onValueChange={(v) => setF({ ...f, category_slug: v })}>
-              <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="bg-white">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 {categories.map((c) => (
                   <SelectItem key={c.slug} value={c.slug}>
@@ -715,7 +818,11 @@ export function TrendForm({ initial, onDone }: { initial: AdminTrend; onDone: ()
         </div>
 
         {/* cover image visual picker */}
-        <ImagePicker label="Cover Image" value={f.image_key} onChange={(val) => setF({ ...f, image_key: val })} />
+        <ImagePicker
+          label="Cover Image"
+          value={f.image_key}
+          onChange={(val) => setF({ ...f, image_key: val })}
+        />
 
         <Field label="Excerpt Summary">
           <Textarea
@@ -785,7 +892,11 @@ export function TrendForm({ initial, onDone }: { initial: AdminTrend; onDone: ()
       </div>
 
       <DialogFooter>
-        <Button onClick={() => save.mutate()} disabled={save.isPending} className="bg-primary hover:bg-accent text-white w-full rounded-full">
+        <Button
+          onClick={() => save.mutate()}
+          disabled={save.isPending}
+          className="bg-primary hover:bg-accent text-white w-full rounded-full"
+        >
           {save.isPending ? "Syncing data..." : isEdit ? "Update Trendboard" : "Create Trendboard"}
         </Button>
       </DialogFooter>
@@ -830,17 +941,27 @@ export function BlogTab() {
   const filtered = (listQ.data ?? []).filter(
     (p) =>
       p.title.toLowerCase().includes(search.toLowerCase()) ||
-      p.slug.toLowerCase().includes(search.toLowerCase())
+      p.slug.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 className="font-display text-2xl animate-fade-in">Blog Journal Editorials ({filtered.length})</h2>
-          <p className="text-xs text-muted-foreground mt-1">Publish news features, guides, styling advice and editor reviews.</p>
+          <h2 className="font-display text-2xl animate-fade-in">
+            Blog Journal Editorials ({filtered.length})
+          </h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Publish news features, guides, styling advice and editor reviews.
+          </p>
         </div>
-        <Button onClick={() => { setEditing({ ...emptyPost }); setOpen(true); }} className="bg-primary hover:bg-accent text-white rounded-full px-5 py-2">
+        <Button
+          onClick={() => {
+            setEditing({ ...emptyPost });
+            setOpen(true);
+          }}
+          className="bg-primary hover:bg-accent text-white rounded-full px-5 py-2"
+        >
           <Plus className="mr-2 h-4 w-4" /> New Article
         </Button>
       </div>
@@ -915,16 +1036,25 @@ export function BlogTab() {
               {filtered.map((p) => {
                 const imgUrl = resolveImage(p.image_key);
                 return (
-                  <tr key={p.id} className="border-t border-border/60 hover:bg-secondary/5 transition">
+                  <tr
+                    key={p.id}
+                    className="border-t border-border/60 hover:bg-secondary/5 transition"
+                  >
                     <td className="px-5 py-3.5 font-medium">
                       <div className="flex items-center gap-3">
                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-border/40 bg-muted shadow-soft">
                           <img src={imgUrl} alt={p.title} className="h-full w-full object-cover" />
                         </div>
                         <div className="min-w-0">
-                          <div className="font-semibold text-foreground truncate max-w-sm md:max-w-md">{p.title}</div>
-                          <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1 max-w-xs md:max-w-sm">{p.excerpt}</div>
-                          <div className="text-[10px] text-muted-foreground mt-0.5 font-mono">/{p.slug}</div>
+                          <div className="font-semibold text-foreground truncate max-w-sm md:max-w-md">
+                            {p.title}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1 max-w-xs md:max-w-sm">
+                            {p.excerpt}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground mt-0.5 font-mono">
+                            /{p.slug}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -935,16 +1065,28 @@ export function BlogTab() {
                     </td>
                     <td className="px-5 py-3.5">
                       {p.published ? (
-                        <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-none">Published</Badge>
+                        <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-none">
+                          Published
+                        </Badge>
                       ) : (
-                        <Badge variant="secondary" className="bg-muted text-muted-foreground">Draft</Badge>
+                        <Badge variant="secondary" className="bg-muted text-muted-foreground">
+                          Draft
+                        </Badge>
                       )}
                     </td>
                     <td className="px-5 py-3.5 text-muted-foreground">
                       {new Date(p.updated_at).toLocaleDateString()}
                     </td>
                     <td className="px-5 py-3.5 text-right">
-                      <Button variant="ghost" size="icon" onClick={() => { setEditing({ ...p }); setOpen(true); }} className="hover:bg-secondary/20 mr-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditing({ ...p });
+                          setOpen(true);
+                        }}
+                        className="hover:bg-secondary/20 mr-1"
+                      >
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
@@ -1003,10 +1145,19 @@ export function AdminBlogCard({
     <div className="group relative overflow-hidden rounded-3xl bg-white border border-border/80 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant flex flex-col md:flex-row md:items-stretch h-full">
       {/* Visual Image container */}
       <div className="relative aspect-video md:aspect-square md:w-40 shrink-0 overflow-hidden bg-muted">
-        <img src={imgUrl} alt={post.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <img
+          src={imgUrl}
+          alt={post.title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
         {!post.published && (
           <div className="absolute inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center">
-            <Badge variant="secondary" className="bg-black/60 text-white border-none uppercase text-[10px] tracking-wider font-semibold">Draft</Badge>
+            <Badge
+              variant="secondary"
+              className="bg-black/60 text-white border-none uppercase text-[10px] tracking-wider font-semibold"
+            >
+              Draft
+            </Badge>
           </div>
         )}
       </div>
@@ -1031,9 +1182,7 @@ export function AdminBlogCard({
         </div>
 
         <div className="mt-4 flex items-center justify-between border-t border-border/40 pt-3 gap-2">
-          <span className="text-[10px] text-muted-foreground font-mono truncate">
-            /{post.slug}
-          </span>
+          <span className="text-[10px] text-muted-foreground font-mono truncate">/{post.slug}</span>
           <div className="flex items-center gap-1.5 shrink-0">
             <Button
               variant="outline"
@@ -1064,7 +1213,8 @@ export function PostForm({ initial, onDone }: { initial: AdminPost; onDone: () =
 
   const save = useMutation({
     mutationFn: async () => {
-      if (!f.slug || !f.title || !f.excerpt) throw new Error("Slug, title and excerpt are required");
+      if (!f.slug || !f.title || !f.excerpt)
+        throw new Error("Slug, title and excerpt are required");
       await upsertPost({
         id: f.id || undefined,
         slug: f.slug.trim(),
@@ -1088,13 +1238,19 @@ export function PostForm({ initial, onDone }: { initial: AdminPost; onDone: () =
   return (
     <div className="space-y-6">
       <DialogHeader>
-        <DialogTitle className="font-display text-2xl">{isEdit ? "Edit Editorial Post" : "Compose Editorial Post"}</DialogTitle>
+        <DialogTitle className="font-display text-2xl">
+          {isEdit ? "Edit Editorial Post" : "Compose Editorial Post"}
+        </DialogTitle>
       </DialogHeader>
-      
+
       <div className="grid gap-5 py-2">
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Article Title">
-            <Input value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} placeholder="e.g. Building A Capsule Wardrobe: The Pakistani Edit" />
+            <Input
+              value={f.title}
+              onChange={(e) => setF({ ...f, title: e.target.value })}
+              placeholder="e.g. Building A Capsule Wardrobe: The Pakistani Edit"
+            />
           </Field>
           <Field label="URL Slug">
             <Input
@@ -1108,7 +1264,9 @@ export function PostForm({ initial, onDone }: { initial: AdminPost; onDone: () =
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Category Group">
             <Select value={f.category} onValueChange={(v) => setF({ ...f, category: v })}>
-              <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="bg-white">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 {blogCategories.map((c) => (
                   <SelectItem key={c} value={c} className="capitalize">
@@ -1134,7 +1292,11 @@ export function PostForm({ initial, onDone }: { initial: AdminPost; onDone: () =
         </div>
 
         {/* image selector */}
-        <ImagePicker label="Cover Image" value={f.image_key} onChange={(val) => setF({ ...f, image_key: val })} />
+        <ImagePicker
+          label="Cover Image"
+          value={f.image_key}
+          onChange={(val) => setF({ ...f, image_key: val })}
+        />
 
         <Field label="Brief Summary Excerpt">
           <Textarea
@@ -1160,7 +1322,7 @@ export function PostForm({ initial, onDone }: { initial: AdminPost; onDone: () =
               onChange={(e) => setF({ ...f, read_minutes: Number(e.target.value) })}
             />
           </Field>
-          
+
           <div className="flex items-center gap-3 bg-secondary/10 p-4 rounded-2xl border border-border/40 mt-6 md:mt-0">
             <Switch checked={f.published} onCheckedChange={(v) => setF({ ...f, published: v })} />
             <div className="grid">
@@ -1174,7 +1336,11 @@ export function PostForm({ initial, onDone }: { initial: AdminPost; onDone: () =
       </div>
 
       <DialogFooter>
-        <Button onClick={() => save.mutate()} disabled={save.isPending} className="bg-primary hover:bg-accent text-white w-full rounded-full">
+        <Button
+          onClick={() => save.mutate()}
+          disabled={save.isPending}
+          className="bg-primary hover:bg-accent text-white w-full rounded-full"
+        >
           {save.isPending ? "Syncing data..." : isEdit ? "Update Article" : "Publish Article"}
         </Button>
       </DialogFooter>
@@ -1187,7 +1353,7 @@ export function PostForm({ initial, onDone }: { initial: AdminPost; onDone: () =
 export function NewsletterTab() {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["admin-subs"], queryFn: fetchNewsletterSubscribers });
-  
+
   const del = useMutation({
     mutationFn: (id: string) => deleteSubscriber(id),
     onSuccess: () => {
@@ -1224,9 +1390,14 @@ export function NewsletterTab() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="font-display text-2xl">Newsletter Subscribers ({q.data?.length ?? 0})</h2>
-          <p className="text-xs text-muted-foreground mt-1">Manage user emails that opted-in to receive magazine notifications.</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Manage user emails that opted-in to receive magazine notifications.
+          </p>
         </div>
-        <Button onClick={handleExportCSV} className="bg-primary hover:bg-accent text-white rounded-full px-5 py-2">
+        <Button
+          onClick={handleExportCSV}
+          className="bg-primary hover:bg-accent text-white rounded-full px-5 py-2"
+        >
           <Download className="mr-2 h-4 w-4" /> Export CSV List
         </Button>
       </div>
@@ -1278,9 +1449,10 @@ export function NewsletterTab() {
 export function MessagesTab() {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["admin-messages"], queryFn: fetchContactMessages });
-  
+
   const mark = useMutation({
-    mutationFn: ({ id, handled }: { id: string; handled: boolean }) => markMessageHandled(id, handled),
+    mutationFn: ({ id, handled }: { id: string; handled: boolean }) =>
+      markMessageHandled(id, handled),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-messages"] });
       qc.invalidateQueries({ queryKey: ["admin-overview"] });
@@ -1300,8 +1472,12 @@ export function MessagesTab() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-display text-2xl font-semibold">Inbox Messages ({q.data?.length ?? 0})</h2>
-        <p className="text-xs text-muted-foreground mt-1">Review contact requests, reader inquiries, and collaboration requests.</p>
+        <h2 className="font-display text-2xl font-semibold">
+          Inbox Messages ({q.data?.length ?? 0})
+        </h2>
+        <p className="text-xs text-muted-foreground mt-1">
+          Review contact requests, reader inquiries, and collaboration requests.
+        </p>
       </div>
 
       <div className="space-y-4">
@@ -1317,13 +1493,16 @@ export function MessagesTab() {
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-semibold text-base text-foreground">{m.subject}</span>
                   {m.handled ? (
-                    <Badge variant="secondary" className="bg-muted text-muted-foreground">Handled</Badge>
+                    <Badge variant="secondary" className="bg-muted text-muted-foreground">
+                      Handled
+                    </Badge>
                   ) : (
                     <Badge className="bg-primary text-white border-none">New</Badge>
                   )}
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">
-                  From: <span className="font-semibold text-foreground/80">{m.name}</span> · {m.email} · {new Date(m.created_at).toLocaleString()}
+                  From: <span className="font-semibold text-foreground/80">{m.name}</span> ·{" "}
+                  {m.email} · {new Date(m.created_at).toLocaleString()}
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -1345,7 +1524,9 @@ export function MessagesTab() {
                 </Button>
               </div>
             </div>
-            <p className="mt-4 whitespace-pre-wrap text-sm text-foreground/90 leading-relaxed border-t border-border/40 pt-3">{m.message}</p>
+            <p className="mt-4 whitespace-pre-wrap text-sm text-foreground/90 leading-relaxed border-t border-border/40 pt-3">
+              {m.message}
+            </p>
           </div>
         ))}
         {(!q.data || q.data.length === 0) && (
@@ -1363,9 +1544,10 @@ export function MessagesTab() {
 export function CommentsTab() {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["admin-comments"], queryFn: fetchAllCommentsAdmin });
-  
+
   const setStatus = useMutation({
-    mutationFn: (vars: { id: string; status: "visible" | "hidden" }) => setCommentStatus(vars.id, vars.status),
+    mutationFn: (vars: { id: string; status: "visible" | "hidden" }) =>
+      setCommentStatus(vars.id, vars.status),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-comments"] });
       qc.invalidateQueries({ queryKey: ["comments"] });
@@ -1390,7 +1572,9 @@ export function CommentsTab() {
     <div className="space-y-6">
       <div>
         <h2 className="font-display text-2xl font-semibold">Moderated Comments ({rows.length})</h2>
-        <p className="text-xs text-muted-foreground mt-1">Approve, hide or delete comment threads under lookbooks and editorials.</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Approve, hide or delete comment threads under lookbooks and editorials.
+        </p>
       </div>
 
       <div className="space-y-4">
@@ -1398,7 +1582,9 @@ export function CommentsTab() {
           <div
             key={c.id}
             className={`rounded-3xl border p-5 shadow-soft transition-all duration-300 ${
-              c.status === "hidden" ? "border-border bg-white/40 opacity-70" : "border-border bg-white"
+              c.status === "hidden"
+                ? "border-border bg-white/40 opacity-70"
+                : "border-border bg-white"
             }`}
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -1409,20 +1595,29 @@ export function CommentsTab() {
                   </span>
                   <span className="text-xs text-muted-foreground">
                     commented on {c.target_type === "trend" ? "trend" : "editorial"}{" "}
-                    <span className="font-semibold text-foreground">{c.target_title ?? c.target_id}</span>
+                    <span className="font-semibold text-foreground">
+                      {c.target_title ?? c.target_id}
+                    </span>
                   </span>
                   {c.status === "hidden" && (
-                    <Badge variant="secondary" className="bg-muted text-muted-foreground">Hidden</Badge>
+                    <Badge variant="secondary" className="bg-muted text-muted-foreground">
+                      Hidden
+                    </Badge>
                   )}
                 </div>
-                <div className="text-[10px] text-muted-foreground mt-0.5">{new Date(c.created_at).toLocaleString()}</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5">
+                  {new Date(c.created_at).toLocaleString()}
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() =>
-                    setStatus.mutate({ id: c.id, status: c.status === "hidden" ? "visible" : "hidden" })
+                    setStatus.mutate({
+                      id: c.id,
+                      status: c.status === "hidden" ? "visible" : "hidden",
+                    })
                   }
                   className="rounded-full border-border/80 hover:bg-secondary/15"
                 >
@@ -1446,7 +1641,9 @@ export function CommentsTab() {
                 </Button>
               </div>
             </div>
-            <p className="mt-4 whitespace-pre-wrap text-sm text-foreground/90 leading-relaxed border-t border-border/40 pt-3">{c.body}</p>
+            <p className="mt-4 whitespace-pre-wrap text-sm text-foreground/90 leading-relaxed border-t border-border/40 pt-3">
+              {c.body}
+            </p>
           </div>
         ))}
         {rows.length === 0 && (
@@ -1481,14 +1678,20 @@ export function UsersTab() {
   });
 
   if (isLoading) {
-    return <div className="py-20 text-center text-muted-foreground italic animate-pulse">Loading registered profiles...</div>;
+    return (
+      <div className="py-20 text-center text-muted-foreground italic animate-pulse">
+        Loading registered profiles...
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="font-display text-2xl font-semibold">Users & Roles ({users.length})</h2>
-        <p className="text-xs text-muted-foreground mt-1">Manage system administrators, moderator roles, and view user metadata profiles.</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Manage system administrators, moderator roles, and view user metadata profiles.
+        </p>
       </div>
 
       <div className="overflow-x-auto rounded-3xl border border-border/80 bg-white shadow-soft">
@@ -1509,14 +1712,24 @@ export function UsersTab() {
                   <div className="flex items-center gap-3">
                     <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-primary/10 border border-primary/25 flex items-center justify-center font-display text-sm font-semibold text-primary shadow-soft">
                       {u.avatar_url ? (
-                        <img src={u.avatar_url} alt={u.display_name ?? ""} className="h-full w-full object-cover" />
+                        <img
+                          src={u.avatar_url}
+                          alt={u.display_name ?? ""}
+                          className="h-full w-full object-cover"
+                        />
                       ) : (
                         u.display_name?.slice(0, 2).toUpperCase() || "U"
                       )}
                     </div>
                     <div className="min-w-0">
-                      <div className="font-semibold text-foreground truncate">{u.display_name || "Anonymous Reader"}</div>
-                      {u.bio && <div className="text-xs text-muted-foreground truncate max-w-xs mt-0.5 leading-relaxed">{u.bio}</div>}
+                      <div className="font-semibold text-foreground truncate">
+                        {u.display_name || "Anonymous Reader"}
+                      </div>
+                      {u.bio && (
+                        <div className="text-xs text-muted-foreground truncate max-w-xs mt-0.5 leading-relaxed">
+                          {u.bio}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </td>
@@ -1528,7 +1741,9 @@ export function UsersTab() {
                   {u.role === "admin" ? (
                     <Badge className="bg-primary text-white border-none">Admin</Badge>
                   ) : (
-                    <Badge variant="secondary" className="bg-muted text-muted-foreground">User</Badge>
+                    <Badge variant="secondary" className="bg-muted text-muted-foreground">
+                      User
+                    </Badge>
                   )}
                 </td>
                 <td className="px-5 py-3.5 text-right">
@@ -1617,7 +1832,12 @@ export function ProductsTab() {
         description: desc,
         price,
         compare_at_price: compPrice,
-        images: imageUrls.length > 0 ? imageUrls : ["https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=80"],
+        images:
+          imageUrls.length > 0
+            ? imageUrls
+            : [
+                "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=80",
+              ],
         video_url: videoUrl || null,
         category,
         sizes,
@@ -1721,9 +1941,17 @@ export function ProductsTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-display text-2xl font-bold">Catalog Management</h2>
-          <p className="text-xs text-muted-foreground mt-1">Manage designer products and variants</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Manage designer products and variants
+          </p>
         </div>
-        <Button onClick={() => { setEditId(null); setOpen(true); }} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-4.5 py-2 cursor-pointer shadow-soft">
+        <Button
+          onClick={() => {
+            setEditId(null);
+            setOpen(true);
+          }}
+          className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-4.5 py-2 cursor-pointer shadow-soft"
+        >
           <PlusCircle className="mr-1 h-4 w-4" /> Add Product
         </Button>
       </div>
@@ -1744,7 +1972,11 @@ export function ProductsTab() {
               <tr key={prod.id} className="hover:bg-secondary/5 transition">
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
-                    <img src={prod.images?.[0] || ""} alt="" className="h-11 w-9 object-cover rounded-lg border border-border shadow-soft" />
+                    <img
+                      src={prod.images?.[0] || ""}
+                      alt=""
+                      className="h-11 w-9 object-cover rounded-lg border border-border shadow-soft"
+                    />
                     <div>
                       <div className="font-bold text-foreground">{prod.title}</div>
                       <div className="text-[10px] text-muted-foreground mt-0.5">{prod.slug}</div>
@@ -1752,16 +1984,35 @@ export function ProductsTab() {
                   </div>
                 </td>
                 <td className="px-5 py-3 font-mono text-muted-foreground">{prod.sku}</td>
-                <td className="px-5 py-3 font-bold text-primary">PKR {prod.price.toLocaleString()}</td>
-                <td className="px-5 py-3 capitalize text-muted-foreground">{prod.category.replace("-", " ")}</td>
+                <td className="px-5 py-3 font-bold text-primary">
+                  PKR {prod.price.toLocaleString()}
+                </td>
+                <td className="px-5 py-3 capitalize text-muted-foreground">
+                  {prod.category.replace("-", " ")}
+                </td>
                 <td className="px-5 py-3 text-right space-x-1">
-                  <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-secondary/20 text-muted-foreground hover:text-foreground" onClick={() => handleEdit(prod)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 hover:bg-secondary/20 text-muted-foreground hover:text-foreground"
+                    onClick={() => handleEdit(prod)}
+                  >
                     <Pencil className="h-3.5 w-3.5" />
                   </Button>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-secondary/20 text-primary" onClick={() => handleDuplicate(prod)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 hover:bg-secondary/20 text-primary"
+                    onClick={() => handleDuplicate(prod)}
+                  >
                     <Copy className="h-3.5 w-3.5" />
                   </Button>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => confirm("Delete this product?") && deleteMut.mutate(prod.id)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                    onClick={() => confirm("Delete this product?") && deleteMut.mutate(prod.id)}
+                  >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </td>
@@ -1775,22 +2026,38 @@ export function ProductsTab() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl rounded-3xl border border-border bg-white p-6 shadow-elegant max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-display text-lg font-bold">{editId ? "Edit Product" : "Create Product"}</DialogTitle>
+            <DialogTitle className="font-display text-lg font-bold">
+              {editId ? "Edit Product" : "Create Product"}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-2 text-xs">
             <div className="grid grid-cols-2 gap-4">
               <Field label="Product SKU *">
-                <Input value={sku} onChange={(e) => setSku(e.target.value)} placeholder="PAH-LWN-101" required />
+                <Input
+                  value={sku}
+                  onChange={(e) => setSku(e.target.value)}
+                  placeholder="PAH-LWN-101"
+                  required
+                />
               </Field>
               <Field label="Product Title *">
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="E.g. Rose Garden Kurta" required />
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="E.g. Rose Garden Kurta"
+                  required
+                />
               </Field>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <Field label="Category *">
-                <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary">
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary"
+                >
                   <option value="lawn-suits">Lawn Collection</option>
                   <option value="pret-wear">Pret Wear</option>
                   <option value="casual-wear">Casual Wear</option>
@@ -1801,33 +2068,65 @@ export function ProductsTab() {
                 </select>
               </Field>
               <Field label="Slug URL (optional)">
-                <Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="rose-garden-kurta" />
+                <Input
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder="rose-garden-kurta"
+                />
               </Field>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <Field label="Selling Price (PKR) *">
-                <Input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} required />
+                <Input
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
+                  required
+                />
               </Field>
               <Field label="Original Price (for discount display)">
-                <Input type="number" value={compPrice || ""} onChange={(e) => setCompPrice(e.target.value ? Number(e.target.value) : null)} />
+                <Input
+                  type="number"
+                  value={compPrice || ""}
+                  onChange={(e) => setCompPrice(e.target.value ? Number(e.target.value) : null)}
+                />
               </Field>
             </div>
 
             <Field label="Short Description *">
-              <Input value={shortDesc} onChange={(e) => setShortDesc(e.target.value)} placeholder="Brief summary of item card..." required />
+              <Input
+                value={shortDesc}
+                onChange={(e) => setShortDesc(e.target.value)}
+                placeholder="Brief summary of item card..."
+                required
+              />
             </Field>
 
             <Field label="Full Description *">
-              <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Elaborate details about styling, look and structure..." rows={3} required />
+              <Textarea
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
+                placeholder="Elaborate details about styling, look and structure..."
+                rows={3}
+                required
+              />
             </Field>
 
             <div className="grid grid-cols-2 gap-4">
               <Field label="Fabric Type">
-                <Input value={fabric} onChange={(e) => setFabric(e.target.value)} placeholder="Pure raw silk / Chiffon / Lawn" />
+                <Input
+                  value={fabric}
+                  onChange={(e) => setFabric(e.target.value)}
+                  placeholder="Pure raw silk / Chiffon / Lawn"
+                />
               </Field>
               <Field label="Embroidery Style">
-                <Input value={embroidery} onChange={(e) => setEmbroidery(e.target.value)} placeholder="Zardozi handcraft / None" />
+                <Input
+                  value={embroidery}
+                  onChange={(e) => setEmbroidery(e.target.value)}
+                  placeholder="Zardozi handcraft / None"
+                />
               </Field>
             </div>
 
@@ -1841,14 +2140,21 @@ export function ProductsTab() {
             />
 
             <div className="space-y-1.5">
-              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Available Sizes</Label>
+              <Label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+                Available Sizes
+              </Label>
               <div className="flex gap-2">
                 {["XS", "S", "M", "L", "XL", "XXL"].map((sz) => {
                   const selected = sizes.includes(sz);
                   return (
-                    <button type="button" key={sz} onClick={() => handleSizeToggle(sz)} className={`h-8 w-10 rounded-lg border text-[10px] font-bold ${
-                      selected ? "bg-primary border-primary text-white" : "border-border bg-white"
-                    }`}>
+                    <button
+                      type="button"
+                      key={sz}
+                      onClick={() => handleSizeToggle(sz)}
+                      className={`h-8 w-10 rounded-lg border text-[10px] font-bold ${
+                        selected ? "bg-primary border-primary text-white" : "border-border bg-white"
+                      }`}
+                    >
                       {sz}
                     </button>
                   );
@@ -1856,28 +2162,67 @@ export function ProductsTab() {
               </div>
             </div>
 
-            <ListBuilder label="Available Colors" values={colors} onChange={setColors} placeholder="E.g. Lilac, Peach, Emerald" />
+            <ListBuilder
+              label="Available Colors"
+              values={colors}
+              onChange={setColors}
+              placeholder="E.g. Lilac, Peach, Emerald"
+            />
 
             {/* Badges indicators */}
             <div className="grid grid-cols-3 gap-4 border-t border-border/40 pt-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="featured-cb" className="text-xs">Featured Product</Label>
-                <input id="featured-cb" type="checkbox" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} className="h-4.5 w-4.5" />
+                <Label htmlFor="featured-cb" className="text-xs">
+                  Featured Product
+                </Label>
+                <input
+                  id="featured-cb"
+                  type="checkbox"
+                  checked={isFeatured}
+                  onChange={(e) => setIsFeatured(e.target.checked)}
+                  className="h-4.5 w-4.5"
+                />
               </div>
               <div className="flex items-center justify-between">
-                <Label htmlFor="trending-cb" className="text-xs">Trending Now</Label>
-                <input id="trending-cb" type="checkbox" checked={isTrending} onChange={(e) => setIsTrending(e.target.checked)} className="h-4.5 w-4.5" />
+                <Label htmlFor="trending-cb" className="text-xs">
+                  Trending Now
+                </Label>
+                <input
+                  id="trending-cb"
+                  type="checkbox"
+                  checked={isTrending}
+                  onChange={(e) => setIsTrending(e.target.checked)}
+                  className="h-4.5 w-4.5"
+                />
               </div>
               <div className="flex items-center justify-between">
-                <Label htmlFor="newarrival-cb" className="text-xs">New Arrival</Label>
-                <input id="newarrival-cb" type="checkbox" checked={isNewArrival} onChange={(e) => setIsNewArrival(e.target.checked)} className="h-4.5 w-4.5" />
+                <Label htmlFor="newarrival-cb" className="text-xs">
+                  New Arrival
+                </Label>
+                <input
+                  id="newarrival-cb"
+                  type="checkbox"
+                  checked={isNewArrival}
+                  onChange={(e) => setIsNewArrival(e.target.checked)}
+                  className="h-4.5 w-4.5"
+                />
               </div>
             </div>
           </div>
 
           <DialogFooter className="mt-4 gap-2">
-            <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-full text-xs font-semibold px-4">Cancel</Button>
-            <Button onClick={() => upsertMut.mutate()} disabled={upsertMut.isPending} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft">
+            <Button
+              variant="ghost"
+              onClick={() => setOpen(false)}
+              className="rounded-full text-xs font-semibold px-4"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => upsertMut.mutate()}
+              disabled={upsertMut.isPending}
+              className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft"
+            >
               {upsertMut.isPending ? "Syncing..." : editId ? "Save Changes" : "Create Product"}
             </Button>
           </DialogFooter>
@@ -1951,14 +2296,18 @@ export function OrdersTab() {
               <tr><th>Item</th><th>Detail</th><th>Qty</th><th>Subtotal</th></tr>
             </thead>
             <tbody>
-              ${(order.order_items || []).map((i: any) => `
+              ${(order.order_items || [])
+                .map(
+                  (i: any) => `
                 <tr>
                   <td>${i.product_title}</td>
                   <td>${i.size} / ${i.color}</td>
                   <td>${i.quantity}</td>
                   <td>PKR ${(i.price * i.quantity).toLocaleString()}</td>
                 </tr>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tbody>
           </table>
           <div class="totals">
@@ -1978,7 +2327,9 @@ export function OrdersTab() {
     <div className="space-y-6">
       <div>
         <h2 className="font-display text-2xl font-bold">Order Management</h2>
-        <p className="text-xs text-muted-foreground mt-1">Review customer shipments and payment status</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Review customer shipments and payment status
+        </p>
       </div>
 
       <div className="rounded-3xl border border-border/80 bg-white overflow-hidden shadow-soft">
@@ -1995,25 +2346,46 @@ export function OrdersTab() {
           </thead>
           <tbody className="divide-y divide-border/40 text-xs">
             {orders.map((ord: any) => (
-              <tr key={ord.id} className="hover:bg-secondary/5 transition cursor-pointer" onClick={() => handleOpenDetail(ord)}>
-                <td className="px-5 py-3 font-mono text-primary font-semibold">{ord.id.slice(0, 8).toUpperCase()}</td>
-                <td className="px-5 py-3">
-                  <p className="font-semibold">{ord.first_name} {ord.last_name}</p>
-                  <p className="text-[10px] text-muted-foreground truncate max-w-[120px]">{ord.email}</p>
+              <tr
+                key={ord.id}
+                className="hover:bg-secondary/5 transition cursor-pointer"
+                onClick={() => handleOpenDetail(ord)}
+              >
+                <td className="px-5 py-3 font-mono text-primary font-semibold">
+                  {ord.id.slice(0, 8).toUpperCase()}
                 </td>
-                <td className="px-5 py-3 text-muted-foreground">{new Date(ord.created_at).toLocaleDateString()}</td>
+                <td className="px-5 py-3">
+                  <p className="font-semibold">
+                    {ord.first_name} {ord.last_name}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground truncate max-w-[120px]">
+                    {ord.email}
+                  </p>
+                </td>
+                <td className="px-5 py-3 text-muted-foreground">
+                  {new Date(ord.created_at).toLocaleDateString()}
+                </td>
                 <td className="px-5 py-3 font-bold">PKR {ord.total.toLocaleString()}</td>
                 <td className="px-5 py-3">
-                  <span className={`px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider ${
-                    ord.status === "delivered" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                    ord.status === "cancelled" ? "bg-rose-50 text-rose-700 border-rose-200" :
-                    "bg-amber-50 text-amber-700 border-amber-200"
-                  }`}>
+                  <span
+                    className={`px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider ${
+                      ord.status === "delivered"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : ord.status === "cancelled"
+                          ? "bg-rose-50 text-rose-700 border-rose-200"
+                          : "bg-amber-50 text-amber-700 border-amber-200"
+                    }`}
+                  >
                     {ord.status}
                   </span>
                 </td>
                 <td className="px-5 py-3 text-right" onClick={(e) => e.stopPropagation()}>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-secondary/15 rounded-full" onClick={() => handlePrintInvoice(ord)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 hover:bg-secondary/15 rounded-full"
+                    onClick={() => handlePrintInvoice(ord)}
+                  >
                     <Printer className="h-3.5 w-3.5 text-muted-foreground" />
                   </Button>
                 </td>
@@ -2028,16 +2400,38 @@ export function OrdersTab() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="max-w-md rounded-3xl border border-border bg-white p-6 shadow-elegant">
             <DialogHeader>
-              <DialogTitle className="font-display text-lg font-bold">Order Details & Status</DialogTitle>
+              <DialogTitle className="font-display text-lg font-bold">
+                Order Details & Status
+              </DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4 py-2 text-xs">
               <div className="border border-border/40 rounded-2xl bg-secondary/5 p-4 space-y-1.5 text-muted-foreground">
-                <p>Order ID: <strong className="text-foreground">{selectedOrder.id}</strong></p>
-                <p>Placed By: <strong className="text-foreground">{selectedOrder.first_name} {selectedOrder.last_name} ({selectedOrder.email})</strong></p>
-                <p>Phone: <strong className="text-foreground">{selectedOrder.phone}</strong></p>
-                <p>Ship Address: <strong className="text-foreground">{selectedOrder.shipping_address.address_line1}, {selectedOrder.shipping_address.city}</strong></p>
-                <p>Payment: <strong className="text-foreground uppercase">{selectedOrder.payment_method} ({selectedOrder.payment_status})</strong></p>
+                <p>
+                  Order ID: <strong className="text-foreground">{selectedOrder.id}</strong>
+                </p>
+                <p>
+                  Placed By:{" "}
+                  <strong className="text-foreground">
+                    {selectedOrder.first_name} {selectedOrder.last_name} ({selectedOrder.email})
+                  </strong>
+                </p>
+                <p>
+                  Phone: <strong className="text-foreground">{selectedOrder.phone}</strong>
+                </p>
+                <p>
+                  Ship Address:{" "}
+                  <strong className="text-foreground">
+                    {selectedOrder.shipping_address.address_line1},{" "}
+                    {selectedOrder.shipping_address.city}
+                  </strong>
+                </p>
+                <p>
+                  Payment:{" "}
+                  <strong className="text-foreground uppercase">
+                    {selectedOrder.payment_method} ({selectedOrder.payment_status})
+                  </strong>
+                </p>
               </div>
 
               {/* Items */}
@@ -2046,9 +2440,13 @@ export function OrdersTab() {
                   <div key={item.id} className="py-2.5 flex justify-between">
                     <div>
                       <p className="font-bold text-foreground">{item.product_title}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5 capitalize">{item.size} / {item.color} · Qty: {item.quantity}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5 capitalize">
+                        {item.size} / {item.color} · Qty: {item.quantity}
+                      </p>
                     </div>
-                    <span className="font-semibold">PKR {(item.price * item.quantity).toLocaleString()}</span>
+                    <span className="font-semibold">
+                      PKR {(item.price * item.quantity).toLocaleString()}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -2056,7 +2454,11 @@ export function OrdersTab() {
               {/* Edit Status fields */}
               <div className="space-y-3.5 border-t border-border/40 pt-4">
                 <Field label="Order Fulfillment Status">
-                  <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary">
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary"
+                  >
                     <option value="pending">Pending</option>
                     <option value="processing">Processing</option>
                     <option value="shipped">Shipped</option>
@@ -2067,18 +2469,36 @@ export function OrdersTab() {
                 </Field>
 
                 <Field label="Courier Tracking Number">
-                  <Input value={trackingNo} onChange={(e) => setTrackingNo(e.target.value)} placeholder="TCS12998811" />
+                  <Input
+                    value={trackingNo}
+                    onChange={(e) => setTrackingNo(e.target.value)}
+                    placeholder="TCS12998811"
+                  />
                 </Field>
 
                 <Field label="Internal Order Notes">
-                  <Input value={internalNotes} onChange={(e) => setInternalNotes(e.target.value)} placeholder="Gate verification pending..." />
+                  <Input
+                    value={internalNotes}
+                    onChange={(e) => setInternalNotes(e.target.value)}
+                    placeholder="Gate verification pending..."
+                  />
                 </Field>
               </div>
             </div>
 
             <DialogFooter className="mt-4 gap-2">
-              <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-full text-xs font-semibold px-4">Cancel</Button>
-              <Button onClick={() => updateMut.mutate()} disabled={updateMut.isPending} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft">
+              <Button
+                variant="ghost"
+                onClick={() => setOpen(false)}
+                className="rounded-full text-xs font-semibold px-4"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => updateMut.mutate()}
+                disabled={updateMut.isPending}
+                className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft"
+              >
                 Save Changes
               </Button>
             </DialogFooter>
@@ -2133,14 +2553,23 @@ export function InventoryTab() {
           </thead>
           <tbody className="divide-y divide-border/40 text-xs">
             {inventory.map((item: any) => {
-              const localVal = quantities[item.id] !== undefined ? quantities[item.id] : item.quantity;
+              const localVal =
+                quantities[item.id] !== undefined ? quantities[item.id] : item.quantity;
               return (
                 <tr key={item.id} className="hover:bg-secondary/5 transition">
-                  <td className="px-5 py-3 font-semibold text-foreground">{item.products?.title || "Unknown product"}</td>
-                  <td className="px-5 py-3 font-mono text-muted-foreground">{item.products?.sku}</td>
-                  <td className="px-5 py-3 capitalize text-muted-foreground">{item.size} / {item.color}</td>
+                  <td className="px-5 py-3 font-semibold text-foreground">
+                    {item.products?.title || "Unknown product"}
+                  </td>
+                  <td className="px-5 py-3 font-mono text-muted-foreground">
+                    {item.products?.sku}
+                  </td>
+                  <td className="px-5 py-3 capitalize text-muted-foreground">
+                    {item.size} / {item.color}
+                  </td>
                   <td className="px-5 py-3 font-bold">
-                    <span className={`px-2 py-0.5 rounded-full ${item.quantity === 0 ? "bg-rose-50 text-rose-700" : "bg-emerald-50 text-emerald-700"}`}>
+                    <span
+                      className={`px-2 py-0.5 rounded-full ${item.quantity === 0 ? "bg-rose-50 text-rose-700" : "bg-emerald-50 text-emerald-700"}`}
+                    >
                       {item.quantity} In Stock
                     </span>
                   </td>
@@ -2149,10 +2578,17 @@ export function InventoryTab() {
                       <input
                         type="number"
                         value={localVal}
-                        onChange={(e) => setQuantities({ ...quantities, [item.id]: Number(e.target.value) })}
+                        onChange={(e) =>
+                          setQuantities({ ...quantities, [item.id]: Number(e.target.value) })
+                        }
                         className="w-16 rounded-xl border border-border bg-background px-2.5 py-1.5 text-center text-xs outline-none focus:border-primary"
                       />
-                      <Button size="sm" className="bg-primary text-white rounded-xl text-[10px]" onClick={() => updateMut.mutate({ id: item.id, qty: localVal })} disabled={updateMut.isPending}>
+                      <Button
+                        size="sm"
+                        className="bg-primary text-white rounded-xl text-[10px]"
+                        onClick={() => updateMut.mutate({ id: item.id, qty: localVal })}
+                        disabled={updateMut.isPending}
+                      >
                         Update
                       </Button>
                     </div>
@@ -2231,9 +2667,17 @@ export function CouponsTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-display text-2xl font-bold">Coupon Codes</h2>
-          <p className="text-xs text-muted-foreground mt-1">Manage marketing promotions and discounts</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Manage marketing promotions and discounts
+          </p>
         </div>
-        <Button onClick={() => { setEditId(null); setOpen(true); }} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-4.5 py-2 cursor-pointer shadow-soft">
+        <Button
+          onClick={() => {
+            setEditId(null);
+            setOpen(true);
+          }}
+          className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-4.5 py-2 cursor-pointer shadow-soft"
+        >
           <Plus className="mr-1 h-4 w-4" /> Add Coupon
         </Button>
       </div>
@@ -2255,14 +2699,28 @@ export function CouponsTab() {
               <tr key={cp.id} className="hover:bg-secondary/5 transition">
                 <td className="px-5 py-3 font-mono font-bold text-primary">{cp.code}</td>
                 <td className="px-5 py-3 capitalize text-foreground">
-                  {cp.discount_type === "percentage" ? `${cp.discount_value}% Off` :
-                   cp.discount_type === "fixed" ? `PKR ${cp.discount_value} Off` : "Free Shipping"}
+                  {cp.discount_type === "percentage"
+                    ? `${cp.discount_value}% Off`
+                    : cp.discount_type === "fixed"
+                      ? `PKR ${cp.discount_value} Off`
+                      : "Free Shipping"}
                 </td>
-                <td className="px-5 py-3 font-medium">PKR {cp.min_purchase_amount.toLocaleString()}</td>
-                <td className="px-5 py-3 font-semibold text-muted-foreground">{cp.usage_count} / {cp.usage_limit || "∞"}</td>
-                <td className="px-5 py-3 text-muted-foreground">{new Date(cp.end_date).toLocaleDateString()}</td>
+                <td className="px-5 py-3 font-medium">
+                  PKR {cp.min_purchase_amount.toLocaleString()}
+                </td>
+                <td className="px-5 py-3 font-semibold text-muted-foreground">
+                  {cp.usage_count} / {cp.usage_limit || "∞"}
+                </td>
+                <td className="px-5 py-3 text-muted-foreground">
+                  {new Date(cp.end_date).toLocaleDateString()}
+                </td>
                 <td className="px-5 py-3 text-right">
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => confirm("Delete this coupon?") && deleteMut.mutate(cp.id)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                    onClick={() => confirm("Delete this coupon?") && deleteMut.mutate(cp.id)}
+                  >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </td>
@@ -2276,44 +2734,84 @@ export function CouponsTab() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md rounded-3xl border border-border bg-white p-6 shadow-elegant">
           <DialogHeader>
-            <DialogTitle className="font-display text-lg font-bold">Generate Coupon Code</DialogTitle>
+            <DialogTitle className="font-display text-lg font-bold">
+              Generate Coupon Code
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-2 text-xs">
             <Field label="Coupon Code Name *">
-              <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="SUMMER25" required />
+              <Input
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="SUMMER25"
+                required
+              />
             </Field>
 
             <div className="grid grid-cols-2 gap-4">
               <Field label="Discount Type">
-                <select value={discType} onChange={(e) => setDiscType(e.target.value)} className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary">
+                <select
+                  value={discType}
+                  onChange={(e) => setDiscType(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none focus:border-primary"
+                >
                   <option value="percentage">Percentage %</option>
                   <option value="fixed">Fixed Price Amount</option>
                   <option value="free_shipping">Free Shipping</option>
                 </select>
               </Field>
               <Field label="Discount Value *">
-                <Input type="number" value={discValue} onChange={(e) => setDiscValue(Number(e.target.value))} required />
+                <Input
+                  type="number"
+                  value={discValue}
+                  onChange={(e) => setDiscValue(Number(e.target.value))}
+                  required
+                />
               </Field>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <Field label="Minimum Spend threshold">
-                <Input type="number" value={minSpend} onChange={(e) => setMinSpend(Number(e.target.value))} />
+                <Input
+                  type="number"
+                  value={minSpend}
+                  onChange={(e) => setMinSpend(Number(e.target.value))}
+                />
               </Field>
               <Field label="Usage Limit count">
-                <Input type="number" value={limit || ""} onChange={(e) => setLimit(e.target.value ? Number(e.target.value) : null)} placeholder="Unlimited" />
+                <Input
+                  type="number"
+                  value={limit || ""}
+                  onChange={(e) => setLimit(e.target.value ? Number(e.target.value) : null)}
+                  placeholder="Unlimited"
+                />
               </Field>
             </div>
 
             <Field label="Expiration Date *">
-              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+              />
             </Field>
           </div>
 
           <DialogFooter className="mt-4 gap-2">
-            <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-full text-xs font-semibold px-4">Cancel</Button>
-            <Button onClick={() => upsertMut.mutate()} disabled={upsertMut.isPending} className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft">
+            <Button
+              variant="ghost"
+              onClick={() => setOpen(false)}
+              className="rounded-full text-xs font-semibold px-4"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => upsertMut.mutate()}
+              disabled={upsertMut.isPending}
+              className="bg-primary hover:bg-accent text-white rounded-full text-xs font-semibold px-6 shadow-soft"
+            >
               {upsertMut.isPending ? "Generating..." : "Generate Coupon"}
             </Button>
           </DialogFooter>
@@ -2359,7 +2857,9 @@ export function ReviewsTab() {
     <div className="space-y-6">
       <div>
         <h2 className="font-display text-2xl font-bold">Feedback Reviews</h2>
-        <p className="text-xs text-muted-foreground mt-1">Moderate customer reviews and stars rating</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Moderate customer reviews and stars rating
+        </p>
       </div>
 
       <div className="rounded-3xl border border-border/80 bg-white overflow-hidden shadow-soft">
@@ -2389,19 +2889,36 @@ export function ReviewsTab() {
                     ))}
                   </div>
                 </td>
-                <td className="px-5 py-3 max-w-[200px] truncate text-muted-foreground" title={rev.comment}>{rev.comment}</td>
+                <td
+                  className="px-5 py-3 max-w-[200px] truncate text-muted-foreground"
+                  title={rev.comment}
+                >
+                  {rev.comment}
+                </td>
                 <td className="px-5 py-3">
                   <button
-                    onClick={() => toggleMut.mutate({ id: rev.id, newStatus: rev.status === "visible" ? "hidden" : "visible" })}
+                    onClick={() =>
+                      toggleMut.mutate({
+                        id: rev.id,
+                        newStatus: rev.status === "visible" ? "hidden" : "visible",
+                      })
+                    }
                     className={`px-3 py-1 rounded-full border text-[9px] font-bold uppercase cursor-pointer transition ${
-                      rev.status === "visible" ? "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100" : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
+                      rev.status === "visible"
+                        ? "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100"
+                        : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
                     }`}
                   >
                     {rev.status}
                   </button>
                 </td>
                 <td className="px-5 py-3 text-right">
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => confirm("Delete this review?") && deleteMut.mutate(rev.id)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                    onClick={() => confirm("Delete this review?") && deleteMut.mutate(rev.id)}
+                  >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </td>
@@ -2413,4 +2930,3 @@ export function ReviewsTab() {
     </div>
   );
 }
-

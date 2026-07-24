@@ -1,14 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import {
-  Gift,
-  Heart,
-  Package,
-  Truck,
-  ArrowRight,
-  ShoppingBag,
-  MapPin,
-  Star,
-} from "lucide-react";
+import { Gift, Heart, Package, Truck, ArrowRight, ShoppingBag, MapPin, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { greetingForHour, rewardsFromOrders, type AccountTab } from "./account-utils";
 
@@ -99,7 +90,9 @@ export function AccountHome({ displayName, orders, wishlistCount, loading, onNav
               <ArrowRight className="h-4 w-4 text-muted-foreground/50 transition group-hover:text-primary" />
             </div>
             <p className="mt-4 font-display text-3xl font-bold text-foreground">{value}</p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-wider text-foreground">{label}</p>
+            <p className="mt-1 text-xs font-bold uppercase tracking-wider text-foreground">
+              {label}
+            </p>
             <p className="mt-0.5 text-[11px] text-muted-foreground">{hint}</p>
           </button>
         ))}

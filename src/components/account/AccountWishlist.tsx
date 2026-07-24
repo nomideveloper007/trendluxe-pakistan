@@ -40,7 +40,9 @@ export function AccountWishlist({ products, loading, userId }: Props) {
       addToCart(product, size, color, 1);
       added += 1;
     }
-    toast.success(added ? `${added} item${added === 1 ? "" : "s"} added to cart` : "No available items");
+    toast.success(
+      added ? `${added} item${added === 1 ? "" : "s"} added to cart` : "No available items",
+    );
   };
 
   const shareWishlist = async () => {

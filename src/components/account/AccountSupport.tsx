@@ -6,7 +6,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Mail, MessageCircle, Phone, Ticket } from "lucide-react";
 import { toast } from "sonner";
 import { loadJson, saveJson, type SupportTicket } from "./account-utils";
@@ -66,7 +72,9 @@ export function AccountSupport({ userId }: { userId?: string }) {
     <div className="space-y-6 animate-fade-in">
       <div>
         <h2 className="font-display text-2xl font-bold">Support Center</h2>
-        <p className="mt-1 text-xs text-muted-foreground">We&apos;re here for every fitting question.</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          We&apos;re here for every fitting question.
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

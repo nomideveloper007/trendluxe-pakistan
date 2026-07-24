@@ -35,7 +35,10 @@ export function AccountSettings({ email, userId }: Props) {
   const devices = [
     {
       name: "This browser",
-      detail: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 48) + "…" : "Current session",
+      detail:
+        typeof navigator !== "undefined"
+          ? navigator.userAgent.slice(0, 48) + "…"
+          : "Current session",
       current: true,
     },
     {

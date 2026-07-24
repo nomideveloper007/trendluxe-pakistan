@@ -94,9 +94,7 @@ export function loadNotificationPrefs(): NotificationPrefs {
   if (typeof window === "undefined") return DEFAULT_NOTIFICATION_PREFS;
   try {
     const raw = localStorage.getItem("pahraan_notification_prefs");
-    return raw
-      ? { ...DEFAULT_NOTIFICATION_PREFS, ...JSON.parse(raw) }
-      : DEFAULT_NOTIFICATION_PREFS;
+    return raw ? { ...DEFAULT_NOTIFICATION_PREFS, ...JSON.parse(raw) } : DEFAULT_NOTIFICATION_PREFS;
   } catch {
     return DEFAULT_NOTIFICATION_PREFS;
   }

@@ -32,7 +32,8 @@ export function normalizePost(r: Row): BlogPost {
   };
 }
 
-const SELECT = "id,slug,title,category,image_key,excerpt,content,read_minutes,published_at,created_at";
+const SELECT =
+  "id,slug,title,category,image_key,excerpt,content,read_minutes,published_at,created_at";
 
 export async function fetchAllPosts(): Promise<BlogPost[]> {
   const { data, error } = await supabase
@@ -41,7 +42,7 @@ export async function fetchAllPosts(): Promise<BlogPost[]> {
     .eq("published", true)
     .order("published_at", { ascending: false, nullsFirst: false });
   if (error) throw error;
-  return (data as Row[] | null ?? []).map(normalizePost);
+  return ((data as Row[] | null) ?? []).map(normalizePost);
 }
 
 export async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
@@ -63,5 +64,5 @@ export async function fetchPostsBySlugs(slugs: string[]): Promise<BlogPost[]> {
     .in("slug", slugs)
     .eq("published", true);
   if (error) throw error;
-  return (data as Row[] | null ?? []).map(normalizePost);
+  return ((data as Row[] | null) ?? []).map(normalizePost);
 }

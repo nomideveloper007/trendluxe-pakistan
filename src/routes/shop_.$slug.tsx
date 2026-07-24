@@ -51,16 +51,19 @@ export const Route = createFileRoute("/shop_/$slug")({
     const product = loaderData?.product;
     if (!product) {
       return {
-        meta: [
-          { title: `Product — ${SITE.name}` },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: `Product — ${SITE.name}` }, { name: "robots", content: "noindex" }],
       };
     }
     const image = resolveImage(product.images[0]);
     const imageUrl = image.startsWith("http") ? image : absoluteUrl(image);
     const description = product.short_description || product.description.slice(0, 160);
-    const keywords = [product.title, product.brand, product.category, product.fabric, ...(product.tags || [])]
+    const keywords = [
+      product.title,
+      product.brand,
+      product.category,
+      product.fabric,
+      ...(product.tags || []),
+    ]
       .filter(Boolean)
       .join(", ");
     return buildPageHead({

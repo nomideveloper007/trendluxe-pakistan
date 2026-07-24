@@ -192,7 +192,10 @@ export async function fetchAdminOverview() {
       supabase.from("trends").select("id", { count: "exact", head: true }),
       supabase.from("blog_posts").select("id", { count: "exact", head: true }),
       supabase.from("newsletter_subscribers").select("id", { count: "exact", head: true }),
-      supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("handled", false),
+      supabase
+        .from("contact_messages")
+        .select("id", { count: "exact", head: true })
+        .eq("handled", false),
       supabase.from("trend_likes").select("id", { count: "exact", head: true }),
       supabase.from("favorites").select("id", { count: "exact", head: true }),
       supabase.from("comments").select("id", { count: "exact", head: true }),
@@ -233,10 +236,14 @@ export async function fetchAdminOverview() {
       ["returned", "refunded"].includes(o.status),
     ).length;
     const inv = inventoryRows.data ?? [];
-    const lowStock = inv.filter((i: any) => Number(i.quantity) > 0 && Number(i.quantity) <= 5).length;
+    const lowStock = inv.filter(
+      (i: any) => Number(i.quantity) > 0 && Number(i.quantity) <= 5,
+    ).length;
     const outOfStock = inv.filter((i: any) => Number(i.quantity) <= 0).length;
     const conversionRate =
-      (users.count ?? 0) > 0 ? Math.round(((orders.count ?? 0) / (users.count ?? 1)) * 1000) / 10 : 0;
+      (users.count ?? 0) > 0
+        ? Math.round(((orders.count ?? 0) / (users.count ?? 1)) * 1000) / 10
+        : 0;
 
     const last7: { label: string; sales: number; orders: number }[] = [];
     for (let i = 6; i >= 0; i--) {
@@ -328,10 +335,8 @@ export async function fetchAdminUsers(): Promise<AdminUser[]> {
     .order("created_at", { ascending: false });
   if (pError) throw pError;
 
-  const { data: roles, error: rError } = await supabase
-    .from("user_roles")
-    .select("user_id, role");
-  
+  const { data: roles, error: rError } = await supabase.from("user_roles").select("user_id, role");
+
   if (rError) {
     console.warn("Could not fetch user roles, RLS policies might not be updated yet:", rError);
   }
@@ -401,7 +406,12 @@ export async function fetchAdminOrders() {
   return data ?? [];
 }
 
-export async function updateOrderStatus(orderId: string, status: string, trackingNumber?: string, internalNotes?: string) {
+export async function updateOrderStatus(
+  orderId: string,
+  status: string,
+  trackingNumber?: string,
+  internalNotes?: string,
+) {
   const payload: any = { status };
   if (trackingNumber !== undefined) payload.tracking_number = trackingNumber;
   if (internalNotes !== undefined) payload.order_notes = internalNotes;

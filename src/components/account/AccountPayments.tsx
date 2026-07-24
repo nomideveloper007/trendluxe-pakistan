@@ -52,7 +52,10 @@ export function AccountPayments({ userId }: { userId?: string }) {
   const [preferred, setPreferred] = useState<PaymentPreference>("cod");
 
   useEffect(() => {
-    const stored = loadJson<PaymentPreference | { preferred?: PaymentPreference }>(storageKey, "cod");
+    const stored = loadJson<PaymentPreference | { preferred?: PaymentPreference }>(
+      storageKey,
+      "cod",
+    );
     setPreferred(typeof stored === "string" ? stored : stored.preferred || "cod");
   }, [storageKey]);
 
@@ -109,7 +112,9 @@ export function AccountPayments({ userId }: { userId?: string }) {
                 )}
               </div>
               <p className="mt-4 text-sm font-bold text-foreground">{title}</p>
-              <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{description}</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+                {description}
+              </p>
             </button>
           );
         })}
@@ -119,8 +124,8 @@ export function AccountPayments({ userId }: { userId?: string }) {
         <div className="flex items-start gap-3">
           <Building2 className="mt-0.5 h-4 w-4 text-primary" />
           <p>
-            Card vaulting and saved EasyPaisa / JazzCash numbers will appear here in a future update.
-            Your preference is stored securely on this device for checkout convenience.
+            Card vaulting and saved EasyPaisa / JazzCash numbers will appear here in a future
+            update. Your preference is stored securely on this device for checkout convenience.
           </p>
         </div>
       </div>

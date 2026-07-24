@@ -83,8 +83,7 @@ export function AccountProfile({ userId, email, displayName, bio, avatarUrl }: P
   const saveMut = useMutation({
     mutationFn: async () => {
       if (!userId) return;
-      const combined =
-        [extra.firstName, extra.lastName].filter(Boolean).join(" ").trim() || name;
+      const combined = [extra.firstName, extra.lastName].filter(Boolean).join(" ").trim() || name;
       await updateProfile(userId, {
         display_name: combined,
         bio: about,

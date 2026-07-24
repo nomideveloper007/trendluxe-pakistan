@@ -1,16 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ChevronDown,
-  Heart,
-  Menu,
-  Search,
-  Shield,
-  ShoppingBag,
-  User,
-  X,
-} from "lucide-react";
+import { ChevronDown, Heart, Menu, Search, Shield, ShoppingBag, User, X } from "lucide-react";
 import { SITE, resolveImage } from "@/lib/content";
 import { useAuth } from "@/lib/auth";
 import { fetchProfile, fetchFavorites } from "@/lib/user-data";
@@ -258,14 +249,27 @@ export function Navbar({ searchOpen, onSearchOpenChange }: NavbarProps) {
                   </p>
                   <p className="text-[10px] text-muted-foreground truncate mt-0.5">{user?.email}</p>
                 </div>
-                <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer">
-                  <Link to="/profile" search={{ tab: "home" }}>My Account</Link>
+                <DropdownMenuItem
+                  asChild
+                  className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer"
+                >
+                  <Link to="/profile" search={{ tab: "home" }}>
+                    My Account
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer">
-                  <Link to="/profile" search={{ tab: "orders" }}>Orders</Link>
+                <DropdownMenuItem
+                  asChild
+                  className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer"
+                >
+                  <Link to="/profile" search={{ tab: "orders" }}>
+                    Orders
+                  </Link>
                 </DropdownMenuItem>
                 {isAdmin && (
-                  <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer text-primary">
+                  <DropdownMenuItem
+                    asChild
+                    className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer text-primary"
+                  >
                     <Link to="/admin" className="flex items-center gap-1.5">
                       <Shield className="h-3.5 w-3.5" /> Admin
                     </Link>

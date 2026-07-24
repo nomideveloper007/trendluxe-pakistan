@@ -75,7 +75,9 @@ function CartPage() {
           <div className="rounded-3xl border border-border bg-white overflow-hidden shadow-soft">
             <div className="divide-y divide-border/40">
               {cart.map((item, index) => {
-                const hasDisc = item.product.compare_at_price && item.product.compare_at_price > item.product.price;
+                const hasDisc =
+                  item.product.compare_at_price &&
+                  item.product.compare_at_price > item.product.price;
                 const lineTotal = item.product.price * item.quantity;
                 const itemImg = item.product.images[0] || "";
 
@@ -87,7 +89,11 @@ function CartPage() {
                     {/* Image & Title details */}
                     <div className="flex gap-4 items-center flex-1">
                       <div className="h-20 w-16 overflow-hidden rounded-xl border border-border bg-muted shadow-soft shrink-0">
-                        <img src={resolveImage(itemImg)} alt={item.product.title} className="h-full w-full object-cover" />
+                        <img
+                          src={resolveImage(itemImg)}
+                          alt={item.product.title}
+                          className="h-full w-full object-cover"
+                        />
                       </div>
                       <div className="min-w-0">
                         <span className="text-[9px] font-bold uppercase tracking-widest text-primary">
@@ -104,8 +110,13 @@ function CartPage() {
                         </Link>
                         {/* Variant details */}
                         <div className="flex gap-2.5 text-[10px] text-muted-foreground mt-1 font-semibold uppercase tracking-wider">
-                          <span>Size: <strong className="text-foreground">{item.size}</strong></span>
-                          <span>Color: <strong className="text-foreground capitalize">{item.color}</strong></span>
+                          <span>
+                            Size: <strong className="text-foreground">{item.size}</strong>
+                          </span>
+                          <span>
+                            Color:{" "}
+                            <strong className="text-foreground capitalize">{item.color}</strong>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -114,14 +125,18 @@ function CartPage() {
                     <div className="flex items-center gap-6 justify-between w-full sm:w-auto sm:justify-start">
                       <div className="flex h-9 items-center rounded-full border border-border bg-secondary/10 px-1 shrink-0">
                         <button
-                          onClick={() => updateQuantity(item.productId, item.size, item.color, item.quantity - 1)}
+                          onClick={() =>
+                            updateQuantity(item.productId, item.size, item.color, item.quantity - 1)
+                          }
                           className="h-7 w-7 rounded-full font-bold hover:bg-white transition flex items-center justify-center"
                         >
                           <Minus className="h-3 w-3" />
                         </button>
                         <span className="w-8 text-center font-bold text-xs">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.productId, item.size, item.color, item.quantity + 1)}
+                          onClick={() =>
+                            updateQuantity(item.productId, item.size, item.color, item.quantity + 1)
+                          }
                           className="h-7 w-7 rounded-full font-bold hover:bg-white transition flex items-center justify-center"
                         >
                           <Plus className="h-3 w-3" />
@@ -161,7 +176,8 @@ function CartPage() {
               <Gift className="h-4.5 w-4.5 text-primary" /> Gift Wrap Option (Free)
             </span>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Writing a sweet gift message? Include it here and we'll wrap it in a premium Pahraan presentation box.
+              Writing a sweet gift message? Include it here and we'll wrap it in a premium Pahraan
+              presentation box.
             </p>
             <textarea
               placeholder="Enter your gift note card message..."
@@ -176,7 +192,9 @@ function CartPage() {
         {/* ORDER SUMMARY SIDEBAR */}
         <div className="space-y-4">
           <div className="rounded-3xl border border-border bg-white p-5 shadow-soft space-y-4">
-            <h3 className="font-display text-lg font-bold border-b border-border/40 pb-3">Summary</h3>
+            <h3 className="font-display text-lg font-bold border-b border-border/40 pb-3">
+              Summary
+            </h3>
 
             {/* Coupons input form */}
             {!appliedCoupon ? (
@@ -215,7 +233,9 @@ function CartPage() {
             <div className="space-y-2.5 text-xs text-muted-foreground pt-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="font-semibold text-foreground">PKR {cartSubtotal.toLocaleString()}</span>
+                <span className="font-semibold text-foreground">
+                  PKR {cartSubtotal.toLocaleString()}
+                </span>
               </div>
 
               {discountAmount > 0 && (
@@ -234,7 +254,9 @@ function CartPage() {
 
               <div className="flex justify-between">
                 <span>Sales Tax (5% GST)</span>
-                <span className="font-semibold text-foreground">PKR {taxCost.toLocaleString()}</span>
+                <span className="font-semibold text-foreground">
+                  PKR {taxCost.toLocaleString()}
+                </span>
               </div>
 
               <div className="flex justify-between text-base font-bold text-foreground border-t border-border/40 pt-3.5">

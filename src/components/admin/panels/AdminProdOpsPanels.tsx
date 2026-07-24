@@ -47,7 +47,10 @@ export function AdminTrackingPanel() {
       title="Analytics & Tracking"
       subtitle="Manage GA4, GTM, Search Console, Meta, Pinterest, TikTok & Clarity without code changes."
       action={
-        <Button onClick={save} className="rounded-full bg-primary text-xs text-white cursor-pointer">
+        <Button
+          onClick={save}
+          className="rounded-full bg-primary text-xs text-white cursor-pointer"
+        >
           Save tracking IDs
         </Button>
       }
@@ -166,7 +169,7 @@ export function AdminBackupMonitoringPanel() {
       analytics: loadAnalyticsIds(),
       notifications: loadNotificationPrefs(),
     };
-    const points = loadAdminJson("pahraan_restore_points", [] as typeof snapshot[]);
+    const points = loadAdminJson("pahraan_restore_points", [] as (typeof snapshot)[]);
     const next = [snapshot, ...points].slice(0, 14);
     saveAdminJson("pahraan_restore_points", next);
     const entry = {
@@ -186,7 +189,10 @@ export function AdminBackupMonitoringPanel() {
       title="Backup & Monitoring"
       subtitle="Daily backup hooks, restore points, error & activity logs."
       action={
-        <Button onClick={createBackup} className="rounded-full bg-primary text-xs text-white cursor-pointer">
+        <Button
+          onClick={createBackup}
+          className="rounded-full bg-primary text-xs text-white cursor-pointer"
+        >
           Create restore point
         </Button>
       }
@@ -204,7 +210,10 @@ export function AdminBackupMonitoringPanel() {
           <h3 className="font-display text-lg font-bold">Activity log</h3>
           <div className="mt-3 max-h-64 space-y-2 overflow-y-auto">
             {logs.map((log) => (
-              <div key={log.id} className="rounded-2xl border border-border/40 px-3 py-2 text-[11px]">
+              <div
+                key={log.id}
+                className="rounded-2xl border border-border/40 px-3 py-2 text-[11px]"
+              >
                 <p className="font-semibold">{log.message}</p>
                 <p className="text-muted-foreground">{new Date(log.at).toLocaleString()}</p>
               </div>

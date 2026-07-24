@@ -5,7 +5,13 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { fetchTrendLikeCount, fetchUserLikedTrend, likeTrend, unlikeTrend } from "@/lib/user-data";
 
-export function LikeButton({ trendSlug, baseLikes = 0 }: { trendSlug: string; baseLikes?: number }) {
+export function LikeButton({
+  trendSlug,
+  baseLikes = 0,
+}: {
+  trendSlug: string;
+  baseLikes?: number;
+}) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
@@ -51,7 +57,9 @@ export function LikeButton({ trendSlug, baseLikes = 0 }: { trendSlug: string; ba
           : "border-border bg-white text-foreground hover:border-primary hover:text-primary hover:-translate-y-0.5"
       }`}
     >
-      <Heart className={`h-4 w-4 transition-all duration-300 group-hover:scale-115 ${liked ? "fill-current scale-110 text-rose-500" : ""}`} />
+      <Heart
+        className={`h-4 w-4 transition-all duration-300 group-hover:scale-115 ${liked ? "fill-current scale-110 text-rose-500" : ""}`}
+      />
       {liked ? "Loved" : "Love"}
       <span className="text-[10px] font-mono opacity-80">{total}</span>
     </button>

@@ -97,7 +97,9 @@ export function AdminProductsPanel() {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => toast.message("CSV bulk upload coming soon — use Create Product for now")}
+              onClick={() =>
+                toast.message("CSV bulk upload coming soon — use Create Product for now")
+              }
               className="rounded-full text-[10px] font-bold cursor-pointer"
             >
               <Upload className="mr-1 h-3 w-3" /> Bulk Upload
@@ -131,9 +133,7 @@ export function AdminProductsPanel() {
                 key={p.id}
                 type="button"
                 onClick={() =>
-                  setSelected((prev) =>
-                    on ? prev.filter((x) => x !== p.id) : [...prev, p.id],
-                  )
+                  setSelected((prev) => (on ? prev.filter((x) => x !== p.id) : [...prev, p.id]))
                 }
                 className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold cursor-pointer ${
                   on ? "border-primary bg-primary/10 text-primary" : "border-border"

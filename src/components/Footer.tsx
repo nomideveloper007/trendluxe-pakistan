@@ -48,7 +48,11 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/shop" search={{ tag: "new-arrivals" }} className="hover:text-primary transition">
+              <Link
+                to="/shop"
+                search={{ tag: "new-arrivals" }}
+                className="hover:text-primary transition"
+              >
                 New Arrivals
               </Link>
             </li>
@@ -83,7 +87,11 @@ export function Footer() {
               ["party-wear", "Party Wear"],
             ].map(([slug, name]) => (
               <li key={slug}>
-                <Link to="/shop" search={{ category: slug }} className="hover:text-primary transition">
+                <Link
+                  to="/shop"
+                  search={{ category: slug }}
+                  className="hover:text-primary transition"
+                >
                   {name}
                 </Link>
               </li>
@@ -102,7 +110,11 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/profile" search={{ tab: "orders" }} className="hover:text-primary transition">
+              <Link
+                to="/profile"
+                search={{ tab: "orders" }}
+                className="hover:text-primary transition"
+              >
                 Track Order
               </Link>
             </li>

@@ -171,9 +171,7 @@ function RootComponent() {
             Skip to content
           </a>
           <div className="flex min-h-screen flex-col overflow-x-clip">
-            {!isAdminPage && (
-              <Navbar searchOpen={searchOpen} onSearchOpenChange={setSearchOpen} />
-            )}
+            {!isAdminPage && <Navbar searchOpen={searchOpen} onSearchOpenChange={setSearchOpen} />}
             <main id="main-content" className="flex-1" tabIndex={-1}>
               <Outlet />
             </main>

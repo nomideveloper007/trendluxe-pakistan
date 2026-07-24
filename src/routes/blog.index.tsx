@@ -12,9 +12,15 @@ export const Route = createFileRoute("/blog/")({
   head: () => ({
     meta: [
       { title: `Journal — ${SITE.name}` },
-      { name: "description", content: "Fashion editorials, styling guides and features on Pakistani women's fashion." },
+      {
+        name: "description",
+        content: "Fashion editorials, styling guides and features on Pakistani women's fashion.",
+      },
       { property: "og:title", content: `Journal — ${SITE.name}` },
-      { property: "og:description", content: "Fashion editorials and styling guides on Pakistani women's fashion." },
+      {
+        property: "og:description",
+        content: "Fashion editorials and styling guides on Pakistani women's fashion.",
+      },
       { property: "og:url", content: "/blog" },
     ],
     links: [{ rel: "canonical", href: "/blog" }],
@@ -33,7 +39,10 @@ function BlogPage() {
 
   const [cat, setCat] = useState<(typeof cats)[number]>("all");
   const filtered = useMemo(
-    () => (cat === "all" ? (posts as BlogPost[]) : (posts as BlogPost[]).filter((p: BlogPost) => p.category === cat)),
+    () =>
+      cat === "all"
+        ? (posts as BlogPost[])
+        : (posts as BlogPost[]).filter((p: BlogPost) => p.category === cat),
     [cat, posts],
   );
   return (
@@ -68,7 +77,9 @@ function BlogPage() {
 
       <section className="container-page pb-20">
         <div className="grid gap-5">
-          {filtered.map((p: BlogPost) => <BlogCard key={p.slug} post={p} />)}
+          {filtered.map((p: BlogPost) => (
+            <BlogCard key={p.slug} post={p} />
+          ))}
         </div>
         <AdSlot variant="footer" />
       </section>
