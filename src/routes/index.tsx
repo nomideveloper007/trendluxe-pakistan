@@ -189,35 +189,35 @@ function Home() {
             decoding="async"
             fetchPriority="high"
           />
-          {/* Soft text readability only — does not cover the dress on the right */}
+          {/* Enhanced Mobile & Desktop gradient mask for crystal clear text legibility */}
           <div
-            className="absolute inset-y-0 left-0 w-[70%] max-w-xl bg-gradient-to-r from-[#FFF9FB]/90 via-[#FFF9FB]/45 to-transparent md:w-[42%] md:max-w-none md:from-[#FFF9FB]/70 md:via-[#FFF9FB]/20"
+            className="absolute inset-0 bg-gradient-to-b from-[#FFF9FB]/95 via-[#FFF9FB]/85 to-[#FFF9FB]/50 md:inset-y-0 md:left-0 md:w-[50%] md:max-w-none md:bg-gradient-to-r md:from-[#FFF9FB]/95 md:via-[#FFF9FB]/60 md:to-transparent"
             aria-hidden
           />
         </div>
 
         <div className="pointer-events-none absolute -left-16 top-28 h-36 w-36 rounded-full bg-secondary/25 blur-3xl animate-float" />
 
-        <div className="container-page relative z-10 flex min-h-[100svh] flex-col justify-center py-24 md:min-h-[92vh] md:py-28">
-          <div className="max-w-md animate-fade-up md:max-w-lg">
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-primary shadow-soft backdrop-blur">
+        <div className="container-page relative z-10 flex min-h-[100svh] flex-col justify-center py-16 md:min-h-[92vh] md:py-28">
+          <div className="max-w-md animate-fade-up rounded-3xl border border-white/70 bg-white/80 p-5 shadow-soft backdrop-blur-md sm:max-w-lg sm:p-7 md:border-none md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/90 px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-primary shadow-soft backdrop-blur sm:px-4 sm:py-1.5 sm:text-[11px]">
               <Sparkles className="h-3.5 w-3.5" />
               Summer Collection 2026
             </span>
 
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            <h1 className="mt-4 font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:mt-6 sm:text-5xl md:text-6xl">
               Where Pakistani Fashion Meets <span className="text-gradient">Timeless Elegance</span>
             </h1>
 
-            <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">
+            <p className="mt-3 max-w-md text-xs leading-relaxed text-muted-foreground sm:mt-5 sm:text-sm md:text-base">
               Discover lawn, luxury pret, and bridal couture crafted for the modern Pakistani woman
               — soft silhouettes, heritage embroidery, effortless polish.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:gap-3">
               <Link
                 to="/shop"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-elegant transition hover:bg-accent"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-elegant transition hover:bg-accent sm:py-3.5"
               >
                 Shop Collection
                 <ArrowRight className="h-4 w-4" />
@@ -225,13 +225,13 @@ function Home() {
               <Link
                 to="/shop"
                 search={{ tag: "new-arrivals" }}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-foreground backdrop-blur transition hover:border-primary hover:text-primary"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-white/90 px-7 py-3 text-xs font-bold uppercase tracking-wider text-foreground backdrop-blur transition hover:border-primary hover:text-primary sm:py-3.5"
               >
                 Explore New Arrivals
               </Link>
             </div>
 
-            <div className="mt-10 flex flex-wrap gap-2.5">
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-10 sm:flex sm:flex-wrap sm:gap-2.5">
               {[
                 { icon: Truck, label: "Free Shipping" },
                 { icon: Package, label: "Cash on Delivery" },
@@ -240,10 +240,10 @@ function Home() {
               ].map(({ icon: Icon, label }) => (
                 <span
                   key={label}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white/85 px-3 py-1.5 text-[11px] font-semibold text-foreground/80 shadow-soft backdrop-blur"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white/90 px-2.5 py-1.5 text-[10px] font-semibold text-foreground/90 shadow-soft backdrop-blur sm:px-3 sm:text-[11px]"
                 >
-                  <Icon className="h-3.5 w-3.5 text-primary" />
-                  {label}
+                  <Icon className="h-3.5 w-3.5 shrink-0 text-primary" />
+                  <span className="truncate">{label}</span>
                 </span>
               ))}
             </div>
@@ -252,27 +252,27 @@ function Home() {
       </section>
 
       {/* CATEGORIES */}
-      <section className="container-page py-20 md:py-24">
-        <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <section className="container-page py-14 md:py-24">
+        <div className="mb-8 flex items-end justify-between md:mb-10">
           <div className="animate-fade-up">
             <p className="text-xs font-bold uppercase tracking-widest text-primary">
               Shop by category
             </p>
-            <h2 className="mt-2 font-display text-3xl text-foreground md:text-5xl">
+            <h2 className="mt-1.5 font-display text-2xl text-foreground sm:text-3xl md:text-5xl">
               Curated closets
             </h2>
           </div>
-          <Link to="/shop" className="text-sm font-semibold text-primary hover:underline">
+          <Link to="/shop" className="text-xs font-semibold text-primary hover:underline sm:text-sm">
             View all →
           </Link>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           {SHOP_CATEGORIES.map((c) => (
             <Link
               key={c.slug}
               to="/shop"
               search={{ category: c.slug }}
-              className="group relative overflow-hidden rounded-3xl border border-border/40 shadow-soft transition hover:shadow-elegant"
+              className="group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border/40 shadow-soft transition hover:shadow-elegant"
             >
               <div className="aspect-[4/5] overflow-hidden bg-muted">
                 <img
@@ -283,12 +283,12 @@ function Home() {
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#F8BBD0]">
+              <div className="absolute inset-x-0 bottom-0 p-3.5 sm:p-5 text-white">
+                <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[#F8BBD0]">
                   {categoryCounts[c.slug] || 0} pieces
                 </p>
-                <h3 className="mt-1 font-display text-2xl font-semibold">{c.name}</h3>
-                <p className="mt-1 text-xs text-white/80 line-clamp-2">{c.blurb}</p>
+                <h3 className="mt-0.5 sm:mt-1 font-display text-base sm:text-2xl font-semibold">{c.name}</h3>
+                <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs text-white/80 line-clamp-1 sm:line-clamp-2">{c.blurb}</p>
               </div>
             </Link>
           ))}
@@ -384,7 +384,7 @@ function Home() {
             Fresh lawn, pret, and festive pieces curated for the season.
           </p>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
           {(newArrivals.length ? newArrivals : featured).slice(0, 8).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -401,21 +401,21 @@ function Home() {
       </section>
 
       {/* FEATURED COLLECTIONS */}
-      <section className="bg-blush/60 border-y border-border/40 py-16 md:py-20">
+      <section className="bg-blush/60 border-y border-border/40 py-14 md:py-20">
         <div className="container-page">
-          <div className="mb-8">
+          <div className="mb-6 md:mb-8">
             <p className="text-xs font-bold uppercase tracking-widest text-primary">Collections</p>
-            <h2 className="mt-2 font-display text-3xl text-foreground md:text-4xl">
+            <h2 className="mt-1 font-display text-2xl font-semibold text-foreground sm:text-3xl md:text-4xl">
               Featured edits
             </h2>
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {COLLECTION_BANNERS.map((banner) => (
               <Link
                 key={banner.title}
                 to="/shop"
                 search={banner.search}
-                className="group relative h-56 w-[78vw] shrink-0 snap-start overflow-hidden rounded-3xl border border-border/40 shadow-soft sm:w-[340px] md:h-64"
+                className="group relative h-48 w-[68vw] shrink-0 snap-start overflow-hidden rounded-2xl sm:rounded-3xl border border-border/40 shadow-soft sm:w-[340px] md:h-64"
               >
                 <img
                   src={banner.image}
@@ -424,11 +424,11 @@ function Home() {
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#F8BBD0]">
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 text-white">
+                  <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[#F8BBD0]">
                     {banner.subtitle}
                   </p>
-                  <h3 className="mt-1 font-display text-2xl font-semibold">{banner.title}</h3>
+                  <h3 className="mt-0.5 sm:mt-1 font-display text-xl sm:text-2xl font-semibold">{banner.title}</h3>
                 </div>
               </Link>
             ))}
@@ -437,21 +437,21 @@ function Home() {
       </section>
 
       {/* TRENDING / EDITOR PICKS */}
-      <section className="container-page py-20">
-        <div className="mb-10 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <section className="container-page py-14 md:py-20">
+        <div className="mb-8 flex items-end justify-between md:mb-10">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-primary">Bestsellers</p>
-            <h2 className="mt-2 font-display text-3xl md:text-4xl">Trending now</h2>
+            <h2 className="mt-1 font-display text-2xl sm:text-3xl md:text-4xl">Trending now</h2>
           </div>
           <Link
             to="/shop"
             search={{ tag: "best-sellers" }}
-            className="text-sm font-semibold text-primary hover:underline"
+            className="text-xs font-semibold text-primary hover:underline sm:text-sm"
           >
             Shop bestsellers →
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
           {(trending.length ? trending : featured).slice(0, 6).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

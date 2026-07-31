@@ -220,9 +220,8 @@ export function ProductCard({ product }: { product: Product }) {
               />
             )}
           </Link>
-
-          {/* Hover floating actions */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 flex items-end justify-center px-3 opacity-0 translate-y-2 transition-all duration-[350ms] ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 max-md:pointer-events-auto max-md:opacity-100 max-md:translate-y-0">
+          {/* Hover floating actions — visible on desktop hover only */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 hidden items-end justify-center px-3 opacity-0 translate-y-2 transition-all duration-[350ms] ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 md:flex">
             <button
               type="button"
               onClick={handleQuickView}
@@ -243,56 +242,56 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Info */}
-        <div className="flex flex-1 flex-col gap-3 px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+        <div className="flex flex-1 flex-col gap-2.5 p-3 sm:p-5">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
+            <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
               {collectionLabel(product.category)}
             </p>
-            <Link to="/shop/$slug" params={{ slug: product.slug }} className="mt-1.5 block">
-              <h3 className="font-display text-[1.05rem] font-semibold leading-snug text-foreground transition group-hover:text-primary line-clamp-2 sm:text-lg">
+            <Link to="/shop/$slug" params={{ slug: product.slug }} className="mt-1 block">
+              <h3 className="font-display text-xs sm:text-base font-semibold leading-snug text-foreground transition group-hover:text-primary line-clamp-2">
                 {product.title}
               </h3>
             </Link>
 
-            <div className="mt-2 flex items-center gap-1.5">
+            <div className="mt-1.5 flex items-center gap-1 sm:gap-1.5">
               <div className="flex text-amber-400" aria-hidden>
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
-                    className={`h-3 w-3 ${i < Math.round(product.rating) ? "fill-current" : "fill-transparent"}`}
+                    className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i < Math.round(product.rating) ? "fill-current" : "fill-transparent"}`}
                   />
                 ))}
               </div>
-              <span className="text-[11px] font-semibold text-foreground">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-foreground">
                 {product.rating.toFixed(1)}
               </span>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="hidden text-[10px] text-muted-foreground sm:inline sm:text-[11px]">
                 ({product.review_count} Reviews)
               </span>
             </div>
           </div>
 
           <div>
-            <div className="flex flex-wrap items-baseline gap-2">
-              <span className="font-display text-xl font-bold text-primary">
+            <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-2">
+              <span className="font-display text-base sm:text-xl font-bold text-primary">
                 PKR {product.price.toLocaleString()}
               </span>
               {hasDiscount && (
-                <span className="text-sm text-muted-foreground line-through">
+                <span className="text-xs sm:text-sm text-muted-foreground line-through">
                   PKR {product.compare_at_price!.toLocaleString()}
                 </span>
               )}
             </div>
             {hasDiscount && (
-              <p className="mt-1 text-[11px] font-semibold text-emerald-600">
-                You Save PKR {savings.toLocaleString()}
+              <p className="mt-0.5 text-[10px] sm:text-[11px] font-semibold text-emerald-600">
+                Save PKR {savings.toLocaleString()}
               </p>
             )}
           </div>
 
           {/* Colors */}
           {visibleColors.length > 0 && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1 sm:gap-1.5">
               {visibleColors.map((color) => {
                 const active = selectedColor === color;
                 return (
@@ -305,7 +304,7 @@ export function ProductCard({ product }: { product: Product }) {
                       e.stopPropagation();
                       setSelectedColor(color);
                     }}
-                    className={`h-5 w-5 rounded-full border transition cursor-pointer ${
+                    className={`h-4 w-4 sm:h-5 sm:w-5 rounded-full border transition cursor-pointer ${
                       active
                         ? "border-primary ring-2 ring-primary/25 scale-110"
                         : "border-border/80 hover:border-primary/50"
@@ -316,7 +315,7 @@ export function ProductCard({ product }: { product: Product }) {
                 );
               })}
               {extraColors > 0 && (
-                <span className="text-[10px] font-semibold text-muted-foreground">
+                <span className="text-[9px] sm:text-[10px] font-semibold text-muted-foreground">
                   +{extraColors}
                 </span>
               )}
@@ -324,15 +323,15 @@ export function ProductCard({ product }: { product: Product }) {
           )}
 
           {/* Sizes */}
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1">
             {(displaySizes.length ? displaySizes : SIZE_ORDER.slice(0, 5))
-              .slice(0, 6)
+              .slice(0, 5)
               .map((size) => {
                 const available = product.sizes.length === 0 || product.sizes.includes(size);
                 return (
                   <span
                     key={size}
-                    className={`rounded-lg border px-2 py-0.5 text-[10px] font-bold tracking-wide ${
+                    className={`rounded-md border px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold tracking-wide ${
                       available
                         ? "border-border/70 bg-[#FFF9FB] text-foreground"
                         : "border-border/40 bg-muted/40 text-muted-foreground/50 line-through"
@@ -344,7 +343,7 @@ export function ProductCard({ product }: { product: Product }) {
               })}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="hidden flex-wrap items-center gap-2 sm:flex">
             <span className="rounded-full border border-primary/15 bg-primary/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
               {fabricTag(product.fabric, product.category)}
             </span>
@@ -362,7 +361,7 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
 
           <p
-            className={`text-[11px] font-semibold ${
+            className={`text-[10px] sm:text-[11px] font-semibold ${
               outOfStock
                 ? "text-destructive"
                 : product.stock_status === "low_stock"
@@ -377,22 +376,22 @@ export function ProductCard({ product }: { product: Product }) {
                 : "● In Stock"}
           </p>
 
-          <div className="mt-auto flex flex-col gap-2 pt-1">
+          <div className="mt-auto flex flex-col gap-1.5 pt-1">
             <button
               type="button"
               onClick={handleAddToCart}
               disabled={outOfStock}
-              className={`inline-flex h-11 w-full items-center justify-center gap-2 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-soft transition duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+              className={`inline-flex h-9 sm:h-11 w-full items-center justify-center gap-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white shadow-soft transition duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
                 added ? "bg-emerald-600 hover:bg-emerald-600" : "bg-primary hover:bg-accent"
               }`}
             >
               {added ? (
                 <>
-                  <Check className="h-4 w-4" /> Added to Cart
+                  <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Added
                 </>
               ) : (
                 <>
-                  <ShoppingBag className="h-4 w-4" /> Add to Cart
+                  <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Add to Cart
                 </>
               )}
             </button>
@@ -400,7 +399,7 @@ export function ProductCard({ product }: { product: Product }) {
               type="button"
               onClick={handleBuyNow}
               disabled={outOfStock}
-              className="inline-flex h-11 w-full items-center justify-center rounded-full border border-primary bg-white text-xs font-bold uppercase tracking-wider text-primary transition duration-300 hover:bg-primary hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+              className="hidden sm:inline-flex h-11 w-full items-center justify-center rounded-full border border-primary bg-white text-xs font-bold uppercase tracking-wider text-primary transition duration-300 hover:bg-primary hover:text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             >
               Buy Now
             </button>
